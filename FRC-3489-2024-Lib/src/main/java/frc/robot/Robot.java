@@ -4,8 +4,7 @@
 
 package frc.robot;
 
-import com.ctre.phoenix6.hardware.Pigeon2;
-
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -15,19 +14,64 @@ public class Robot extends TimedRobot {
 
   private RobotContainer m_robotContainer;
 
-  private final Pigeon2 pigeon2 = new Pigeon2(16);
+  private final DigitalInput buttonA = new DigitalInput(0);
+  private final DigitalInput buttonB = new DigitalInput(1);
+
+  private double speed = 0;
+  private boolean lastButtonA = false;
+  private boolean lastButtonB = false;
+  private double buttonAPressSeconds = 0;
+  private double buttonBPressSeconds = 0;
 
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
   }
 
+  private long i = 0;
+
+  // 50hz
   @Override
   public void robotPeriodic() {
     CommandScheduler.getInstance().run();
 
-    var heading = pigeon2.getAngle();
-    System.out.println(heading);
+    if (!lastButtonA && buttonA.get()) {
+      speed -= 0.01;
+    }
+    lastButtonA = buttonA.get();
+    if (buttonA.get()) {
+      buttonAPressSeconds += 0.02;
+    } else {
+      buttonAPressSeconds = 0;
+    }
+    if (buttonAPressSeconds > 0.5) {
+      speed -= 0.01;
+    }
+
+    if (!lastButtonB && buttonB.get()) {
+      speed += 0.01;
+    }
+    lastButtonB = buttonB.get();
+    if (buttonB.get()) {
+      buttonBPressSeconds += 0.02;
+    } else {
+      buttonBPressSeconds = 0;
+    }
+    if (buttonBPressSeconds > 0.5) {
+      speed += 0.01;
+    }
+
+    if (speed < 0) {
+      speed = 0;
+    } else if (speed > 1) {
+      speed = 1;
+    }
+
+    i++;
+    if (i % 5 == 0) {
+      int percentSpeed = (int) (speed * 100);
+      System.out.println("Speed is " + percentSpeed + "%");
+    }
   }
 
   @Override
