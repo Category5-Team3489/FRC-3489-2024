@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.hardware.TalonFX;
+
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -16,7 +18,8 @@ public class Robot extends TimedRobot {
 
   private final DigitalInput buttonA = new DigitalInput(0);
   private final DigitalInput buttonB = new DigitalInput(1);
-
+  private final TalonFX motorA = new TalonFX(1);
+  private final TalonFX motorB = new TalonFX(5);
   private double speed = 0;
   private boolean lastButtonA = false;
   private boolean lastButtonB = false;
@@ -68,10 +71,22 @@ public class Robot extends TimedRobot {
     }
 
     i++;
-    if (i % 5 == 0) {
-      int percentSpeed = (int) (speed * 100);
-      System.out.println("Speed is " + percentSpeed + "%");
+    /*
+     * if (i % 5 == 0) {
+     * int percentSpeed = (int) (speed * 100);
+     * System.out.println("Speed is " + percentSpeed + "%");
+     * }
+     */
+    if (i % 10 == 0) {
+      System.out.println("The velocity is " + motorA.getRotorVelocity());
     }
+
+    if (buttonA.get() && buttonB.get()) {
+      speed = 0;
+    }
+    motorA.set(speed);
+    motorB.set(speed);
+
   }
 
   @Override
