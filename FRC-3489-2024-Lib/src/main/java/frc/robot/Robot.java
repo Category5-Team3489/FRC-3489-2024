@@ -87,7 +87,13 @@ public class Robot extends TimedRobot {
     motorA.set(speed);
     motorB.set(speed);
 
+
   }
+
+  private double V_to_Radians(double rotations_per_second){
+  
+  }
+  
 
   @Override
   public void disabledInit() {
