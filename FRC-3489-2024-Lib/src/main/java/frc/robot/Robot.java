@@ -77,24 +77,33 @@ public class Robot extends TimedRobot {
      * System.out.println("Speed is " + percentSpeed + "%");
      * }
      */
-    if (i % 10 == 0) {
-      System.out.println("The velocity is " + motorA.getRotorVelocity());
-    }
+    // if (i % 10 == 0) {
+    //   System.out.println("The velocity is " + motorA.getRotorVelocity());
+    // }
 
     if (buttonA.get() && buttonB.get()) {
       speed = 0;
     }
     motorA.set(speed);
     motorB.set(speed);
-
-
+    
+    VelocictytoMeters();
+    Supply();
+   }
+private void Supply() {
+  double current = motorA.getTorqueCurrent().getValue();
+  System.out.println("The supply current is "+ current );
+}
+  private void VelocictytoMeters() {
+    double rotationspersecond = motorA.getRotorVelocity().getValue();
+    System.out.println("The current rotation per second" + rotationspersecond);
+    // r = 2 inches, converted to meters is 0.0508
+    double mps = (rotationspersecond * (2 * Math.PI * 0.0508));
+    System.out.println("The motors are running at " + mps + " meters per second");
   }
 
-  private double V_to_Radians(double rotations_per_second){
-  
-  }
-  
 
+  
   @Override
   public void disabledInit() {
   }
