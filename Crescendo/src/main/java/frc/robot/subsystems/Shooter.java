@@ -1,17 +1,49 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import com.ctre.phoenix6.hardware.TalonFX;
 
 public class Shooter extends SubsystemBase {
 
     public Shooter() {}
 
-    private final Spark angleMotor = new Spark(0);
+    private final Spark angleMotorLeft = new Spark(0);
+    private final Spark angleMotorRight = new Spark (1);
+
+    private final Spark beltmotor = new Spark(0);
+
+    private final TalonFX bottomShooter = new TalonFX (0); 
+    private final TalonFX topShooter = new TalonFX (1);
+
+    //Intake
+
+    //Adjust Angle
+
+    //Rev up motors
+    public void setShooterSpeed(double shooterSpeed){
+        bottomShooter.set(-shooterSpeed);
+        topShooter.set(shooterSpeed);
+        
+    }
+
+    //move belt
+    public void moveBelt (double beltSpeed) {
+        beltmotor.set(beltSpeed);
+    }
 
 
-    
+
+
+
+
+
+
+
+
 
  
 }

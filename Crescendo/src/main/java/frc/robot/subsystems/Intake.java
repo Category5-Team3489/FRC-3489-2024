@@ -3,11 +3,9 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import frc.robot.Enums.IntakeState;
 
 public class Intake extends SubsystemBase {
-
-    private Constants constants;
 
     private final Spark frontMotor = new Spark(0);
     private final Spark backMotor = new Spark(1);
@@ -15,21 +13,19 @@ public class Intake extends SubsystemBase {
   public Intake() {}
 
   //Intake/Outtake front
-  // if intake: direction=1 //if outtake: direction=-1
-    public void setFront(int direction) {   
-      double speed = constants.intakeSpeed * direction;
-      frontMotor.set(speed);
+    public void setFront(IntakeState speed) {
+      frontMotor.set(speed.getSpeed());
     }
 
   //Intake/Outtake back
-    public void setBack(int direction) {
-      double speed = constants.intakeSpeed * direction ; 
-      backMotor.set(speed) ;
+    public void setBack(IntakeState speed) {
+      backMotor.set(speed.getSpeed());
     }
 
-    public void setBoth(int direction) {
-      setFront(direction) ;
-      setBack(direction) ;
+    //set speed both
+    public void setBoth(IntakeState speed) {
+      setFront(speed) ;
+      setBack(speed) ;
     } 
 
   //Stop Motors
