@@ -22,5 +22,11 @@ public class SetIntakeBoth extends Command {
   @Override
   public void execute() {
     intake.setBoth(state);
+    //move belts
   }
 }
+
+
+//start intake/belt
+//wait to get sensor value (could have this start shooter motor)
+//stop

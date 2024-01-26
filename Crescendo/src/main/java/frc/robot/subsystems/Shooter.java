@@ -6,25 +6,20 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 
 public class Shooter extends SubsystemBase {
 
     public Shooter() {}
 
-    private final Spark angleMotorLeft = new Spark(0);
-    private final Spark angleMotorRight = new Spark (1);
-
-    private final Spark beltmotor = new Spark(0);
+    private final CANSparkMax beltmotor = new CANSparkMax(0, MotorType.kBrushless);
 
     private final TalonFX bottomShooter = new TalonFX (0); 
     private final TalonFX topShooter = new TalonFX (1);
 
-    //Intake
-
-    //Adjust Angle
-
     //Rev up motors
-    public void setShooterSpeed(double shooterSpeed){
+    public void setShooterSpeed(double shooterSpeed) {
         bottomShooter.set(-shooterSpeed);
         topShooter.set(shooterSpeed);
         
@@ -34,10 +29,6 @@ public class Shooter extends SubsystemBase {
     public void moveBelt (double beltSpeed) {
         beltmotor.set(beltSpeed);
     }
-
-
-
-
 
 
 

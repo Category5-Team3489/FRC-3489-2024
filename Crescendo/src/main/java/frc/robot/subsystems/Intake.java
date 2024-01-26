@@ -1,5 +1,8 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkLowLevel.MotorType;
+
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -7,8 +10,8 @@ import frc.robot.Enums.IntakeState;
 
 public class Intake extends SubsystemBase {
 
-    private final Spark frontMotor = new Spark(0);
-    private final Spark backMotor = new Spark(1);
+    private final CANSparkMax frontMotor = new CANSparkMax(0, MotorType.kBrushless);
+    private final CANSparkMax backMotor = new CANSparkMax(1, MotorType.kBrushless);
 
   public Intake() {}
 
