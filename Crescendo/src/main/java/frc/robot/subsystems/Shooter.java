@@ -1,47 +1,40 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Enums.ShooterState;
 
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.VelocityDutyCycle;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkLowLevel.MotorType;
 
 public class Shooter extends SubsystemBase {
 
-    public Shooter() {}
+    private final TalonFX motor = new TalonFX(0);
 
-    private final CANSparkMax beltmotor = new CANSparkMax(0, MotorType.kBrushless);
+    public Shooter() {
+        // TalonFXConfiguration configs = new TalonFXConfiguration();
+        // configs.Slot0
+        // motor.co
+    }
 
-    private final TalonFX bottomShooter = new TalonFX (0); 
-    private final TalonFX topShooter = new TalonFX (1);
-
-    //Rev up motors
+    // Rev up motors
     public void setShooterSpeed(double shooterSpeed) {
-        bottomShooter.set(-shooterSpeed);
-        topShooter.set(shooterSpeed);
-        
+        motor.set(shooterSpeed);
+
     }
 
     public void setShooterState(ShooterState shooterState) {
-        bottomShooter.set(-shooterState.getSpeed());
-        topShooter.set(shooterState.getSpeed());
-        
+        motor.set(-shooterState.getSpeed());
+        // VelocityVoltage a = new VelocityVoltage()
+        // VelocityDutyCycle e = new VelocityDutyCycle()
+        // https://github.com/Category5-Team3489/FRC-3489-2022/blob/main/FRC-3489-2022-AutoTesting/src/main/java/frc/robot/handlers/ShooterHandler.java
+        // https://github.com/CrossTheRoadElec/Phoenix6-Examples/blob/main/java/VelocityClosedLoop/src/main/java/frc/robot/Robot.java
     }
 
-    //move belt
-    public void moveBelt (double beltSpeed) {
-        beltmotor.set(beltSpeed);
+    public boolean isAtTarget() {
+        // double error = motor.getClosedLoopError().getValueAsDouble();
+        return true;
     }
 
-
-
-
-
-
-
- 
 }

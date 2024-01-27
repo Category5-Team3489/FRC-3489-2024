@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.Intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Enums.BeltState;
@@ -23,6 +23,12 @@ public class IntakeUntilDetection extends Command {
         //start intake/belt
         intake.setBoth(IntakeState.In);
         belt.moveBelt(BeltState.Belt_1);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        belt.moveBelt(BeltState.Belt_nomove);
+        intake.stopMotors();
     }
 
     @Override
