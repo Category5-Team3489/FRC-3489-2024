@@ -1,17 +1,20 @@
 package frc.robot.commands;
 
 import frc.robot.Enums.IntakeState;
+import frc.robot.subsystems.Belt;
 import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class SetIntakeBoth extends Command {
 
   private final Intake intake;
-  private final IntakeState state;
+  private final Belt belt;
+  private double speed;
 
-  public SetIntakeBoth(Intake intake, IntakeState state ) {
+  public SetIntakeBoth(Intake intake,Belt belt, double speed) {
     this.intake = intake;
-    this.state = state;
+    this.belt = belt;
+    this.speed = speed;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake);
@@ -21,8 +24,9 @@ public class SetIntakeBoth extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intake.setBoth(state);
+    intake.setDoubleBoth(speed);
     //move belts
+    belt.moveDoubleBelt(speed);
   }
 }
 

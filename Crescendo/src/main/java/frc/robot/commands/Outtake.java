@@ -6,12 +6,11 @@ import frc.robot.Enums.IntakeState;
 import frc.robot.subsystems.Belt;
 import frc.robot.subsystems.Intake;
 
-public class IntakeUntilDetection extends Command {
-
+public class Outtake extends Command {
     private final Intake intake;
     private final Belt belt;
 
-    public IntakeUntilDetection(Intake intake, Belt belt) {
+    public Outtake(Intake intake, Belt belt) {
         this.intake = intake;
         this.belt = belt;
         
@@ -20,14 +19,10 @@ public class IntakeUntilDetection extends Command {
 
     @Override
     public void execute() {
-        //start intake/belt
-        intake.setBoth(IntakeState.In);
-        belt.moveBelt(BeltState.Belt_1);
+        //set intake to out
+        intake.setBoth(IntakeState.Out);
+        //set belt to out
+        belt.moveBelt(BeltState.BeltOut);
     }
 
-    @Override
-    public boolean isFinished() {
-        //wait to get sensor value (could have this start shooter motor)
-        return belt.isNoteDetected();
-    }
 }

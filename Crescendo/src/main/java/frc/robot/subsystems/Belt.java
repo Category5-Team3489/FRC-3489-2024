@@ -2,6 +2,9 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Enums.BeltState;
+import frc.robot.Enums.ShooterState;
+import frc.robot.Enums.BeltState;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -16,7 +19,14 @@ public class Belt extends SubsystemBase {
     private final DigitalInput laserSensor = new DigitalInput(0);
 
     //move belt
-    public void moveBelt (double beltSpeed) {
+    public void moveBelt (BeltState beltEnumSpeed) {
+        beltmotor.set(beltEnumSpeed.getbeltEnumSpeed());
+    }
+
+    public void moveBeltShooter (BeltState beltEnumSpeed) {
+        beltmotor.set(beltEnumSpeed.getbeltEnumSpeed());
+    }
+    public void moveDoubleBelt(double beltSpeed) {
         beltmotor.set(beltSpeed);
     }
 

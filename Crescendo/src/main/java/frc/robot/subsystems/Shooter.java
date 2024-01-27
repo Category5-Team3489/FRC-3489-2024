@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Enums.ShooterState;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkMax;
@@ -22,6 +23,12 @@ public class Shooter extends SubsystemBase {
     public void setShooterSpeed(double shooterSpeed) {
         bottomShooter.set(-shooterSpeed);
         topShooter.set(shooterSpeed);
+        
+    }
+
+    public void setShooterState(ShooterState shooterState) {
+        bottomShooter.set(-shooterState.getSpeed());
+        topShooter.set(shooterState.getSpeed());
         
     }
 

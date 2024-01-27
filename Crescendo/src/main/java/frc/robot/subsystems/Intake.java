@@ -31,6 +31,11 @@ public class Intake extends SubsystemBase {
       setBack(speed) ;
     } 
 
+    public void setDoubleBoth(double speed) {
+      frontMotor.set(speed);
+      backMotor.set(speed);
+    }
+
   //Stop Motors
     public void stopMotors() {
         frontMotor.stopMotor();
