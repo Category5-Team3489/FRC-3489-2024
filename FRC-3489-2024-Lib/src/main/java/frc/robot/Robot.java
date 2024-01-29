@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -18,8 +20,8 @@ public class Robot extends TimedRobot {
 
   private final DigitalInput buttonA = new DigitalInput(0);
   private final DigitalInput buttonB = new DigitalInput(1);
-  private final TalonFX motorA = new TalonFX(1);
-  private final TalonFX motorB = new TalonFX(5);
+  private final TalonSRX motorA = new TalonSRX(2);
+  private final TalonSRX motorB = new TalonSRX(8);
   private double speed = 0;
   private boolean lastButtonA = false;
   private boolean lastButtonB = false;
@@ -71,39 +73,40 @@ public class Robot extends TimedRobot {
     }
 
     i++;
-    /*
-     * if (i % 5 == 0) {
-     * int percentSpeed = (int) (speed * 100);
-     * System.out.println("Speed is " + percentSpeed + "%");
-     * }
-     */
+
+    if (i % 5 == 0) {
+      int percentSpeed = (int) (speed * 100);
+      System.out.println("Speed is " + percentSpeed + "%");
+    }
+
     // if (i % 10 == 0) {
-    //   System.out.println("The velocity is " + motorA.getRotorVelocity());
+    // System.out.println("The velocity is " + motorA.getRotorVelocity());
     // }
 
     if (buttonA.get() && buttonB.get()) {
       speed = 0;
     }
-    motorA.set(speed);
-    motorB.set(speed);
-    
-    VelocictytoMeters();
-    Supply();
-   }
-private void Supply() {
-  double current = motorA.getTorqueCurrent().getValue();
-  System.out.println("The supply current is "+ current );
-}
-  private void VelocictytoMeters() {
-    double rotationspersecond = motorA.getRotorVelocity().getValue();
-    System.out.println("The current rotation per second" + rotationspersecond);
-    // r = 2 inches, converted to meters is 0.0508
-    double mps = (rotationspersecond * (2 * Math.PI * 0.0508));
-    System.out.println("The motors are running at " + mps + " meters per second");
+    motorA.set(TalonSRXControlMode.Velocity, speed);
+    motorA.setInverted(false);
+    motorB.set(TalonSRXControlMode.Velocity, speed);
+    motorB.setInverted(true);
+
+    // VelocictytoMeters();
+    // Supply();
   }
+  // private void Supply() {
+  // double current = motorA.getTorqueCurrent().getValue();
+  // System.out.println("The supply current is "+ current );
+  // }
+  // private void VelocictytoMeters() {
+  // double rotationspersecond = motorA.getRotorVelocity().getValue();
+  // System.out.println("The current rotation per second" + rotationspersecond);
+  // // r = 2 inches, converted to meters is 0.0508
+  // double mps = (rotationspersecond * (2 * Math.PI * 0.0508));
+  // System.out.println("The motors are running at " + mps + " meters per
+  // second");
+  // }
 
-
-  
   @Override
   public void disabledInit() {
   }
