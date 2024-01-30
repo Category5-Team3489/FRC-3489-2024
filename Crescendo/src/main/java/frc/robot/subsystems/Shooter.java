@@ -12,6 +12,8 @@ public class Shooter extends SubsystemBase {
 
     private final TalonFX motor = new TalonFX(0);
 
+    private final double allowedError = 30; //the amount of error allowed 
+
     public Shooter() {
         // TalonFXConfiguration configs = new TalonFXConfiguration();
         // configs.Slot0
@@ -33,8 +35,11 @@ public class Shooter extends SubsystemBase {
     }
 
     public boolean isAtTarget() {
-        // double error = motor.getClosedLoopError().getValueAsDouble();
-        return true;
+        double error = motor.getClosedLoopError().getValueAsDouble();
+        if (error <= allowedError) {
+            return true;
+        }
+        return false;
     }
 
 }

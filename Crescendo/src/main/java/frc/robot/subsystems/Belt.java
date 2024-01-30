@@ -1,10 +1,8 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Enums.BeltState;
-
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
@@ -53,10 +51,4 @@ public class Belt extends SubsystemBase {
     //press shoot button
     //run belt/shooter
     //stop
-
-
-
-
-
- 
 }

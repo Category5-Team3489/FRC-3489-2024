@@ -14,13 +14,13 @@ public class IntakeUntilDetection extends Command {
     public IntakeUntilDetection(Intake intake, Belt belt) {
         this.intake = intake;
         this.belt = belt;
-        
+
         addRequirements(intake, belt);
     }
 
     @Override
     public void execute() {
-        //start intake/belt
+        // start intake/belt
         intake.setBoth(IntakeState.In);
         belt.moveBelt(BeltState.Belt_1);
     }
@@ -33,7 +33,7 @@ public class IntakeUntilDetection extends Command {
 
     @Override
     public boolean isFinished() {
-        //wait to get sensor value (could have this start shooter motor)
+        // wait to get sensor value (could have this start shooter motor)
         return belt.isNoteDetected();
     }
 }
