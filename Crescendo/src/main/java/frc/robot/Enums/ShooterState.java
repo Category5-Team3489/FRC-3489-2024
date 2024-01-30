@@ -6,14 +6,14 @@ public enum ShooterState {
     IntakeSpeed(-0.5),
     Off(0);
 
-    private final double shooterSpeed;
+    private final double rotationsPerSecond;
 
-    private ShooterState(double shooterSpeed) {
-        this.shooterSpeed = shooterSpeed;
+    private ShooterState(double rotationsPerSecond) {
+        this.rotationsPerSecond = rotationsPerSecond;
     }
 
-    public double getSpeed() {
-        return shooterSpeed;
+    public double getRotationsPerSecond() {
+        return rotationsPerSecond;
     }
 
 }
