@@ -1,24 +1,24 @@
 package frc.robot.commands.Shooter;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Enums.ShooterState;
-import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.ShooterSpeed;
 
 public class SetShooterSpeed extends Command {
-    
-    private final Shooter shooter;
-    private final ShooterState shooterState;
+    private final DoubleSupplier speedRpsSupplier;
+    private final ShooterSpeed shooterSpeed;
 
-    public SetShooterSpeed(Shooter shooter, ShooterState shooterState) {
-        this.shooter = shooter;
-        this.shooterState = shooterState;
+    public SetShooterSpeed(DoubleSupplier speedRpsSupplier, ShooterSpeed shooterSpeed) {
+        this.speedRpsSupplier = speedRpsSupplier;
+        this.shooterSpeed = shooterSpeed;
 
-        addRequirements(shooter);
+        addRequirements(shooterSpeed);
     }
 
     @Override
     public void execute() {
-        // adjust speed
-        shooter.setShooterState(shooterState);
+        // adjust speed of shooter
+        shooterSpeed.setSpeed(speedRpsSupplier.getAsDouble());
     }
 }

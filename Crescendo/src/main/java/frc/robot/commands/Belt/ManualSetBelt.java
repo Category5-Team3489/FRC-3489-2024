@@ -1,4 +1,4 @@
-package frc.robot.commands.Belt;
+package frc.robot.commands.belt;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Belt;

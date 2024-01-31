@@ -2,35 +2,34 @@ package frc.robot.commands.Shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Enums.BeltState;
-import frc.robot.Enums.ShooterState;
 import frc.robot.subsystems.Belt;
-import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.ShooterAngle;
+import frc.robot.subsystems.ShooterSpeed;
 
 public class ManualShoot extends Command {
 
-    private final Shooter shooter;
+    private final ShooterSpeed shooterSpeed;
     private final ShooterAngle shooterAngle;
-    private final ShooterState shooterState;
     private final Belt belt;
     private double angle;
+    private final double speed;
 
-    public ManualShoot(Shooter shooter, ShooterAngle shooterAngle, double angle, Belt belt, ShooterState shooterState) {
-        this.shooter = shooter;
+    public ManualShoot(double speed, ShooterSpeed shooterSpeed, ShooterAngle shooterAngle, double angle, Belt belt) {
+        this.shooterSpeed = shooterSpeed;
         this.shooterAngle = shooterAngle;
         this.belt = belt;
         this.angle = angle;
-        this.shooterState = shooterState;
+        this.speed = speed;
 
-        addRequirements(shooter, shooterAngle);
+        addRequirements(shooterSpeed, shooterAngle);
     }
 
     @Override
     public void execute() {
         // adjust angle
-        shooterAngle.adjustAngle(angle);
+        shooterAngle.setAngle(angle);
         // adjust speed
-        shooter.setShooterState(shooterState);
+        shooterSpeed.setSpeed(speed);
         // move belt index
         belt.moveBeltShooter(BeltState.BeltShooter);
     }

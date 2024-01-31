@@ -1,16 +1,18 @@
 package frc.robot.commands.Shooter;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.ShooterAngle;
 
 public class SetShooterAngle extends Command {
 
     private final ShooterAngle shooterAngle;
-    private double angle;
+    private DoubleSupplier angleDegreesSupplier;
 
-    public SetShooterAngle(ShooterAngle shooterAngle, double angle) {
+    public SetShooterAngle(ShooterAngle shooterAngle, DoubleSupplier angleDegreesSupplier) {
         this.shooterAngle = shooterAngle;
-        this.angle = angle;
+        this.angleDegreesSupplier = angleDegreesSupplier;
 
         addRequirements(shooterAngle);
     }
@@ -18,7 +20,7 @@ public class SetShooterAngle extends Command {
     @Override
     public void initialize() {
         // adjust angle
-        shooterAngle.adjustAngle(angle);
+        shooterAngle.setAngle(angleDegreesSupplier.getAsDouble());
     }
 
     @Override

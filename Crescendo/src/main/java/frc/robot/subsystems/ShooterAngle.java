@@ -11,11 +11,14 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 public class ShooterAngle extends SubsystemBase {
 
     // Constants
-    private static final double MotorRevolutionsPerRevolution = (100.0 / 1.0) * (2.0 / 1.0); // gear ratio (revolution)
-    private static final double MotorRevolutionsPerDegree = MotorRevolutionsPerRevolution / 360.0; // convert
-                                                                                                   // revolutions to
-                                                                                                   // degrees
-    private static final double DegreesPerMotorRevolution = 1.0 / MotorRevolutionsPerDegree; // used in pid
+    private static final double MotorRotationsPerRevolution = (100.0 / 1.0) * (2.0 / 1.0); // gear ratio (revolution)
+    // convert revolutions to degrees
+    private static final double MotorRotationsPerDegree = MotorRotationsPerRevolution / 360.0;
+    private static final double DegreesPerMotorRotation = 1.0 / MotorRotationsPerDegree; // used in pid
+
+    // Shooter is at its target angle if the error
+    // is within plus or minus this value
+    private static final double AllowedErrorDegrees = 2.0;
 
     private final CANSparkMax angleMotorLeft = new CANSparkMax(0, MotorType.kBrushless);
     private final CANSparkMax angleMotorRight = new CANSparkMax(1, MotorType.kBrushless);
@@ -23,22 +26,35 @@ public class ShooterAngle extends SubsystemBase {
     private final SparkPIDController pidController;
     private final RelativeEncoder encoder;
 
+    private double targetAngleDegrees = Double.NaN;
+
     public ShooterAngle() {
+        angleMotorLeft.setInverted(true);
         angleMotorLeft.follow(angleMotorRight);
 
         pidController = angleMotorRight.getPIDController();
         encoder = angleMotorRight.getEncoder();
     }
 
-    public void adjustAngle(double angle) { // angle = degrees
-        pidController.setReference(-angle * MotorRevolutionsPerDegree, ControlType.kPosition, 0);
+    public void setAngle(double angleDegrees) {
+        targetAngleDegrees = angleDegrees;
+
+        double targetRotations = angleDegrees * MotorRotationsPerDegree;
+        pidController.setReference(targetRotations, ControlType.kPosition, 0);
     }
 
     public boolean isAtTarget() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'isAtTarget'");
-        // double error = angleMotorRight.getClosedLoopError().getValueAsDouble();
+        if (Double.isNaN(targetAngleDegrees)) {
+            return false;
+        }
 
+        double rotations = encoder.getPosition();
+        double angleDegrees = rotations * DegreesPerMotorRotation;
+
+        double errorDegrees = targetAngleDegrees - angleDegrees;
+        errorDegrees = Math.abs(errorDegrees);
+
+        return errorDegrees < AllowedErrorDegrees;
     }
 
     // manual shooting
