@@ -3,15 +3,15 @@ package frc.robot.commands.Shooter;
 import java.util.function.DoubleSupplier;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.commands.belt.ManualSetBelt;
-import frc.robot.subsystems.Belt;
+import frc.robot.commands.index.ManualSetIndex;
+import frc.robot.subsystems.Index;
 import frc.robot.subsystems.ShooterAngle;
 import frc.robot.subsystems.ShooterSpeed;
 
 public class Shoot extends SequentialCommandGroup {
     public Shoot(
             DoubleSupplier angleDegreesSupplier, DoubleSupplier speedRpsSupplier,
-            ShooterSpeed shooter, ShooterAngle shooterAngle, Belt belt) {
+            ShooterSpeed shooter, ShooterAngle shooterAngle, Index belt) {
         addCommands(
                 Commands.parallel(
                         new SetShooterAngle(shooterAngle, angleDegreesSupplier),
@@ -21,7 +21,7 @@ public class Shoot extends SequentialCommandGroup {
                                 Commands.parallel(
                                         Commands.waitUntil(() -> shooter.isAtTarget()),
                                         Commands.waitUntil(() -> shooterAngle.isAtTarget())),
-                                new ManualSetBelt(belt, 0.5).withTimeout(0.7),
+                                new ManualSetIndex(belt, 0.5).withTimeout(0.7),
                                 Commands.waitSeconds(1.0))));
     }
 

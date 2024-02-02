@@ -1,17 +1,17 @@
 package frc.robot.commands.Intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Enums.BeltState;
+import frc.robot.Enums.IndexState;
 import frc.robot.Enums.IntakeState;
-import frc.robot.subsystems.Belt;
+import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
 
 public class IntakeUntilDetection extends Command {
 
     private final Intake intake;
-    private final Belt belt;
+    private final Index belt;
 
-    public IntakeUntilDetection(Intake intake, Belt belt) {
+    public IntakeUntilDetection(Intake intake, Index belt) {
         this.intake = intake;
         this.belt = belt;
 
@@ -21,13 +21,13 @@ public class IntakeUntilDetection extends Command {
     @Override
     public void execute() {
         // start intake/belt
-        intake.setBoth(IntakeState.In);
-        belt.moveBelt(BeltState.Belt_1);
+        intake.setSpeedState(IntakeState.In);
+        belt.moveIndex(IndexState.Belt_1);
     }
 
     @Override
     public void end(boolean interrupted) {
-        belt.moveBelt(BeltState.Belt_nomove);
+        belt.moveIndex(IndexState.StopIndex);
         intake.stopMotors();
     }
 
