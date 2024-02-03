@@ -22,13 +22,17 @@ public class ShooterAngle extends SubsystemBase {
 
     private final CANSparkMax angleMotorLeft = new CANSparkMax(0, MotorType.kBrushless);
     private final CANSparkMax angleMotorRight = new CANSparkMax(1, MotorType.kBrushless);
-
+    
     private final SparkPIDController pidController;
     private final RelativeEncoder encoder;
 
     private double targetAngleDegrees = Double.NaN;
+    private static ShooterAngle instance = new ShooterAngle();
 
-    public ShooterAngle() {
+    public static ShooterAngle get() {
+        return instance;
+    }
+    private ShooterAngle() {
         angleMotorLeft.setInverted(true);
         angleMotorLeft.follow(angleMotorRight);
 

@@ -16,7 +16,8 @@ public class ShooterSpeed extends SubsystemBase {
     // volts / rotation per second
     private static final double VoltsPerRotationPerSecond = 0.12; // kV
 
-    // Shooter is at its target speed if the error is within plus or minus this value
+    // Shooter is at its target speed if the error is within plus or minus this
+    // value
     private static final double AllowedErrorRotationsPerSecond = 5;
 
     private final TalonFX motor = new TalonFX(0);
@@ -24,7 +25,13 @@ public class ShooterSpeed extends SubsystemBase {
     private final VelocityVoltage velocity = new VelocityVoltage(0);
     // https://v6.docs.ctr-electronics.com/en/stable/docs/migration/migration-guide/closed-loop-guide.html
 
-    public ShooterSpeed() {
+    private static ShooterSpeed instance = new ShooterSpeed();
+
+    public static ShooterSpeed get() {
+        return instance;
+    }
+
+    private ShooterSpeed() {
         TalonFXConfiguration configs = new TalonFXConfiguration();
         configs.Slot0.kP = VoltsPerRotationPerSecondOfError;
         configs.Slot0.kI = VoltsPerRotationOfError;

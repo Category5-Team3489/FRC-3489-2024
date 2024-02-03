@@ -17,4 +17,6 @@ public class ManualSetIndex extends Command {
     public void execute() {
         belt.moveDoubleIndex(speed);
     }
+
+    
 }

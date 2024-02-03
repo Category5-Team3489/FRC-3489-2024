@@ -4,13 +4,19 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Enums.IntakeState;
+import frc.robot.enums.IntakeState;
 
 public class Intake extends SubsystemBase {
+  // Constants
+  
 
+  // Devices
   private final CANSparkMax motor = new CANSparkMax(0, MotorType.kBrushless);
 
-  public Intake() {
+  // Singleton
+  private static final Intake instance = new Intake();
+  public static Intake get() {
+    return instance;
   }
 
   // set speed state
@@ -27,5 +33,4 @@ public class Intake extends SubsystemBase {
   public void stopMotors() {
     motor.stopMotor();
   }
-
 }

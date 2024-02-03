@@ -1,4 +1,4 @@
-package frc.robot.Enums;
+package frc.robot.enums;
 
 public enum LimelightPipeline {
     Shooting(0),

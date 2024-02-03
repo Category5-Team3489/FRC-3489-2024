@@ -1,7 +1,7 @@
-package frc.robot.commands.Shooter;
+package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Enums.IndexState;
+import frc.robot.enums.IndexState;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.ShooterAngle;
 import frc.robot.subsystems.ShooterSpeed;

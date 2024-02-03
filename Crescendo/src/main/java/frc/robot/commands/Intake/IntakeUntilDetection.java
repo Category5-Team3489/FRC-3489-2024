@@ -1,8 +1,8 @@
 package frc.robot.commands.Intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Enums.IndexState;
-import frc.robot.Enums.IntakeState;
+import frc.robot.enums.IndexState;
+import frc.robot.enums.IntakeState;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
 

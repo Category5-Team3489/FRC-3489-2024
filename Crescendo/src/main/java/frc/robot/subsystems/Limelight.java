@@ -4,7 +4,6 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.DoubleArraySubscriber;
-import edu.wpi.first.networktables.GenericEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -12,7 +11,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
-import frc.robot.Enums.LimelightPipeline;
+import frc.robot.enums.LimelightPipeline;
 
 public class Limelight extends SubsystemBase {
     // Constants
@@ -37,7 +36,12 @@ public class Limelight extends SubsystemBase {
     private LimelightPipeline desiredPipeline = DefaultPipeline;
     private long activePipeline = -1;
 
-    public Limelight(RobotContainer robotContainer) {
+    private static Limelight instance = new Limelight();
+
+    public static Limelight get() {
+      return instance;
+    }
+    private Limelight() {
         // super(robotContainer);
 
         activePipelineTimer.restart();

@@ -1,4 +1,4 @@
-package frc.robot.Enums;
+package frc.robot.enums;
 
 public enum IndexState {
     Belt_1(0.4),

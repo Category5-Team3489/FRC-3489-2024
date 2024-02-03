@@ -3,6 +3,7 @@ package frc.robot.commands.Intake;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 
 public class ManualSetIntake extends Command {
 
@@ -18,6 +19,13 @@ public class ManualSetIntake extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake, belt);
   }
+  public Command manualSetIntake() {
+    return Commands.run(() -> {
+        intake.setDoubleSpeed(speed);
+        belt.moveDoubleIndex(speed);
+    });
+  }
+
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

@@ -1,5 +1,5 @@
 // Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of                Nicholas was here
+// Open Source Software; you can modify and/or share it under the terms of Nicholas was here
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
@@ -7,16 +7,15 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.Climber.SetClimberHeight;
 import frc.robot.commands.Intake.IntakeUntilDetection;
 import frc.robot.commands.Intake.ManualSetIntake;
 import frc.robot.commands.Intake.Outtake;
-import frc.robot.commands.Shooter.ManualShoot;
-import frc.robot.commands.Shooter.SetShooterAngle;
-import frc.robot.commands.Shooter.SetShooterSpeed;
-import frc.robot.commands.Shooter.Shoot;
 import frc.robot.commands.autoShooting.AutoShoot;
 import frc.robot.commands.index.ManualSetIndex;
+import frc.robot.commands.shooter.ManualShoot;
+import frc.robot.commands.shooter.SetShooterAngle;
+import frc.robot.commands.shooter.SetShooterSpeed;
+import frc.robot.commands.shooter.Shoot;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.ShooterAngle;
 import frc.robot.subsystems.ShooterSpeed;
@@ -25,7 +24,7 @@ import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Limelight;
-import frc.robot.subsystems.Telemetry;
+// import frc.robot.subsystems.Telemetry;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
@@ -33,6 +32,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -43,63 +43,63 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  
+
   private double MaxSpeed = 6; // 6 meters per second desired top speed
-  private double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
+  private double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular
+                                                 // velocity
 
   // The robot's subsystems are defined here...
-  private final Climber climber = new Climber();
-  private final Drivetrain drivetrain2 = new Drivetrain(null, null);
-  private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  private final Index index = new Index();
-  private final Intake intake = new Intake();
-  private final Limelight limelight = new Limelight(null);
-  private final ShooterAngle shooterAngle = new ShooterAngle();
-  private final ShooterSpeed shooterSpeed = new ShooterSpeed();
-  private final Telemetry telemetry = new Telemetry(MaxSpeed);
-
+  private final Climber climber = Climber.get();
+  // private final Drivetrain drivetrain2 = new Drivetrain(null, null);
+  // private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  // private final Index index = new Index();
+  // private final Intake intake = new Intake();
+  // private final Limelight limelight = new Limelight();
+  // private final ShooterAngle shooterAngle = new ShooterAngle();
+  // private final ShooterSpeed shooterSpeed = ShooterSpeed.get();
+  // private final Telemetry telemetry = new Telemetry(MaxSpeed);
 
   // The robot's commands are defined here...
-  
+
   // autoShooting
-  private final AutoShoot autoShoot = new AutoShoot();
+  // private final AutoShoot autoShoot = new AutoShoot();
 
   // Climber
-  private final SetClimberHeight setClimberHeight = new SetClimberHeight(climber);
 
   // Index
-  private final ManualSetIndex manualSetIndex = new ManualSetIndex(index, MaxSpeed);
+  // private final ManualSetIndex manualSetIndex = new ManualSetIndex(index, MaxSpeed);
 
-  //Intake
-  private final IntakeUntilDetection intakeUntilDetection = new IntakeUntilDetection(null, index);
-  private final ManualSetIntake manualSetIntake = new ManualSetIntake(null, index, MaxSpeed);
-  private final Outtake outtake = new Outtake(null, index);
+  // Intake
+  // private final IntakeUntilDetection intakeUntilDetection = new IntakeUntilDetection(null, index);
+  // private final ManualSetIntake manualSetIntake = new ManualSetIntake(null, index, MaxSpeed);
+  // private final Outtake outtake = new Outtake(null, index);
 
   // Shooter
-  private final ManualShoot manualShoot = new ManualShoot(MaxSpeed, shooterSpeed, shooterAngle, MaxAngularRate, index);
-  private final SetShooterAngle setShooterAngle = new SetShooterAngle(shooterAngle, null);
-  private final SetShooterSpeed setShooterSpeed = new SetShooterSpeed(null, shooterSpeed);
-  private final Shoot shoot = new Shoot(null, null, shooterSpeed, shooterAngle, index);
-
-
-
-
+  // private final ManualShoot manualShoot =
+  //     new ManualShoot(MaxSpeed, shooterSpeed, shooterAngle, MaxAngularRate, index);
+  // private final SetShooterAngle setShooterAngle = new SetShooterAngle(shooterAngle, null);
+  // private final SetShooterSpeed setShooterSpeed = new SetShooterSpeed(null, shooterSpeed);
+  // private final Shoot shoot = new Shoot(null, null, shooterSpeed, shooterAngle, index);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
   /* Setting up bindings for necessary control of the swerve drive platform */
-  private final CommandXboxController joystick = new CommandXboxController(OperatorConstants.kDriverControllerPort); // My joystick
-  private final Drivetrain drivetrain = Constants.DriveTrain; // My drivetrain
+  private final CommandXboxController xbox =
+      new CommandXboxController(OperatorConstants.kDriverControllerPort); // My
+                                                                          // xbox
+  // private final Drivetrain drivetrain = Constants.DriveTrain; // My drivetrain
 
   private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-      .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+      .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10%
+                                                                                 // deadband
       .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
                                                                // driving in open loop
   private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
   private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-  private final Telemetry logger = new Telemetry(MaxSpeed);
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  /**
+   * The container for the robot. Contains subsystems, OI devices, and commands.
+   */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
@@ -108,40 +108,59 @@ public class RobotContainer {
   /**
    * Use this method to define your trigger->command mappings. Triggers can be created via the
    * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
+   * predicate, or via the named factories in
+   * {@link edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for
+   * {@link CommandXboxController
+   * Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller PS4} controllers or
+   * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight joysticks}.
    */
   private void configureBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
+    // // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+    // new Trigger(m_exampleSubsystem::exampleCondition)
+    //     .onTrue(new ExampleCommand(m_exampleSubsystem));
 
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
+    // Schedule `exampleMethodCommand` when the Xbox controller's B button is
+    // pressed,
     // cancelling on release.
-    joystick.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    // xbox.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
 
-    //DRIVETRAIN
-    drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
-        drivetrain.applyRequest(() -> drive.withVelocityX(-joystick.getLeftY() * MaxSpeed) // Drive forward with
-                                                                                           // negative Y (forward)
-            .withVelocityY(-joystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-            .withRotationalRate(-joystick.getRightX() * MaxAngularRate) // Drive counterclockwise with negative X (left)
-        ));
+    // DRIVETRAIN
+    // drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
+    //     drivetrain.applyRequest(() -> drive.withVelocityX(-xbox.getLeftY() * MaxSpeed) // Drive
+    //                                                                                    // forward
+    //                                                                                    // with
+    //                                                                                    // negative Y
+    //                                                                                    // (forward)
+    //         .withVelocityY(-xbox.getLeftX() * MaxSpeed) // Drive left with negative X (left)
+    //         .withRotationalRate(-xbox.getRightX() * MaxAngularRate) // Drive counterclockwise with
+    //                                                                 // negative X (left)
+    //     ));
 
-    joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-    joystick.b().whileTrue(drivetrain
-        .applyRequest(() -> point.withModuleDirection(new Rotation2d(-joystick.getLeftY(), -joystick.getLeftX()))));
 
-    // reset the field-centric heading on left bumper press
-    joystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
 
-    if (Utils.isSimulation()) {
-      drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
-    }
-    drivetrain.registerTelemetry(logger::telemeterize);
+    xbox.back().whileTrue(climber.descendCommand());
+    xbox.start().whileTrue(climber.ascendCommand());
+
+    // xbox.rightTrigger().and(xbox.y()).whileTrue(manualSetIntake.manualSetIntake());
+    // xbox.a().whileTrue(drivetrain.applyRequest(() -> brake));
+    // xbox.b().whileTrue(drivetrain.applyRequest(
+    //     () -> point.withModuleDirection(new Rotation2d(-xbox.getLeftY(), -xbox.getLeftX()))));
+    // xbox.button(1).onTrue(autoShoot);
+    // // reset the field-centric heading on left bumper press
+    // xbox.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+    // dpad center = manual shoot
+    // left joystick = climber adjustment
+    // left trigger and y = shooter intake
+    // right trigger and y = manual intake (no laser sensor)
+    // right joystick = shooter angle
+    // a = auto shoot
+    // x = stop shooter
+    // y = intake
+    // b = outtake
+    // start = reset climber
+    // mode = set climber to lowest chain position
+    // back = set climber to highest chain position
+    // bumpers = set manual shootstate (speed/angle)
   }
 
   /**
@@ -151,70 +170,46 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    return Commands.print("TODO Auto");
   }
+
+
+  /*
+   * Intake intake game piece until dectection when detection occurs, stop the belt, the intake, and
+   * initiate the falcon motors manual intake/belt until stop button stop intake outtake Game piece
+   * move intake and belt
+   */
+
+  // Belt
+  // *manual belt
+  // *manual belt stop
+  // *move belt for shooting (once shooter is at right speed)
+  // shooter intake
+
+  // Shooter Angle
+  // adjust to set angles (for set distances)
+  // reset to home
+  // adjust to shortest angle to pass under stage?
+  // manually adjust angle
+  // auto adjust angle
+
+  // Shooter
+  // intake with shooter
+  // adjust to set speed
+  // auto adjust to speed?
+  // stop shooter
+
+  // LEDs
+  // in "reved up" state
+  // Errors
+  // laser sensor out
+  // When note has been detected
+  // default colors
+  // after game piece has been shot
+
+  // Climber
+  // Move up and down
+  // lock?
+
+  // Hello Brave Traveller
 }
-
-
-/*	Intake
- * intake game piece until dectection
- *   	when detection occurs, stop the belt, the intake, and initiate the falcon motors
- * manual intake/belt until stop button
- * stop intake
- * outtake Game piece
- *		move intake and belt
- */
-
-
-//Belt
-	//*manual belt
-  	//*manual belt stop
-	//*move belt for shooting (once shooter is at right speed)
-	//shooter intake
-
-//Shooter Angle
-	//adjust to set angles (for set distances)
-		//reset to home
-		//adjust to shortest angle to pass under stage?
-	//manually adjust angle
-	//auto adjust angle
-
-//Shooter
-	//intake with shooter
-	//adjust to set speed
-	//auto adjust to speed?
-	//stop shooter
-
-//LEDs
-	//in "reved up" state
-	//Errors
-		//laser sensor out
-	//When note has been detected
-	//default colors
-	//after game piece has been shot
-
-//Climber
-	//Move up and down
-	//lock?
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//Hello Brave Traveller
