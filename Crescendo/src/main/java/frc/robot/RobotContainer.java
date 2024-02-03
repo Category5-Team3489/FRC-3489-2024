@@ -7,8 +7,24 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.Climber.SetClimberHeight;
+import frc.robot.commands.Intake.IntakeUntilDetection;
+import frc.robot.commands.Intake.ManualSetIntake;
+import frc.robot.commands.Intake.Outtake;
+import frc.robot.commands.Shooter.ManualShoot;
+import frc.robot.commands.Shooter.SetShooterAngle;
+import frc.robot.commands.Shooter.SetShooterSpeed;
+import frc.robot.commands.Shooter.Shoot;
+import frc.robot.commands.autoShooting.AutoShoot;
+import frc.robot.commands.index.ManualSetIndex;
+import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.ShooterAngle;
+import frc.robot.subsystems.ShooterSpeed;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Index;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Limelight;
 import frc.robot.subsystems.Telemetry;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.Utils;
@@ -31,8 +47,43 @@ public class RobotContainer {
   private double MaxSpeed = 6; // 6 meters per second desired top speed
   private double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a rotation per second max angular velocity
 
-  // The robot's subsystems and commands are defined here...
+  // The robot's subsystems are defined here...
+  private final Climber climber = new Climber();
+  private final Drivetrain drivetrain2 = new Drivetrain(null, null);
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final Index index = new Index();
+  private final Intake intake = new Intake();
+  private final Limelight limelight = new Limelight(null);
+  private final ShooterAngle shooterAngle = new ShooterAngle();
+  private final ShooterSpeed shooterSpeed = new ShooterSpeed();
+  private final Telemetry telemetry = new Telemetry(MaxSpeed);
+
+
+  // The robot's commands are defined here...
+  
+  // autoShooting
+  private final AutoShoot autoShoot = new AutoShoot();
+
+  // Climber
+  private final SetClimberHeight setClimberHeight = new SetClimberHeight(climber);
+
+  // Index
+  private final ManualSetIndex manualSetIndex = new ManualSetIndex(index, MaxSpeed);
+
+  //Intake
+  private final IntakeUntilDetection intakeUntilDetection = new IntakeUntilDetection(null, index);
+  private final ManualSetIntake manualSetIntake = new ManualSetIntake(null, index, MaxSpeed);
+  private final Outtake outtake = new Outtake(null, index);
+
+  // Shooter
+  private final ManualShoot manualShoot = new ManualShoot(MaxSpeed, shooterSpeed, shooterAngle, MaxAngularRate, index);
+  private final SetShooterAngle setShooterAngle = new SetShooterAngle(shooterAngle, null);
+  private final SetShooterSpeed setShooterSpeed = new SetShooterSpeed(null, shooterSpeed);
+  private final Shoot shoot = new Shoot(null, null, shooterSpeed, shooterAngle, index);
+
+
+
+
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
 
