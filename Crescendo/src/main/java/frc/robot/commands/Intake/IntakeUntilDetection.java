@@ -9,11 +9,11 @@ import frc.robot.subsystems.Intake;
 public class IntakeUntilDetection extends Command {
 
     private final Intake intake;
-    private final Index belt;
+    private final Index index;
 
     public IntakeUntilDetection(Intake intake, Index belt) {
         this.intake = intake;
-        this.belt = belt;
+        this.index = belt;
 
         addRequirements(intake, belt);
     }
@@ -22,18 +22,18 @@ public class IntakeUntilDetection extends Command {
     public void execute() {
         // start intake/belt
         intake.setSpeedState(IntakeState.In);
-        belt.moveIndex(IndexState.Belt_1);
+        index.moveIndex(IndexState.Belt_1);
     }
 
     @Override
     public void end(boolean interrupted) {
-        belt.moveIndex(IndexState.StopIndex);
+        index.moveIndex(IndexState.StopIndex);
         intake.stopMotors();
     }
 
     @Override
     public boolean isFinished() {
         // wait to get sensor value (could have this start shooter motor)
-        return belt.isNoteDetected();
+        return index.isNoteDetected();
     }
 }

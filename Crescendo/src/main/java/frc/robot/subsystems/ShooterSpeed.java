@@ -8,6 +8,18 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 public class ShooterSpeed extends SubsystemBase {
+    private static ShooterSpeed instance = new ShooterSpeed();
+
+    public static ShooterSpeed get() {
+        return instance;
+    }
+
+    private static final double ShooterIntakeSpeedPercent = -0.4;
+
+    // TODO SET CAN ID
+    private static final int MotorId = 0;
+
+    // PID
     private static final double VoltsPerRotationPerSecondOfError = 12.0 / 50; // kP
     private static final double VoltsPerRotationOfError = 0.0; // kI
     private static final double VoltsPerRotationPerSecondSquaredOfError = 0.0; // kD
@@ -16,20 +28,14 @@ public class ShooterSpeed extends SubsystemBase {
     // volts / rotation per second
     private static final double VoltsPerRotationPerSecond = 0.12; // kV
 
-    // Shooter is at its target speed if the error is within plus or minus this
-    // value
+    // Shooter is at its target speed if the error is within
+    // plus or minus this value
     private static final double AllowedErrorRotationsPerSecond = 5;
 
     private final TalonFX motor = new TalonFX(0);
 
-    private final VelocityVoltage velocity = new VelocityVoltage(0);
     // https://v6.docs.ctr-electronics.com/en/stable/docs/migration/migration-guide/closed-loop-guide.html
-
-    private static ShooterSpeed instance = new ShooterSpeed();
-
-    public static ShooterSpeed get() {
-        return instance;
-    }
+    private final VelocityVoltage velocity = new VelocityVoltage(0);
 
     private ShooterSpeed() {
         TalonFXConfiguration configs = new TalonFXConfiguration();
@@ -38,6 +44,7 @@ public class ShooterSpeed extends SubsystemBase {
         configs.Slot0.kD = VoltsPerRotationPerSecondSquaredOfError;
         configs.Slot0.kV = VoltsPerRotationPerSecond;
 
+        // Try 5 times to apply the configurations and print an error if it always fails
         StatusCode status = StatusCode.StatusCodeNotInitialized;
         for (int i = 0; i < 5; i++) {
             status = motor.getConfigurator().apply(configs);
@@ -50,16 +57,20 @@ public class ShooterSpeed extends SubsystemBase {
     }
 
     // Rev up motors
-    public void setSpeed(double speedRps) {
+    public void setSpeedRps(double speedRps) {
         velocity.Slot = 0; // Closed loop slot index 0
         motor.setControl(velocity.withVelocity(speedRps));
     }
 
-    // public void setShooterState(ShooterState shooterState) {
-    // motor.set(-shooterState.getRotationsPerSecond());
-    // }
+    public void setShooterIntakeSpeed() {
+        motor.set(ShooterIntakeSpeedPercent);
+    }
 
-    public boolean isAtTarget() {
+    public void stop() {
+        motor.stopMotor();
+    }
+
+    public boolean isAtTargetSpeed() {
         double errorRps = motor.getClosedLoopError().getValueAsDouble();
         return Math.abs(errorRps) <= AllowedErrorRotationsPerSecond;
     }

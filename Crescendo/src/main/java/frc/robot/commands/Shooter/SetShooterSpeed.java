@@ -19,6 +19,6 @@ public class SetShooterSpeed extends Command {
     @Override
     public void execute() {
         // adjust speed of shooter
-        shooterSpeed.setSpeed(speedRpsSupplier.getAsDouble());
+        shooterSpeed.setSpeedRps(speedRpsSupplier.getAsDouble());
     }
 }
