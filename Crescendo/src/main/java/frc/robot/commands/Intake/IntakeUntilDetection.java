@@ -22,13 +22,13 @@ public class IntakeUntilDetection extends Command {
     public void execute() {
         // start intake/belt
         intake.setSpeedState(IntakeState.In);
-        index.moveIndex(IndexState.Belt_1);
+        // index.moveIndex(IndexState.Belt_1);
     }
 
     @Override
     public void end(boolean interrupted) {
-        index.moveIndex(IndexState.StopIndex);
-        intake.stopMotors();
+        // index.moveIndex(IndexState.StopIndex);
+        intake.stop();
     }
 
     @Override

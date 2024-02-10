@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix6.StatusCode;
@@ -17,7 +19,7 @@ public class ShooterSpeed extends SubsystemBase {
     private static final double ShooterIntakeSpeedPercent = -0.4;
 
     // TODO SET CAN ID
-    private static final int MotorId = 0;
+    private static final int MotorId = 14;
 
     // PID
     private static final double VoltsPerRotationPerSecondOfError = 12.0 / 50; // kP
@@ -73,5 +75,17 @@ public class ShooterSpeed extends SubsystemBase {
     public boolean isAtTargetSpeed() {
         double errorRps = motor.getClosedLoopError().getValueAsDouble();
         return Math.abs(errorRps) <= AllowedErrorRotationsPerSecond;
+    }
+
+    public Command shootNote() {
+        return Commands.run(() -> {
+
+        });
+    }
+
+    public Command shooterStop() {
+        return Commands.run(() -> {
+
+        });
     }
 }

@@ -15,8 +15,7 @@ public class ManualSetIndex extends Command {
 
     @Override
     public void execute() {
-        belt.moveDoubleIndex(speed);
+        // belt.moveDoubleIndex(speed);
     }
 
-    
 }

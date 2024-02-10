@@ -19,19 +19,19 @@ public class ManualSetIntake extends Command {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake, belt);
   }
+
   public Command manualSetIntake() {
     return Commands.run(() -> {
-        intake.setDoubleSpeed(speed);
-        belt.moveDoubleIndex(speed);
+      intake.setDoubleSpeed(speed);
+      // belt.moveDoubleIndex(speed);
     });
   }
-
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     intake.setDoubleSpeed(speed);
     // move belts
-    belt.moveDoubleIndex(speed);
+    // belt.moveDoubleIndex(speed);
   }
 }

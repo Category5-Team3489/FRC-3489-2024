@@ -23,6 +23,6 @@ public class Outtake extends Command {
         // set intake to out
         intake.setSpeedState(IntakeState.Out);
         // set belt to out
-        belt.moveIndex(IndexState.Outtake);
+        // belt.moveIndex(IndexState.Outtake);
     }
 }

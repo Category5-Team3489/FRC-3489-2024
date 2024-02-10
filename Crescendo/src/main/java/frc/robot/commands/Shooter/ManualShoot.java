@@ -31,7 +31,7 @@ public class ManualShoot extends Command {
         // adjust speed
         shooterSpeed.setSpeedRps(speed);
         // move belt index
-        belt.moveIndexShooter(IndexState.BeltShooter);
+        // belt.moveIndexShooter(IndexState.BeltShooter);
     }
 }
 

@@ -25,7 +25,7 @@ public class ShooterIntake extends Command {
     @Override
     public void execute() {
         shooterSpeed.setShooterIntakeSpeed();
-        index.moveIndex(IndexState.Outtake);
+        // index.moveIndex(IndexState.Outtake);
 
         if (index.isNoteDetected()) {
             timer.restart();
@@ -39,9 +39,10 @@ public class ShooterIntake extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        //This needs to wait a couple seconds because it wil hit the sensor before being properly loaded (probably)
-        
-        index.moveIndex(IndexState.StopIndex);
-        shooterSpeed.stop(); //Just a placeholder value
+        // This needs to wait a couple seconds because it wil hit the sensor before
+        // being properly loaded (probably)
+
+        // index.moveIndex(IndexState.StopIndex);
+        shooterSpeed.stop(); // Just a placeholder value
     }
 }

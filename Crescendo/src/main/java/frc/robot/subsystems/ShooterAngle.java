@@ -17,8 +17,8 @@ public class ShooterAngle extends SubsystemBase {
 
     // Constants
     // TODO SET CAN IDS
-    private final int LeftMotorId = 0;
-    private final int RightMotorId = 1;
+    private final int LeftMotorId = 12;
+    private final int RightMotorId = 13;
 
     // Gear ratio
     private static final double MotorRotationsPerRevolution = (100.0 / 1.0) * (2.0 / 1.0);
