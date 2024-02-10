@@ -20,8 +20,8 @@ public class Robot extends TimedRobot {
 
   private final DigitalInput buttonA = new DigitalInput(0);
   private final DigitalInput buttonB = new DigitalInput(1);
-  private final TalonSRX motorA = new TalonSRX(2);
-  private final TalonSRX motorB = new TalonSRX(8);
+  // private final TalonSRX motorA = new TalonSRX(2);
+  private final TalonSRX motorB = new TalonSRX(7);
   private double speed = 0;
   private boolean lastButtonA = false;
   private boolean lastButtonB = false;
@@ -87,7 +87,7 @@ public class Robot extends TimedRobot {
       speed = 0;
     }
     motorA.set(TalonSRXControlMode.Velocity, speed);
-    motorA.setInverted(false);
+    motorA.setInverted(true);
     motorB.set(TalonSRXControlMode.Velocity, speed);
     motorB.setInverted(true);
 
