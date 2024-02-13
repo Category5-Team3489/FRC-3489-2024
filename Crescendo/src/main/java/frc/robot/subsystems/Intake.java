@@ -28,6 +28,7 @@ public class Intake extends SubsystemBase {
   public Command intakeCommand(IntakeState state) {
     return Commands.run(() -> {
       System.out.println("indexIntake");
+
       motor.set(state.getSpeed());
     }, this);
   }

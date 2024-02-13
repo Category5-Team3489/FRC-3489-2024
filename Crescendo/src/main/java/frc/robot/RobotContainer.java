@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.Intake.IntakeUntilDetection;
 import frc.robot.commands.Intake.ManualSetIntake;
 import frc.robot.commands.shooter.ShooterIntake;
 import frc.robot.enums.ClimberState;
@@ -37,6 +38,7 @@ public class RobotContainer {
     // ---------------- SUBSYSTEMS ----------------
     private final Climber climber = Climber.get();
     private final Intake intake = Intake.get();
+    private final IntakeUntilDetection intakeUntilDetection = IntakeUntilDetection.get();
     private final Index index = Index.get();
     private final ShooterSpeed shooterSpeed = ShooterSpeed.get();
 
@@ -79,7 +81,7 @@ public class RobotContainer {
         // x = stop shooter;
         xbox.x().onTrue(shooterSpeed.shooterStop());
         // y = intake
-        xbox.y().onTrue(intake.intakeCommand(IntakeState.In));
+        xbox.y().onTrue(intakeUntilDetection);
         // b = outtake
         xbox.b().onTrue(intake.intakeCommand(IntakeState.Out));
 

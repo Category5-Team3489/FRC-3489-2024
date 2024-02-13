@@ -6,7 +6,6 @@ import frc.robot.enums.IndexState;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 public class Index extends SubsystemBase {
@@ -21,17 +20,19 @@ public class Index extends SubsystemBase {
     private static final int LaserSensorChannel = 0;
 
     // NEO 550
-    private final CANSparkMax motor = new CANSparkMax(MotorId, MotorType.kBrushless);
-    // Diffuse laser sensor
-    private final DigitalInput laserSensor = new DigitalInput(LaserSensorChannel);
-    // private final RelativeEncoder encoder = motor.getEncoder();
+    private final CANSparkMax motor;
+    private final DigitalInput laserSensor;
 
-    // move belt
+    private Index() {
+        motor = new CANSparkMax(MotorId, MotorType.kBrushless);
+        laserSensor = new DigitalInput(LaserSensorChannel);
+    }
 
     public Command indexCommand(IndexState state) {
         return Commands.run(() -> {
             System.out.println("index");
             motor.set(state.getIndexEnumSpeed());
+
         }, this);
     }
 
