@@ -6,8 +6,6 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.motorcontrol.PWMSparkMax;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -15,12 +13,6 @@ import edu.wpi.first.wpilibj2.command.Command.InterruptionBehavior;
 import frc.robot.Constants.LedConstants;
 
 public class LEDs extends SubsystemBase {
-    // private final ShuffleboardTab tab = Cat5Shuffleboard.getMainTab();
-    // private final GenericEntry colorEntry = tab.add("LED Color", "").getEntry();
-
-    // private final AddressableLED led = new AddressableLED(LedConstants.Port);
-    // private final AddressableLEDBuffer buffer = new
-    // AddressableLEDBuffer(LedConstants.Length);
 
     private static final LEDs instance = new LEDs();
 
@@ -32,28 +24,7 @@ public class LEDs extends SubsystemBase {
 
     PWMSparkMax rightLeds = new PWMSparkMax(LedConstants.RightPort);
     PWMSparkMax leftLeds = new PWMSparkMax(LedConstants.LeftPort);
-
     public LedState ledState = LedState.Off;
-
-    // TODO Limit led setting bandwidth, compare led buffer with applied and
-    // unapplied on update then only set if they are different
-
-    // public LEDs() {
-    // register();
-
-    // // led.setLength(buffer.getLength());
-    // // led.setData(buffer);
-    // // led.start();
-
-    // //ShuffleboardLayout diagnosticLayout =
-    // Cat5Shuffleboard.createDiagnosticLayout("LEDs");
-    // // diagnosticLayout.withSize(2, 1);
-    // // diagnosticLayout.addString("LED", () -> ledState.toString());
-
-    // // ShuffleboardLayout mainLayout = Cat5Shuffleboard.createMainLayout("LEDs")
-    // .withSize(2, 4);
-    // mainLayout.addString("LED State", () -> ledState.toString());
-    // }
 
     public enum LedState {
         Off,
@@ -101,18 +72,6 @@ public class LEDs extends SubsystemBase {
         rightLeds.set(0.99);
         leftLeds.set(0.99);
     }
-
-    // public void setSolidColor(LedColor color) {
-    // for (var i = 0; i < buffer.getLength(); i++) {
-    // color.apply(i, buffer);
-    // }
-    // led.setData(buffer);
-    // colorEntry.setString(color.toString());
-    // }
-
-    // public void stopLeds() {
-    // setSolidColor(LedColor.Off);
-    // }
 
     @Override
     public void periodic() {

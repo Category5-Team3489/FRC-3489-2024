@@ -1,5 +1,6 @@
 package frc.robot.commands.Intake;
 
+import frc.robot.enums.IntakeState;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -9,12 +10,10 @@ public class ManualSetIntake extends Command {
 
   private final Intake intake;
   private final Index belt;
-  private double speed;
 
-  public ManualSetIntake(Intake intake, Index belt, double speed) {
+  public ManualSetIntake(Intake intake, Index belt) {
     this.intake = intake;
     this.belt = belt;
-    this.speed = speed;
 
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(intake, belt);
@@ -22,7 +21,7 @@ public class ManualSetIntake extends Command {
 
   public Command manualSetIntake() {
     return Commands.run(() -> {
-      intake.setDoubleSpeed(speed);
+      intake.intakeCommand(IntakeState.In);
       // belt.moveDoubleIndex(speed);
     });
   }
@@ -30,8 +29,9 @@ public class ManualSetIntake extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intake.setDoubleSpeed(speed);
+    intake.intakeCommand(IntakeState.In);
     // move belts
+
     // belt.moveDoubleIndex(speed);
   }
 }

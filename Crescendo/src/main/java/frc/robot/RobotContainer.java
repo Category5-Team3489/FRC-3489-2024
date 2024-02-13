@@ -45,7 +45,7 @@ public class RobotContainer {
     // ---------------- COMMANDS ----------------
     // Shooter
     private final ShooterIntake shooterIntake = new ShooterIntake();
-    private final ManualSetIntake manualSetIntake = new ManualSetIntake(intake, index, 0.0);
+    private final ManualSetIntake manualSetIntake = new ManualSetIntake(intake, index);
 
     // ---------------- INPUT DEVICES ----------------
     private final CommandXboxController xbox = new CommandXboxController(OperatorConstants.DriverControllerPort);

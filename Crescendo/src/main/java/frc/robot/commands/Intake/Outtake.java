@@ -21,8 +21,9 @@ public class Outtake extends Command {
     @Override
     public void execute() {
         // set intake to out
-        intake.setSpeedState(IntakeState.Out);
+        intake.intakeCommand(IntakeState.Out);
         // set belt to out
+        belt.indexCommand(IndexState.Outtake);
         // belt.moveIndex(IndexState.Outtake);
     }
 }
