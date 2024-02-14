@@ -11,12 +11,23 @@ import frc.robot.commands.shooter.ShooterIntake;
 import frc.robot.enums.ClimberState;
 import frc.robot.enums.IntakeState;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
+
+import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
+
+import java.util.function.DoubleSupplier;
+
+import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.ShooterSpeed;
 
 /**
@@ -35,20 +46,41 @@ public class RobotContainer {
      * piece
      */
 
+    // https://www.swervedrivespecialties.com/products/mk4-swerve-module
+    private static final double MaxMetersPerSecond = 16.5 / 3.281; // (16.5 ft/s) / (3.281 ft/meter)
+    // private static final double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a
+    // rotation per second max angular velocity
+    private static final double MaxRadiansPerSecond = MaxMetersPerSecond
+            / Math.hypot(DrivetrainConstants.kFrontLeftXPosInches, DrivetrainConstants.kFrontLeftYPosInches);
+
     // ---------------- SUBSYSTEMS ----------------
     private final Climber climber = Climber.get();
     private final Intake intake = Intake.get();
     private final IntakeUntilDetection intakeUntilDetection = IntakeUntilDetection.get();
     private final Index index = Index.get();
     private final ShooterSpeed shooterSpeed = ShooterSpeed.get();
+    private final Drivetrain drivetrain = Drivetrain.get();
 
     // ---------------- COMMANDS ----------------
     // Shooter
     private final ShooterIntake shooterIntake = new ShooterIntake();
     private final ManualSetIntake manualSetIntake = new ManualSetIntake(intake, index);
 
+    // Drivetrain
+    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+            .withDeadband(MaxMetersPerSecond * 0.1).withRotationalDeadband(MaxRadiansPerSecond * 0.1) // Add a 10%
+                                                                                                      // deadband
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
+                                                                     // driving in open loop
+    private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+    private final SwerveRequest.FieldCentricFacingAngle driveFacingAngle = new SwerveRequest.FieldCentricFacingAngle();
+
     // ---------------- INPUT DEVICES ----------------
-    private final CommandXboxController xbox = new CommandXboxController(OperatorConstants.DriverControllerPort);
+    private final CommandXboxController manipulatorXbox = new CommandXboxController(
+            OperatorConstants.DriverControllerPort);
+    private final CommandXboxController driverXbox = new CommandXboxController(
+            OperatorConstants.ManipulatorControllerPort);
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -62,38 +94,64 @@ public class RobotContainer {
      * Configure bindings with: - xbox.*().*(Command) - new
      * Trigger(BooleanSupplier).*(Command)
      */
-    private void configureBindings() {
 
-        xbox.rightTrigger().and(xbox.y()).whileTrue(manualSetIntake.manualSetIntake());
-        xbox.y().and(xbox.leftTrigger()).onTrue(shooterIntake);
-        xbox.leftBumper().onTrue(Commands.print("See fieldRelative"));
-        xbox.rightBumper().and(xbox.leftBumper()).onTrue(Commands.print("Xbox Bumpers"));
+    private void configureBindings() {
+        // Drivetrain
+        drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
+                drivetrain.applyRequest(() -> drive.withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond) // Drive
+                                                                                                               // forward
+                                                                                                               // with
+                        // negative Y (forward)
+                        .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond) // Drive left with negative X (left)
+                        .withRotationalRate(-driverXbox.getRightX() * MaxRadiansPerSecond) // Drive counterclockwise
+                                                                                           // with negative X (left)
+                ));
+
+        driverXbox.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        driverXbox.b().whileTrue(drivetrain
+                .applyRequest(() -> point
+                        .withModuleDirection(new Rotation2d(-driverXbox.getLeftY(), -driverXbox.getLeftX()))));
+
+        // reset the field-centric heading on left bumper press
+        driverXbox.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+
+        if (Utils.isSimulation()) {
+            drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
+        }
+
+        // Intake
+        manipulatorXbox.rightTrigger().and(manipulatorXbox.y()).whileTrue(manualSetIntake.manualSetIntake());
+        manipulatorXbox.y().and(manipulatorXbox.leftTrigger()).onTrue(shooterIntake);
+
+        manipulatorXbox.leftBumper().onTrue(Commands.print("See fieldRelative"));
+        manipulatorXbox.rightBumper().and(manipulatorXbox.leftBumper()).onTrue(Commands.print("Xbox Bumpers"));
         // dpad center = manual shoot
         // right trigger and y = manual intake (no laser sensor)
-        xbox.leftTrigger().and(xbox.y()).onTrue(Commands.print("ManualIntake"));
-        xbox.rightTrigger().and(xbox.y()).onTrue(Commands.print("ManualIntake"));
+        manipulatorXbox.leftTrigger().and(manipulatorXbox.y()).onTrue(Commands.print("ManualIntake"));
+        manipulatorXbox.rightTrigger().and(manipulatorXbox.y()).onTrue(Commands.print("ManualIntake"));
+
         // right joystick = shooter angle
 
         // bumpers = set manual shootstate (speed/angle)
 
         // a = auto shoot
-        xbox.a().whileTrue(shooterSpeed.shootNote());
+        manipulatorXbox.a().whileTrue(shooterSpeed.shootNote());
         // x = stop shooter;
-        xbox.x().onTrue(shooterSpeed.shooterStop());
+        manipulatorXbox.x().onTrue(shooterSpeed.shooterStop());
         // y = intake
-        xbox.y().onTrue(intakeUntilDetection);
+        manipulatorXbox.y().onTrue(intakeUntilDetection);
         // b = outtake
-        xbox.b().onTrue(intake.intakeCommand(IntakeState.Out));
+        manipulatorXbox.b().onTrue(intake.intakeCommand(IntakeState.Out));
 
         // Climber
-        xbox.povUp().whileTrue(climber.climberCommand(ClimberState.PovUp));
-        xbox.povDown().whileTrue(climber.climberCommand(ClimberState.PovDown));
-        xbox.povLeft().whileTrue(climber.climberCommand(ClimberState.PovLeft));
-        xbox.povRight().whileTrue(climber.climberCommand(ClimberState.PovRight));
-        xbox.povDownLeft().whileTrue(climber.climberCommand(ClimberState.PovDownLeft));
-        xbox.povDownRight().whileTrue(climber.climberCommand(ClimberState.PovDownRight));
-        xbox.povUpLeft().whileTrue(climber.climberCommand(ClimberState.PovUpLeft));
-        xbox.povUpRight().whileTrue(climber.climberCommand(ClimberState.PovUpRight));
+        manipulatorXbox.povUp().whileTrue(climber.climberCommand(ClimberState.PovUp));
+        manipulatorXbox.povDown().whileTrue(climber.climberCommand(ClimberState.PovDown));
+        manipulatorXbox.povLeft().whileTrue(climber.climberCommand(ClimberState.PovLeft));
+        manipulatorXbox.povRight().whileTrue(climber.climberCommand(ClimberState.PovRight));
+        manipulatorXbox.povDownLeft().whileTrue(climber.climberCommand(ClimberState.PovDownLeft));
+        manipulatorXbox.povDownRight().whileTrue(climber.climberCommand(ClimberState.PovDownRight));
+        manipulatorXbox.povUpLeft().whileTrue(climber.climberCommand(ClimberState.PovUpLeft));
+        manipulatorXbox.povUpRight().whileTrue(climber.climberCommand(ClimberState.PovUpRight));
     }
 
     /**
