@@ -110,5 +110,6 @@ public class Limelight extends SubsystemBase {
         builder.append("\ttx: " + getTargetX() + "\n");
         builder.append("\tty: " + getTargetY() + "\n");
         builder.append("\tta: " + getTargetArea());
+        System.out.println(builder.toString());
     }
 }

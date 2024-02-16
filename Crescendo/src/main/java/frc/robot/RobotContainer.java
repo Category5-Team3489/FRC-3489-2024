@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Intake.IntakeUntilDetection;
 import frc.robot.commands.Intake.ManualSetIntake;
+import frc.robot.commands.shooter.SetShooterAngle;
 import frc.robot.commands.shooter.ShooterIntake;
 import frc.robot.enums.ClimberState;
 import frc.robot.enums.IntakeState;
@@ -14,6 +15,7 @@ import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.ShooterAngle;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 
@@ -60,11 +62,13 @@ public class RobotContainer {
     private final Index index = Index.get();
     private final ShooterSpeed shooterSpeed = ShooterSpeed.get();
     private final Drivetrain drivetrain = Drivetrain.get();
+    private final ShooterAngle shooterAngle = ShooterAngle.get();
 
     // ---------------- COMMANDS ----------------
     // Shooter
     private final ShooterIntake shooterIntake = new ShooterIntake();
     private final ManualSetIntake manualSetIntake = new ManualSetIntake(intake, index);
+    private final SetShooterAngle setShooterAngle = new SetShooterAngle(shooterAngle, () -> {return 0.0;});
 
     // Drivetrain
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -120,18 +124,16 @@ public class RobotContainer {
         }
 
         // Intake
-        manipulatorXbox.rightTrigger().and(manipulatorXbox.y()).whileTrue(manualSetIntake.manualSetIntake());
+        //manipulatorXbox.rightTrigger().and(manipulatorXbox.y()).whileTrue(manualSetIntake.manualSetIntake());
         manipulatorXbox.y().and(manipulatorXbox.leftTrigger()).onTrue(shooterIntake);
 
-        manipulatorXbox.leftBumper().onTrue(Commands.print("See fieldRelative"));
-        manipulatorXbox.rightBumper().and(manipulatorXbox.leftBumper()).onTrue(Commands.print("Xbox Bumpers"));
+        manipulatorXbox.leftBumper().onTrue(Commands.print("See fieldRelative")); // Haven't coded
+        manipulatorXbox.rightBumper().and(manipulatorXbox.leftBumper()).onTrue(Commands.print("Xbox Bumpers")); //Test robot first
         // dpad center = manual shoot
         // right trigger and y = manual intake (no laser sensor)
-        manipulatorXbox.leftTrigger().and(manipulatorXbox.y()).onTrue(Commands.print("ManualIntake"));
-        manipulatorXbox.rightTrigger().and(manipulatorXbox.y()).onTrue(Commands.print("ManualIntake"));
 
         // right joystick = shooter angle
-
+        manipulatorXbox.axisLessThan(5, 0).whileTrue(Commands.print("-set shooter angle"));
         // bumpers = set manual shootstate (speed/angle)
 
         // a = auto shoot
