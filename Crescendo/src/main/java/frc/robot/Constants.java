@@ -31,4 +31,18 @@ public final class Constants {
         public static final int CubeLEDButton = 7;
         public static final int ConeLEDButton = 8;
     }
+
+    //TODO get values
+    public static class ShooterSpeed {
+        public static final double CloseShooterSpeed = 0.6;
+        public static final double FarShooterSpeed = 0.9;
+
+    }
+
+    //TODO get values
+    public static class ShooterAngle {
+        public static final double CloseShooterAngle = 60;
+        public static final double FarShooterAngle = 45;
+
+    }
 }

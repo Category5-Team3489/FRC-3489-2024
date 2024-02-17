@@ -1,0 +1,17 @@
+package frc.robot.enums;
+
+public enum ShooterAngleState {
+    Start(0.0),
+    Max(90.0);
+
+    private final double shooterAngle;
+
+    private ShooterAngleState(double shooterAngle) {
+        this.shooterAngle = shooterAngle;
+    }
+
+    public double getSpeed(ShooterAngleState start2) {
+        return shooterAngle;
+    }
+
+}

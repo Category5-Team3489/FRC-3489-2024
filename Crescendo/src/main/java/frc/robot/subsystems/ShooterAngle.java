@@ -1,6 +1,10 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Robot;
+import frc.robot.enums.ShooterAngleState;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkPIDController;
@@ -63,6 +67,12 @@ public class ShooterAngle extends SubsystemBase {
         errorDegrees = Math.abs(errorDegrees);
 
         return errorDegrees < AllowedErrorDegrees;
+    }
+
+    public void setManualAngle(double joystickInput) {
+        // targetDegrees += correctionPercent * CorrectionDegreesPerSecond * Robot.kDefaultPeriod;
+        // targetDegrees = MathUtil.clamp(targetDegrees, ShooterAngleState.getAngle(ShooterAngleState.Start), ShooterAngleState.getAngle());
+
     }
 
     // manual shooting
