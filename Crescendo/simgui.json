@@ -1,5 +1,10 @@
 {
   "HALProvider": {
+    "DIO": {
+      "window": {
+        "visible": true
+      }
+    },
     "Other Devices": {
       "Talon FX (v6)[5]": {
         "header": {
