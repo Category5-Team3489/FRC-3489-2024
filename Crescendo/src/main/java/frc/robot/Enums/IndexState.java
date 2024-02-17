@@ -1,20 +1,18 @@
 package frc.robot.enums;
 
 public enum IndexState {
-    Belt_1(0.4),
-    Belt_2(0.5),
-    BeltShooter(0.6),
+    Intake(0.4),
     Outtake(-0.5),
-    StopIndex(0);
+    Stop(0);
 
-    private final double indexEnumSpeed;
+    private final double speedPercent;
 
-    private IndexState(double indexEnumSpeed) {
-        this.indexEnumSpeed = indexEnumSpeed;
+    private IndexState(double speedPercent) {
+        this.speedPercent = speedPercent;
     }
 
-    public double getIndexEnumSpeed() {
-        return indexEnumSpeed;
+    public double getSpeedPercent() {
+        return speedPercent;
     }
 
 }

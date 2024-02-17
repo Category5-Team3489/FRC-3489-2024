@@ -1,9 +1,13 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
 import frc.robot.enums.ShooterAngleState;
+
+import java.util.function.DoubleSupplier;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
@@ -13,16 +17,21 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 
 // Power robot on with shooter angle in home position
 public class ShooterAngle extends SubsystemBase {
+    // region ---------------- Singleton ----------------
     private static ShooterAngle instance = new ShooterAngle();
 
     public static ShooterAngle get() {
         return instance;
     }
+    // endregion
 
-    // Constants
+    // region ---------------- Constants ----------------
     // TODO SET CAN IDS
-    private final int LeftMotorId = 12;
-    private final int RightMotorId = 13;
+    private final int LeftMotorCanId = 12;
+    private final int RightMotorCanId = 13;
+
+    // TODO update
+    private static final double CorrectionDegreesPerSecond = 13.5;
 
     // Gear ratio
     private static final double MotorRotationsPerRevolution = (100.0 / 1.0) * (2.0 / 1.0);
@@ -34,12 +43,16 @@ public class ShooterAngle extends SubsystemBase {
     // is within plus or minus this value
     private static final double AllowedErrorDegrees = 2.0;
 
-    // From the perspective of the robot
-    private final CANSparkMax leftMotor = new CANSparkMax(LeftMotorId, MotorType.kBrushless);
-    private final CANSparkMax rightMotor = new CANSparkMax(RightMotorId, MotorType.kBrushless);
+    // endregion
+
+    // region ---------------- Devices ----------------
+    // Left and right are from the perspective of the robot
+    private final CANSparkMax leftMotor = new CANSparkMax(LeftMotorCanId, MotorType.kBrushless);
+    private final CANSparkMax rightMotor = new CANSparkMax(RightMotorCanId, MotorType.kBrushless);
 
     private final SparkPIDController pidController = rightMotor.getPIDController();
     private final RelativeEncoder encoder = rightMotor.getEncoder();
+    // endregion
 
     private double targetAngleDegrees = Double.NaN;
 
@@ -55,7 +68,7 @@ public class ShooterAngle extends SubsystemBase {
         pidController.setReference(targetRotations, ControlType.kPosition, 0);
     }
 
-    public boolean isAtTarget() {
+    public boolean isAtTargetAngle() {
         if (Double.isNaN(targetAngleDegrees)) {
             return false;
         }
@@ -69,11 +82,23 @@ public class ShooterAngle extends SubsystemBase {
         return errorDegrees < AllowedErrorDegrees;
     }
 
-    public void setManualAngle(double joystickInput) {
-        // targetDegrees += correctionPercent * CorrectionDegreesPerSecond * Robot.kDefaultPeriod;
-        // targetDegrees = MathUtil.clamp(targetDegrees, ShooterAngleState.getAngle(ShooterAngleState.Start), ShooterAngleState.getAngle());
+    // region ---------------- Commands ----------------
+    public Command adjustManualAngle(double adjustPercent) {
+        return Commands.run(() -> {
+            targetAngleDegrees += adjustPercent * CorrectionDegreesPerSecond * Robot.kDefaultPeriod;
+            targetAngleDegrees = MathUtil.clamp(targetAngleDegrees, ShooterAngleState.Start.getAngle(),
+                    ShooterAngleState.Max.getAngle());
+            setAngle(targetAngleDegrees);
+        });
 
     }
+
+    public Command updateCommand(DoubleSupplier angleDegreesSupplier) {
+        return Commands.run(() -> {
+            setAngle(angleDegreesSupplier.getAsDouble());
+        }, this);
+    }
+    // endregion
 
     // manual shooting
     // adjust angle

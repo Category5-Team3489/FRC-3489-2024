@@ -41,8 +41,8 @@ public final class Constants {
 
     //TODO get values
     public static class ShooterAngle {
-        public static final double CloseShooterAngle = 60;
-        public static final double FarShooterAngle = 45;
+        public static final double CloseShooterAngle = 60.0;
+        public static final double FarShooterAngle = 45.0;
 
     }
 }

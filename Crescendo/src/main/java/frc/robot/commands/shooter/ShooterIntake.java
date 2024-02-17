@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class ShooterIntake extends Command {
     private final ShooterSpeed shooterSpeed = ShooterSpeed.get();
+
     private final Index index = Index.get();
     private final Timer timer = new Timer();
 
@@ -23,7 +24,7 @@ public class ShooterIntake extends Command {
 
     @Override
     public void execute() {
-        shooterSpeed.setShooterIntakeSpeed();
+        shooterSpeed.setSpeedPercent(ShooterSpeed.ShooterIntakeSpeedPercent);
         index.indexCommand(IndexState.Outtake);
 
         if (index.isNoteDetected()) {
@@ -42,7 +43,7 @@ public class ShooterIntake extends Command {
         // being properly loaded (probably)
 
         // index.moveIndex(IndexState.StopIndex);
-        shooterSpeed.stop(); // Just a placeholder value
+        shooterSpeed.setSpeedPercent(0); // Just a placeholder value
         index.stop();
     }
 }

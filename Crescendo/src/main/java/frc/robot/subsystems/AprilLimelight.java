@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.enums.LimelightPipeline;
 
-public class Limelight extends SubsystemBase {
+public class AprilLimelight extends SubsystemBase {
     // Constants
     private final static LimelightPipeline DefaultPipeline = LimelightPipeline.Shooting;
 
@@ -36,12 +36,12 @@ public class Limelight extends SubsystemBase {
     private LimelightPipeline desiredPipeline = DefaultPipeline;
     private long activePipeline = -1;
 
-    private static Limelight instance = new Limelight();
+    private static AprilLimelight instance = new AprilLimelight();
 
-    public static Limelight get() {
+    public static AprilLimelight get() {
       return instance;
     }
-    private Limelight() {
+    private AprilLimelight() {
         // super(robotContainer);
 
         activePipelineTimer.restart();

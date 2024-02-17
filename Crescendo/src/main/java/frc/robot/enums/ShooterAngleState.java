@@ -10,7 +10,7 @@ public enum ShooterAngleState {
         this.shooterAngle = shooterAngle;
     }
 
-    public double getSpeed(ShooterAngleState start2) {
+    public double getAngle() {
         return shooterAngle;
     }
 
