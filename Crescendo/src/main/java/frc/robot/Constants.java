@@ -48,6 +48,15 @@ public final class Constants {
 
     public static class AprilLimelight {
         //TODO Update
-        public static final double[] ShooterSpeed = { 3200, 3000, 3000, 3000, 3250, 3575, 3400, 3000, 3250, 3000, 3250, 3500 };
+        public static final double[] ShooterSpeedAtDistanceTable = { 3200, 3000, 3000, 3000, 3250, 3575, 3400, 3000, 3250, 3000, 3250, 3500 };
+        public static final double[] ShooterAngleAtDistanceTable = { 70, 70, 50, 50, 50, 50, 60, 60,  60, 65, 65, 65 };
+        public static final DataPoint[] ShooterDistanceTable = { DataPoint.c(0, 50), DataPoint.c(1, 60), DataPoint.c(2, 70.9), DataPoint.c(3, 77.4), DataPoint.c(4, 84.5), DataPoint.c(5, 92.4), DataPoint.c(6, 101.4), DataPoint.c(7, 108.5), DataPoint.c(8, 115.5), DataPoint.c(9, 123), DataPoint.c(10, 137), DataPoint.c(11, 154) };
     }
+
+    public static class General {
+        public static double lerp(double a, double b, double t) {
+            return a + t * (b - a);
+        }
+    }
+    
 }

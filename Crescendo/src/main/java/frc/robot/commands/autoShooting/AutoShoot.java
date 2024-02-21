@@ -31,7 +31,6 @@
 //     private static double TargetYSetpointDegrees = -19.28;
 
 //     private PIDController strafeController = new PIDController(ProportionalGain, 0, 0);
-//     private PIDController distanceController = new PIDController(ProportionalGain, 0, 0);
 
 //     private double xMetersPerSecond = 0;
 //     private double yMetersPerSecond = 0;
@@ -49,15 +48,14 @@
 //         limelight.setDesiredPipeline(LimelightPipeline.Shooting);
 
 //         strafeController.setTolerance(StrafeToleranceDegrees);
-//         distanceController.setTolerance(DistanceToleranceDegrees);
 //     }
 
 //     @Override
 //     public void execute() {
-//         // if (!limelight.isActivePipeline(LimelightPipeline.Shooting)) {
-//         //     drivetrain.driveFieldRelative(xMetersPerSecond, yMetersPerSecond, SpeedLimiter, TargetAngle, MaxOmegaDegreesPerSecond);
-//         //     return;
-//         // }
+//         if (!limelight.isActivePipeline(LimelightPipeline.Shooting)) {
+//             drivetrain.driveFieldRelative(xMetersPerSecond, yMetersPerSecond, SpeedLimiter, TargetAngle, MaxOmegaDegreesPerSecond);
+//             return;
+//         }
 
 //         double targetX = limelight.getTargetX();
 //         if (!Double.isNaN(targetX)) {
@@ -70,7 +68,6 @@
 
 //         double targetY = limelight.getTargetY();
 //         if (!Double.isNaN(targetY)) {
-//             xMetersPerSecond = distanceController.calculate(targetY, TargetYSetpointDegrees);
 //             xMetersPerSecond = MathUtil.clamp(xMetersPerSecond, -MaxDistanceMetersPerSecond, MaxDistanceMetersPerSecond);
 //         }
 //         else {
@@ -90,7 +87,7 @@
 
 //     @Override
 //     public boolean isFinished() {
-//         return strafeController.atSetpoint() && distanceController.atSetpoint();
+//         return strafeController.atSetpoint();
 //     }
 
 // }
@@ -102,15 +99,14 @@
 
 
 
+// // - start spinning shooter motors (should happen as soon as we intake a note)
 // // - press button
-// // - check if note is loaded (maybe)
 // // - detect april tag
 // // - calculate offset from center of shooter
-// // - calculate disatance from shooter
-// // - start spinning shooter motors
+// // - calculate distance from shooter
 // // - set shooter angle
-// // - use drive train to turn shooter
-// // - validate shooter is within tolerances
-// // - index note
+// // - use drive train to rotate robot (aiming)
+// // - validate shooter is within tolerances (maybe)
+// // - index note (actually shooting it)
 // // - stop shooter motors
-// // - reset shooter angle for next intake
+// // - reset shooter angle for next intake (maybe)
