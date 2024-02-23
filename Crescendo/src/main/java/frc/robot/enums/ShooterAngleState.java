@@ -1,6 +1,7 @@
 package frc.robot.enums;
 
 public enum ShooterAngleState {
+    //TODO Update values
     Start(0.0),
     Max(90.0);
 

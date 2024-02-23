@@ -2,6 +2,7 @@
 package frc.robot.enums;
 
 public enum ClimberState {
+    //TODO Update values
     PovUp(1, 1),
     PovDown(-1, -1),
     PovLeft(-1, 1),

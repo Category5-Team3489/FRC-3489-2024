@@ -7,6 +7,7 @@ import frc.robot.DataPoint;
 import frc.robot.ShooterSetting;
 
 public class AutoShootShooter {
+    //TODO Finish command
 
     public static ArrayList<DataPoint> getClosestDistanceIndicies(double distance) {
         ArrayList<DataPoint> indicies = new ArrayList<DataPoint>();

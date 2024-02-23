@@ -74,9 +74,9 @@ public class RobotContainer {
      */
 
     private void configureBindings() {
-        bindDriveTrain();
-        bindClimber();
-        bindIntakeIndex();
+        //bindDriveTrain();
+        // bindClimber();
+        // bindIntakeIndex();
         bindShooter();
     }
 
@@ -93,6 +93,10 @@ public class RobotContainer {
     }
 
     private void bindDriveTrain() {
+
+        //TODO Cardinal Directions
+        //TODO Speed Buttons
+        //TODO slow directions
 
         final Drivetrain drivetrain = Drivetrain.get();
         final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -150,7 +154,7 @@ public class RobotContainer {
 
     private void bindShooter() {
         final ShooterSpeed shooterSpeed = ShooterSpeed.get();
-        final ShooterAngle shooterAngle = ShooterAngle.get();
+        // final ShooterAngle shooterAngle = ShooterAngle.get();
         final Index index = Index.get();
         final ShooterIntake shooterIntake = new ShooterIntake();
 
@@ -167,12 +171,18 @@ public class RobotContainer {
         manipulatorXbox.x().onTrue(index.indexCommand(IndexState.Outtake));
         // Shoter Intake
         manipulatorXbox.a().and(manipulatorXbox.leftTrigger()).onTrue(shooterIntake);
+
+        manipulatorXbox.y().onTrue(shooterSpeed.setMotorPercent(() -> 0.10));
+
         // Manual Shooter Angle
-        manipulatorXbox.axisLessThan(5, -0.5).whileTrue(shooterAngle.adjustManualAngle(-1));
-        manipulatorXbox.axisGreaterThan(5, 0.5).whileTrue(shooterAngle.adjustManualAngle(1));
+        //TODO Uncomment after testing
+        // manipulatorXbox.axisLessThan(5, -0.5).whileTrue(shooterAngle.adjustManualAngle(-1));
+        // manipulatorXbox.axisGreaterThan(5, 0.5).whileTrue(shooterAngle.adjustManualAngle(1));
+
         // set manual speed/angle
         manipulatorXbox.rightBumper().onTrue(setShooterClose);
         manipulatorXbox.leftBumper().onTrue(setShooterFar);
+        
         //TODO y = Auto Shoot
     }
 

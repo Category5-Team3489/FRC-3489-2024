@@ -25,7 +25,8 @@ public class ShooterSpeed extends SubsystemBase {
     private static final double AllowedErrorRotationsPerSecond = 5;
 
     private class MotorBuilder {
-        private static final int CanId = 14;
+        private static final int TopCanId = 13;
+        private static final int BottomCanId = 12;
 
         private static final double VoltsPerRotationPerSecondOfError = 12.0 / 50; // kP
         private static final double VoltsPerRotationOfError = 0.0; // kI
@@ -34,8 +35,8 @@ public class ShooterSpeed extends SubsystemBase {
         // 1 / 8.33 = 0.12 volts / rotation per second
         private static final double VoltsPerRotationPerSecond = 0.12; // kV
 
-        private TalonFX build() {
-            TalonFX motor = new TalonFX(CanId);
+        private TalonFX build(int id) {
+            TalonFX motor = new TalonFX(id);
 
             TalonFXConfiguration configs = new TalonFXConfiguration();
             configs.Slot0.kP = VoltsPerRotationPerSecondOfError;
@@ -61,28 +62,35 @@ public class ShooterSpeed extends SubsystemBase {
     // endregion
 
     // region ---------------- Devices ----------------
-    private final TalonFX motor = new MotorBuilder().build();
+    private final TalonFX topMotor = new MotorBuilder().build(13);
+    private final TalonFX bottomMotor = new MotorBuilder().build(12);
     // https://v6.docs.ctr-electronics.com/en/stable/docs/migration/migration-guide/closed-loop-guide.html
     private final VelocityVoltage velocity = new VelocityVoltage(0);
     // endregion
 
-    private ShooterSpeed() { }
+    private ShooterSpeed() {
+        bottomMotor.setInverted(true);
+    }
 
     // region Subsystem
+    //TODO add bottom motor
     public void setSpeedRps(double speedRps) {
         if (speedRps == 0) {
-            motor.stopMotor();
+            topMotor.stopMotor();
         } else {
             velocity.Slot = 0; // Closed loop slot index 0
-            motor.setControl(velocity.withVelocity(speedRps));
+            topMotor.setControl(velocity.withVelocity(speedRps));
+
         }
     }
 
     public void setSpeedPercent(double speedPercent) {
         if (speedPercent == 0) {
-            motor.stopMotor();
+            topMotor.stopMotor();
+            bottomMotor.stopMotor();
         } else {
-            motor.set(speedPercent);
+            topMotor.set(speedPercent);
+            bottomMotor.set(speedPercent);
         }
     }
 
@@ -91,7 +99,7 @@ public class ShooterSpeed extends SubsystemBase {
      * AllowedErrorRotationsPerSecond
      */
     public boolean isAtTargetSpeed() {
-        double errorRps = motor.getClosedLoopError().getValueAsDouble();
+        double errorRps = topMotor.getClosedLoopError().getValueAsDouble();
         return Math.abs(errorRps) <= AllowedErrorRotationsPerSecond;
     }
     // endregion
@@ -103,9 +111,16 @@ public class ShooterSpeed extends SubsystemBase {
         }, this);
     }
 
+    public Command setMotorPercent(DoubleSupplier speedRpsSupplier) {
+        return Commands.runOnce(() -> {
+            setSpeedPercent(speedRpsSupplier.getAsDouble());
+        }, this);
+    }
+
     public Command stopCommand() {
         return Commands.runOnce(() -> {
-            motor.stopMotor();
+            topMotor.stopMotor();
+            bottomMotor.stopMotor();
         }, this);
     }
     // endregion

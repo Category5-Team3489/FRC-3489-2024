@@ -16,7 +16,7 @@ public class Index extends SubsystemBase {
     }
 
     // Constants
-    private static final int MotorId = 15;
+    private static final int MotorId = 14;
     private static final int LaserSensorChannel = 0;
 
     // NEO 550
