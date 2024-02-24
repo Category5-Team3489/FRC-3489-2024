@@ -2,7 +2,7 @@ package frc.robot.enums;
 
 public enum IntakeState {
     //TODO update values
-    In(0.25),
+    In(0.70),
     Out(-0.25),
     Off(0);
 

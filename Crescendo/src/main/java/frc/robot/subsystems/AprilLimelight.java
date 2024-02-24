@@ -14,6 +14,8 @@ import frc.robot.RobotContainer;
 import frc.robot.enums.LimelightPipeline;
 
 public class AprilLimelight extends SubsystemBase {
+    
+
     // Constants
     private final static LimelightPipeline DefaultPipeline = LimelightPipeline.Shooting;
 

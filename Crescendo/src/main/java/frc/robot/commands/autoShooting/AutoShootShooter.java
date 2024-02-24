@@ -2,12 +2,24 @@ package frc.robot.commands.autoShooting;
 
 import java.util.ArrayList;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
 import frc.robot.DataPoint;
 import frc.robot.ShooterSetting;
+import frc.robot.Constants.AprilLimelight;
+import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Index;
+import frc.robot.subsystems.ShooterAngle;
+import frc.robot.subsystems.ShooterSpeed;
 
-public class AutoShootShooter {
+public class AutoShootShooter extends Command{
     //TODO Finish command
+
+    // private final AprilLimelight limelight = AprilLimelight.get();
+    // private final Drivetrain drivetrain = Drivetrain.get();
+    // private final Index index = Index.get();
+    // private final ShooterAngle shooterAngle = ShooterAngle.get();
+    // private final ShooterSpeed shooterSpeed = ShooterSpeed.get();
 
     public static ArrayList<DataPoint> getClosestDistanceIndicies(double distance) {
         ArrayList<DataPoint> indicies = new ArrayList<DataPoint>();
@@ -49,5 +61,16 @@ public class AutoShootShooter {
         return new ShooterSetting(Constants.General.lerp(settingA.shooterSpeed, settingB.shooterSpeed, t),
                 Constants.General.lerp(settingA.shooterAngle, settingB.shooterAngle, t));
     }
+
+    // public void setShooterAtDistance(double distance) {
+    //     ShooterSetting setting = getShooterSetting(distance);
+    //     shooter.bottomShooterMotor.set(speed.Velocity, setting.bottomSpeed);
+    //     shooter.topShooterMotor.set(ControlMode.Velocity, -setting.topSpeed);
+
+    //     shooterAngle.
+
+        
+    // }
+
 
 }

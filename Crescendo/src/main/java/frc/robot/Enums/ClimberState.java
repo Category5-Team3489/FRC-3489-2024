@@ -3,15 +3,15 @@ package frc.robot.enums;
 
 public enum ClimberState {
     //TODO Update values
-    PovUp(1, 1),
-    PovDown(-1, -1),
-    PovLeft(-1, 1),
-    PovRight(1, -1),
+    PovUp(0.15, 0.15),
+    PovDown(-0.15, -0.15),
+    PovLeft(-0.15, 0.15),
+    PovRight(0.15, -0.15),
 
-    PovDownLeft(-0.5, 0),
-    PovDownRight(0, -0.5),
-    PovUpLeft(0.5, 0),
-    PovUpRight(0, 0.5);
+    PovDownLeft(-0.15, 0),
+    PovDownRight(0, -0.15),
+    PovUpLeft(0.15, 0),
+    PovUpRight(0, 0.15);
 
     private final double aSpeedPercent;
     private final double bSpeedPercent;

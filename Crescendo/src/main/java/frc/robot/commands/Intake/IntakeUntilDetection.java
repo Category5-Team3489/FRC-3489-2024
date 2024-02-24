@@ -33,14 +33,16 @@ public class IntakeUntilDetection extends Command {
     public void execute() {
 
         // Check to see if note is loaded, via index class
-        if (belt.isNoteDetected()) {
-            return;
-        }
+        // if (belt.isNoteDetected()) {
+        //     return;
+        // }
 
         // start intake/belt
-        intake.intakeCommand(IntakeState.In);
-        belt.indexCommand(IndexState.Intake);
-        shooterAngle.setAngle(ShooterAngleState.Max.getAngle());
+        intake.intakeCommand(IntakeState.In).schedule();
+        //TODO outtake
+        belt.indexCommand(IndexState.Outtake).schedule();
+        //shooterAngle.setAngle(ShooterAngleState.Max.getAngle());
+        //TODO uncomment angle
 
         System.out.println("------Intake Until detection");
     }
@@ -49,6 +51,8 @@ public class IntakeUntilDetection extends Command {
     public void end(boolean interrupted) {
         belt.stop();
         intake.stop();
+        belt.indexCommand(IndexState.Stop).cancel();
+        intake.intakeCommand(IntakeState.Off).cancel();
         leds.setLeds(LedState.Intaked);
         //TODO reset shooter angle to home
     }
@@ -56,6 +60,7 @@ public class IntakeUntilDetection extends Command {
     @Override
     public boolean isFinished() {
         // wait to get sensor value (could have this start shooter motor)
-        return belt.isNoteDetected();
+        // return belt.isNoteDetected();
+        return false;
     }
 }

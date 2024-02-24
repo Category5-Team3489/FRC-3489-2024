@@ -21,16 +21,21 @@ public class Intake extends SubsystemBase {
   private final CANSparkMax motor;
 
   private Intake() {
-    motor = new CANSparkMax(18, MotorType.kBrushless);
+    motor = new CANSparkMax(11, MotorType.kBrushless);
   }
 
+
+
   public Command intakeCommand(IntakeState state) {
+
     return Commands.run(() -> {
       System.out.println("indexIntake");
 
       motor.set(state.getSpeed());
     }, this);
   }
+
+  // public void setIntake()
 
   // Stop Motors
   public void stop() {

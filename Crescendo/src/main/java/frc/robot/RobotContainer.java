@@ -75,9 +75,9 @@ public class RobotContainer {
 
     private void configureBindings() {
         //bindDriveTrain();
-        // bindClimber();
+        bindClimber();
         // bindIntakeIndex();
-        bindShooter();
+        // bindShooter();
     }
 
     private void bindClimber() {
@@ -139,10 +139,10 @@ public class RobotContainer {
 
         final IntakeUntilDetection intakeUntilDetection = new IntakeUntilDetection();
 
-        // right Trigger and y = outtake
+        // a and right Trigger = outtake
         manipulatorXbox.rightTrigger().and(manipulatorXbox.a()).onTrue(intake.intakeCommand(IntakeState.Out));
 
-        // y = intake/stop intake
+        // a = intake/stop intake
         manipulatorXbox.a().onTrue(Commands.runOnce(() -> {
             if (intakeUntilDetection.isScheduled()) {
                 intakeUntilDetection.cancel();
@@ -165,14 +165,15 @@ public class RobotContainer {
                 () -> Constants.ShooterAngle.CloseShooterAngle,
                 () -> Constants.ShooterSpeed.CloseShooterSpeed);
 
-        // stop Shooter
+        // b = stop Shooter
         manipulatorXbox.b().onTrue(shooterSpeed.stopCommand());
-        // Manual Shoot
+        // x = Manual Shoot
         manipulatorXbox.x().onTrue(index.indexCommand(IndexState.Outtake));
-        // Shoter Intake
+        // a and left trigger = Shoter Intake
         manipulatorXbox.a().and(manipulatorXbox.leftTrigger()).onTrue(shooterIntake);
 
-        manipulatorXbox.y().onTrue(shooterSpeed.setMotorPercent(() -> 0.10));
+        //TODO remove after testing
+        manipulatorXbox.y().onTrue(shooterSpeed.setMotorPercent(() -> 0.50));
 
         // Manual Shooter Angle
         //TODO Uncomment after testing
