@@ -17,12 +17,13 @@ public class IntakeUntilDetection extends Command {
     private final LEDs leds;
     private final ShooterAngle shooterAngle;
 
+    public boolean hasIntakeBeenSet = false;
+
     public IntakeUntilDetection() {
         this.intake = Intake.get();
         this.belt = Index.get();
         this.leds = LEDs.get();
         this.shooterAngle = ShooterAngle.get();
-
 
         addRequirements(intake, belt, leds, shooterAngle);
     }
@@ -34,27 +35,29 @@ public class IntakeUntilDetection extends Command {
 
         // Check to see if note is loaded, via index class
         // if (belt.isNoteDetected()) {
-        //     return;
+        // return;
         // }
 
         // start intake/belt
         intake.intakeCommand(IntakeState.In).schedule();
-        //TODO outtake
+        // TODO outtake
         belt.indexCommand(IndexState.Outtake).schedule();
-        //shooterAngle.setAngle(ShooterAngleState.Max.getAngle());
-        //TODO uncomment angle
+        hasIntakeBeenSet = true;
+        // shooterAngle.setAngle(ShooterAngleState.Max.getAngle());
+        // TODO uncomment angle
 
-        System.out.println("------Intake Until detection");
+        System.out.println("----Intake Until detection Command");
     }
 
     @Override
     public void end(boolean interrupted) {
-        belt.stop();
-        intake.stop();
-        belt.indexCommand(IndexState.Stop).cancel();
-        intake.intakeCommand(IntakeState.Off).cancel();
+        // belt.stop();
+        // intake.stop();
+        // belt.indexCommand(IndexState.Stop).cancel();
+        // intake.intakeCommand(IntakeState.Off).cancel();
+        System.out.println("End");
         leds.setLeds(LedState.Intaked);
-        //TODO reset shooter angle to home
+        // TODO reset shooter angle to home?
     }
 
     @Override

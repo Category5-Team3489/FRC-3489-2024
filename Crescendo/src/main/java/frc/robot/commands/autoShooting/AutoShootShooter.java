@@ -67,7 +67,7 @@ public class AutoShootShooter extends Command{
     //     shooter.bottomShooterMotor.set(speed.Velocity, setting.bottomSpeed);
     //     shooter.topShooterMotor.set(ControlMode.Velocity, -setting.topSpeed);
 
-    //     shooterAngle.
+    //     shooterAngle.setAngle()
 
         
     // }

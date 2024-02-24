@@ -11,6 +11,7 @@ import frc.robot.commands.shooter.ShooterIntake;
 import frc.robot.enums.ClimberState;
 import frc.robot.enums.IndexState;
 import frc.robot.enums.IntakeState;
+import frc.robot.enums.SpeedLimitState;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Index;
@@ -74,10 +75,10 @@ public class RobotContainer {
      */
 
     private void configureBindings() {
-        //bindDriveTrain();
-        bindClimber();
-        // bindIntakeIndex();
-        // bindShooter();
+        bindDriveTrain();
+        // bindClimber();
+        bindIntakeIndex();
+        bindShooter();
     }
 
     private void bindClimber() {
@@ -94,9 +95,7 @@ public class RobotContainer {
 
     private void bindDriveTrain() {
 
-        //TODO Cardinal Directions
-        //TODO Speed Buttons
-        //TODO slow directions
+        // TODO slow directions
 
         final Drivetrain drivetrain = Drivetrain.get();
         final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -111,23 +110,47 @@ public class RobotContainer {
 
         drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
                 drivetrain.applyRequest(() -> drive
-                        .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond) // Drive forward with negative Y
-                                                                                    // (forward)
-                        .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond) // Drive left with
-                                                                                    // negative
-                                                                                    // X (left)
+                        .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond * drivetrain.getSpeedLimit()) // Drive
+                                                                                                                 // forward
+                                                                                                                 // with
+                                                                                                                 // negative
+                                                                                                                 // Y
+                        // (forward)
+                        .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond * drivetrain.getSpeedLimit()) // Drive
+                                                                                                                 // left
+                                                                                                                 // with
+                        // negative
+                        // TODO add speed limit to rotations // X (left)
                         .withRotationalRate(-driverXbox.getRightX() * MaxRadiansPerSecond) // Drive counterclockwise
                                                                                            // with negative X (left)
                 ));
 
-        driverXbox.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        driverXbox.back().whileTrue(drivetrain.applyRequest(() -> brake));
         driverXbox.b().whileTrue(drivetrain
                 .applyRequest(() -> point
                         .withModuleDirection(new Rotation2d(-driverXbox.getLeftY(),
                                 -driverXbox.getLeftX()))));
 
         // reset the field-centric heading on left bumper press
-        driverXbox.start().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldRelative()));
+        driverXbox.start().onTrue(Commands.runOnce(() -> drivetrain.seedFieldRelative()));
+
+        // TODO Speed Buttons
+        // Speed Buttons- Update the
+        driverXbox.leftBumper().onTrue(Commands.runOnce(() -> drivetrain.setSpeedLimit(SpeedLimitState.Full)));
+        driverXbox.rightBumper().onTrue(Commands.runOnce(() -> drivetrain.setSpeedLimit(SpeedLimitState.Forth)));
+        // Reset the speed when button is released
+        driverXbox.leftBumper().onFalse(Commands.runOnce(() -> drivetrain.setSpeedLimit(SpeedLimitState.Half)));
+        driverXbox.rightBumper().onFalse(Commands.runOnce(() -> drivetrain.setSpeedLimit(SpeedLimitState.Half)));
+
+        // TODO Cardinal Directions
+        // Cardinal turns
+        driverXbox.y().onTrue(drivetrain.applyRequestOnce(() -> drive.withRotationalRate(MaxRadiansPerSecond * 0)));
+        driverXbox.b().onTrue(drivetrain.applyRequestOnce(() -> drive.withRotationalRate(MaxRadiansPerSecond * -90)));
+        driverXbox.a().onTrue(drivetrain.applyRequestOnce(() -> drive.withRotationalRate(MaxRadiansPerSecond * -180)));
+        driverXbox.x().onTrue(drivetrain.applyRequestOnce(() -> drive.withRotationalRate(MaxRadiansPerSecond * -270)));
+
+        // Slow directions
+        // driverXbox.povUp().onTrue(drivetrain.applyRequest(() -> ))
 
         if (Utils.isSimulation()) {
             drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
@@ -136,6 +159,7 @@ public class RobotContainer {
 
     private void bindIntakeIndex() {
         final Intake intake = Intake.get();
+        final Index index = Index.get();
 
         final IntakeUntilDetection intakeUntilDetection = new IntakeUntilDetection();
 
@@ -143,18 +167,31 @@ public class RobotContainer {
         manipulatorXbox.rightTrigger().and(manipulatorXbox.a()).onTrue(intake.intakeCommand(IntakeState.Out));
 
         // a = intake/stop intake
+        // manipulatorXbox.a().onTrue(Commands.runOnce(() -> {
+        // if (intakeUntilDetection.isScheduled()) {
+        // intakeUntilDetection.cancel();
+        // } else {
+        // intakeUntilDetection.schedule();
+        // }
+        // }));
+
         manipulatorXbox.a().onTrue(Commands.runOnce(() -> {
-            if (intakeUntilDetection.isScheduled()) {
-                intakeUntilDetection.cancel();
+            if (intakeUntilDetection.hasIntakeBeenSet) {
+                intake.stop();
+                index.stop();
+                intakeUntilDetection.hasIntakeBeenSet = false;
+                System.out.println("----------stopMotors");
             } else {
                 intakeUntilDetection.schedule();
+                System.out.println("Scheduled");
             }
         }));
+
     }
 
     private void bindShooter() {
         final ShooterSpeed shooterSpeed = ShooterSpeed.get();
-        // final ShooterAngle shooterAngle = ShooterAngle.get();
+        final ShooterAngle shooterAngle = ShooterAngle.get();
         final Index index = Index.get();
         final ShooterIntake shooterIntake = new ShooterIntake();
 
@@ -172,19 +209,19 @@ public class RobotContainer {
         // a and left trigger = Shoter Intake
         manipulatorXbox.a().and(manipulatorXbox.leftTrigger()).onTrue(shooterIntake);
 
-        //TODO remove after testing
-        manipulatorXbox.y().onTrue(shooterSpeed.setMotorPercent(() -> 0.50));
+        // TODO remove after testing
+        manipulatorXbox.y().onTrue(shooterSpeed.setMotorPercent(() -> 1));
 
         // Manual Shooter Angle
-        //TODO Uncomment after testing
-        // manipulatorXbox.axisLessThan(5, -0.5).whileTrue(shooterAngle.adjustManualAngle(-1));
-        // manipulatorXbox.axisGreaterThan(5, 0.5).whileTrue(shooterAngle.adjustManualAngle(1));
+        // TODO Uncomment after testing
+        manipulatorXbox.axisLessThan(5, -0.1).whileTrue(shooterAngle.adjustManualAngle(-1));
+        manipulatorXbox.axisGreaterThan(5,0.1).whileTrue(shooterAngle.adjustManualAngle(1));
 
         // set manual speed/angle
-        manipulatorXbox.rightBumper().onTrue(setShooterClose);
-        manipulatorXbox.leftBumper().onTrue(setShooterFar);
-        
-        //TODO y = Auto Shoot
+        // manipulatorXbox.rightBumper().onTrue(setShooterClose);
+        // manipulatorXbox.leftBumper().onTrue(setShooterFar);
+
+        // TODO y = Auto Shoot
     }
 
     /**

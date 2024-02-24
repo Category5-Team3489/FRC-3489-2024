@@ -6,6 +6,11 @@
       }
     },
     "Other Devices": {
+      "SPARK MAX [11]": {
+        "header": {
+          "open": true
+        }
+      },
       "Talon FX (v6)[5]": {
         "header": {
           "open": true

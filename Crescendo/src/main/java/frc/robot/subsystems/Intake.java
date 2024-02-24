@@ -28,8 +28,8 @@ public class Intake extends SubsystemBase {
 
   public Command intakeCommand(IntakeState state) {
 
-    return Commands.run(() -> {
-      System.out.println("indexIntake");
+    return Commands.runOnce(() -> {
+      System.out.println("Move Intake");
 
       motor.set(state.getSpeed());
     }, this);
@@ -39,6 +39,7 @@ public class Intake extends SubsystemBase {
 
   // Stop Motors
   public void stop() {
+    System.out.println("Stop Intake");
     motor.stopMotor();
   }
 }

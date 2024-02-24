@@ -26,15 +26,15 @@ public class ShooterAngle extends SubsystemBase {
     // endregion
 
     // region ---------------- Constants ----------------
-    // TODO SET CAN IDS
-    private final int LeftMotorCanId = 12;
-    private final int RightMotorCanId = 13;
+    private final int LeftMotorCanId = 10;
+    private final int RightMotorCanId = 9;
 
     // TODO update
-    private static final double CorrectionDegreesPerSecond = 13.5;
+    private static final double CorrectionDegreesPerSecond = 5;
 
+    //TODO update gear ratio
     // Gear ratio
-    private static final double MotorRotationsPerRevolution = (100.0 / 1.0) * (2.0 / 1.0);
+    private static final double MotorRotationsPerRevolution = (58.0/12.0) * (58.0/14.0) * (64.0/12.0);
     // Convert revolutions to degrees (Used in PID)
     private static final double MotorRotationsPerDegree = MotorRotationsPerRevolution / 360.0;
     private static final double DegreesPerMotorRotation = 1.0 / MotorRotationsPerDegree;
@@ -50,28 +50,32 @@ public class ShooterAngle extends SubsystemBase {
     private final CANSparkMax leftMotor = new CANSparkMax(LeftMotorCanId, MotorType.kBrushless);
     private final CANSparkMax rightMotor = new CANSparkMax(RightMotorCanId, MotorType.kBrushless);
 
-    private final SparkPIDController pidController = rightMotor.getPIDController();
-    private final RelativeEncoder encoder = rightMotor.getEncoder();
+    private final SparkPIDController pidController = leftMotor.getPIDController();
+    private final RelativeEncoder encoder = leftMotor.getEncoder();
     // endregion
 
-    private double targetAngleDegrees = Double.NaN;
+    private double targetAngleDegrees = ShooterAngleState.Start.getAngle();
 
-    private ShooterAngle() {
-        leftMotor.setInverted(true);
-        leftMotor.follow(rightMotor);
+    @Override
+    public void periodic() {
+        setAngle(targetAngleDegrees);
     }
 
-    public void setAngle(double angleDegrees) {
-        targetAngleDegrees = angleDegrees;
+    private ShooterAngle() {
+        // leftMotor.setInverted(true);
+        // leftMotor.follow(rightMotor);
+    }
 
+    private void setAngle(double angleDegrees) {
+        setTargetAngle(angleDegrees);
         double targetRotations = angleDegrees * MotorRotationsPerDegree;
         pidController.setReference(targetRotations, ControlType.kPosition, 0);
     }
 
     public boolean isAtTargetAngle() {
-        if (Double.isNaN(targetAngleDegrees)) {
-            return false;
-        }
+    //     if (Double.isNaN(targetAngleDegrees)) {
+    //         return false;
+    //     }
 
         double rotations = encoder.getPosition();
         double angleDegrees = rotations * DegreesPerMotorRotation;
@@ -85,17 +89,22 @@ public class ShooterAngle extends SubsystemBase {
     // region ---------------- Commands ----------------
     public Command adjustManualAngle(double adjustPercent) {
         return Commands.run(() -> {
-            targetAngleDegrees += adjustPercent * CorrectionDegreesPerSecond * Robot.kDefaultPeriod;
-            targetAngleDegrees = MathUtil.clamp(targetAngleDegrees, ShooterAngleState.Start.getAngle(),
-                    ShooterAngleState.Max.getAngle());
-            setAngle(targetAngleDegrees);
-        });
+            double deltaDegrees = adjustPercent * CorrectionDegreesPerSecond * Robot.kDefaultPeriod;
+           setTargetAngle(targetAngleDegrees + deltaDegrees);
+            
+            
+        }, this);
+    }
 
+    private void setTargetAngle(double angleDegrees) {
+        targetAngleDegrees = MathUtil.clamp(angleDegrees, ShooterAngleState.Start.getAngle(),
+            ShooterAngleState.Max.getAngle());
+        System.out.println(targetAngleDegrees);
     }
 
     public Command updateCommand(DoubleSupplier angleDegreesSupplier) {
         return Commands.run(() -> {
-            setAngle(angleDegreesSupplier.getAsDouble());
+            setTargetAngle(angleDegreesSupplier.getAsDouble());
         }, this);
     }
     // endregion
