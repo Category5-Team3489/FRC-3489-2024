@@ -1,4 +1,4 @@
-package frc.robot.commands.autoShooting;
+package frc.robot.commands.autoshooting;
 
 import java.util.ArrayList;
 
@@ -12,8 +12,8 @@ import frc.robot.subsystems.Index;
 import frc.robot.subsystems.ShooterAngle;
 import frc.robot.subsystems.ShooterSpeed;
 
-public class AutoShootShooter extends Command{
-    //TODO Finish command
+public class AutoShootShooter extends Command {
+    // TODO Finish command
 
     // private final AprilLimelight limelight = AprilLimelight.get();
     // private final Drivetrain drivetrain = Drivetrain.get();
@@ -63,14 +63,12 @@ public class AutoShootShooter extends Command{
     }
 
     // public void setShooterAtDistance(double distance) {
-    //     ShooterSetting setting = getShooterSetting(distance);
-    //     shooter.bottomShooterMotor.set(speed.Velocity, setting.bottomSpeed);
-    //     shooter.topShooterMotor.set(ControlMode.Velocity, -setting.topSpeed);
+    // ShooterSetting setting = getShooterSetting(distance);
+    // shooter.bottomShooterMotor.set(speed.Velocity, setting.bottomSpeed);
+    // shooter.topShooterMotor.set(ControlMode.Velocity, -setting.topSpeed);
 
-    //     shooterAngle.setAngle()
+    // shooterAngle.setAngle()
 
-        
     // }
-
 
 }

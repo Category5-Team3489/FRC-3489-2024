@@ -5,7 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Intake.IntakeUntilDetection;
+import frc.robot.commands.intake.IntakeUntilDetection;
 import frc.robot.commands.shooter.Shoot;
 import frc.robot.commands.shooter.ShooterIntake;
 import frc.robot.enums.ClimberState;
@@ -215,7 +215,7 @@ public class RobotContainer {
         // Manual Shooter Angle
         // TODO Uncomment after testing
         manipulatorXbox.axisLessThan(5, -0.1).whileTrue(shooterAngle.adjustManualAngle(-1));
-        manipulatorXbox.axisGreaterThan(5,0.1).whileTrue(shooterAngle.adjustManualAngle(1));
+        manipulatorXbox.axisGreaterThan(5, 0.1).whileTrue(shooterAngle.adjustManualAngle(1));
 
         // set manual speed/angle
         // manipulatorXbox.rightBumper().onTrue(setShooterClose);
