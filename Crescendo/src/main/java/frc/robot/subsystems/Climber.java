@@ -6,8 +6,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.enums.ClimberState;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkLowLevel.MotorType;
 
 public class Climber extends SubsystemBase {
     // Singleton
@@ -27,7 +25,7 @@ public class Climber extends SubsystemBase {
 
     private Climber() {
         rightMotor.setInverted(true);
-        
+
         setDefaultCommand(Commands.runOnce(() -> {
             // System.out.println("Stopped");
             leftMotor.stopMotor();

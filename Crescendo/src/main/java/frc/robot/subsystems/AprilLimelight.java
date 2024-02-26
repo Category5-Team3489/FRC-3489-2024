@@ -10,11 +10,9 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.RobotContainer;
 import frc.robot.enums.LimelightPipeline;
 
 public class AprilLimelight extends SubsystemBase {
-    
 
     // Constants
     private final static LimelightPipeline DefaultPipeline = LimelightPipeline.Shooting;
@@ -41,8 +39,9 @@ public class AprilLimelight extends SubsystemBase {
     private static AprilLimelight instance = new AprilLimelight();
 
     public static AprilLimelight get() {
-      return instance;
+        return instance;
     }
+
     private AprilLimelight() {
         // super(robotContainer);
 

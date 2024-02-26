@@ -14,7 +14,6 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.DrivetrainConstants;
-import frc.robot.RobotContainer;
 import frc.robot.enums.SpeedLimitState;
 
 /**
@@ -70,7 +69,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
     }
 
     public boolean isAroundTargetHeading() {
-        
+
         Rotation2d target = Rotation2d.fromDegrees(90);
 
         return Math.abs(pigeon.getRotation2d().minus(target).getDegrees()) < AroundTargetHeadingThresholdDegrees;
@@ -85,18 +84,18 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
     }
 
     // public void povDrive(int degrees) {
-    //     if (xMetersPerSecond == 0 && yMetersPerSecond == 0) {
-    //         //int degrees = robotContainer.input.getDrivePovAngleDegrees();
-    //         if (degrees != -1) {
-    //             degrees += 90;
+    // if (xMetersPerSecond == 0 && yMetersPerSecond == 0) {
+    // //int degrees = robotContainer.input.getDrivePovAngleDegrees();
+    // if (degrees != -1) {
+    // degrees += 90;
 
-    //             xPercent = Math.sin(Math.toRadians(degrees));
-    //             yPercent = Math.cos(Math.toRadians(degrees));
+    // xPercent = Math.sin(Math.toRadians(degrees));
+    // yPercent = Math.cos(Math.toRadians(degrees));
 
-    //             xMetersPerSecond = xPercent * PovSpeedMetersPerSecond;
-    //             yMetersPerSecond = yPercent * PovSpeedMetersPerSecond;
-    //         }
-    //     }
+    // xMetersPerSecond = xPercent * PovSpeedMetersPerSecond;
+    // yMetersPerSecond = yPercent * PovSpeedMetersPerSecond;
+    // }
+    // }
     // }
 
     private void startSimThread() {

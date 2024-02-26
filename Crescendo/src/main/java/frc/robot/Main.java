@@ -4,10 +4,6 @@
 //Nicholas was here
 package frc.robot;
 
-import edu.wpi.first.util.datalog.DoubleLogEntry;
-import edu.wpi.first.wpilibj.DataLogManager;
-import frc.cat5lib.DistanceLookupTable;
-
 /**
  * Do NOT add any static variables to this class, or any initialization at all.
  * Unless you know what
@@ -26,14 +22,6 @@ public final class Main {
      * If you change your main robot class, change the parameter type.
      */
     public static void main(String... args) {
-        DistanceLookupTable lookupTable = new DistanceLookupTable();
-
-        DoubleLogEntry logEntry = new DoubleLogEntry(DataLogManager.getLog(), "/debug/lookup-table");
-        for (double distanceMeters = 0; distanceMeters < 10; distanceMeters += 0.01) {
-            double estimatedOutputValue = lookupTable.estimateOutputValue(distanceMeters);
-            logEntry.append(estimatedOutputValue, (long) (distanceMeters * 1000000.0));
-        }
-
-        // edu.wpi.first.wpilibj.RobotBase.startRobot(Robot::new);
+        edu.wpi.first.wpilibj.RobotBase.startRobot(Robot::new);
     }
 }

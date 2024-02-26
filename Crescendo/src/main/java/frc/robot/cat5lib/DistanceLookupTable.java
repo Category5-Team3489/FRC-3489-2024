@@ -1,4 +1,4 @@
-package frc.cat5lib;
+package frc.robot.cat5lib;
 
 import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
 
@@ -18,7 +18,7 @@ public class DistanceLookupTable {
         return table.getSample(distanceMeters).get();
     }
 
-    public final class Mapping {
+    public static final class Mapping {
         public final double distanceMeters;
         public final double outputValue;
 

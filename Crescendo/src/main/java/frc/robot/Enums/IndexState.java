@@ -1,4 +1,5 @@
 package frc.robot.enums;
+
 //TODO Update Speeds
 public enum IndexState {
     Intake(0.4),
