@@ -52,8 +52,8 @@ public class RobotContainer {
     // private static final double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a
     // rotation per second max angular velocity
     private static final double MaxRadiansPerSecond = MaxMetersPerSecond
-            / Math.hypot(DrivetrainConstants.kFrontLeftXPosInches,
-                    DrivetrainConstants.kFrontLeftYPosInches);
+            / Math.hypot(DrivetrainConstants.kFrontLeftXPosInches/39.37,
+                    DrivetrainConstants.kFrontLeftYPosInches/39.37);
 
     // ---------------- INPUT DEVICES ----------------
     private final CommandXboxController manipulatorXbox = new CommandXboxController(
@@ -108,6 +108,7 @@ public class RobotContainer {
         final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
         final SwerveRequest.FieldCentricFacingAngle driveFacingAngle = new SwerveRequest.FieldCentricFacingAngle();
 
+
         drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
                 drivetrain.applyRequest(() -> drive
                         .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond * drivetrain.getSpeedLimit()) // Drive
@@ -121,15 +122,48 @@ public class RobotContainer {
                                                                                                                  // with
                         // negative
                         // TODO add speed limit to rotations // X (left)
-                        .withRotationalRate(-driverXbox.getRightX() * MaxRadiansPerSecond) // Drive counterclockwise
+                        .withRotationalRate(-driverXbox.getRightX() * MaxRadiansPerSecond * drivetrain.getSpeedLimit()) // Drive counterclockwise
                                                                                            // with negative X (left)
                 ));
 
+        driverXbox.y().whileTrue(
+            drivetrain.applyRequest(() -> driveFacingAngle
+                        .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond * drivetrain.getSpeedLimit())                                                
+                                                                                                                 
+                        // (forward)
+                        .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond * drivetrain.getSpeedLimit()) 
+                        .withTargetDirection(Rotation2d.fromDegrees(0))                                             
+                ));      
+        driverXbox.b().whileTrue(
+            drivetrain.applyRequest(() -> driveFacingAngle
+                        .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond * drivetrain.getSpeedLimit())                                                
+                                                                                                                 
+                        // (forward)
+                        .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond * drivetrain.getSpeedLimit()) 
+                        .withTargetDirection(Rotation2d.fromDegrees(90))                                             
+                ));           
+        driverXbox.a().whileTrue(
+            drivetrain.applyRequest(() -> driveFacingAngle
+                        .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond * drivetrain.getSpeedLimit())                                                
+                                                                                                                 
+                        // (forward)
+                        .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond * drivetrain.getSpeedLimit()) 
+                        .withTargetDirection(Rotation2d.fromDegrees(180))                                             
+                ));                                                                                     
+        driverXbox.x().whileTrue(
+            drivetrain.applyRequest(() -> driveFacingAngle
+                        .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond * drivetrain.getSpeedLimit())                                                
+                                                                                                                 
+                        // (forward)
+                        .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond * drivetrain.getSpeedLimit()) 
+                        .withTargetDirection(Rotation2d.fromDegrees(270))                                             
+                ));     
+
         driverXbox.back().whileTrue(drivetrain.applyRequest(() -> brake));
-        driverXbox.b().whileTrue(drivetrain
-                .applyRequest(() -> point
-                        .withModuleDirection(new Rotation2d(-driverXbox.getLeftY(),
-                                -driverXbox.getLeftX()))));
+        // driverXbox.b().whileTrue(drivetrain
+        //         .applyRequest(() -> point
+        //                 .withModuleDirection(new Rotation2d(-driverXbox.getLeftY(),
+        //                         -driverXbox.getLeftX()))));
 
         // reset the field-centric heading on left bumper press
         driverXbox.start().onTrue(Commands.runOnce(() -> drivetrain.seedFieldRelative()));
@@ -143,11 +177,11 @@ public class RobotContainer {
         driverXbox.rightBumper().onFalse(Commands.runOnce(() -> drivetrain.setSpeedLimit(SpeedLimitState.Half)));
 
         // TODO Cardinal Directions
-        // Cardinal turns
-        driverXbox.y().onTrue(drivetrain.applyRequestOnce(() -> drive.withRotationalRate(MaxRadiansPerSecond * 0)));
-        driverXbox.b().onTrue(drivetrain.applyRequestOnce(() -> drive.withRotationalRate(MaxRadiansPerSecond * -90)));
-        driverXbox.a().onTrue(drivetrain.applyRequestOnce(() -> drive.withRotationalRate(MaxRadiansPerSecond * -180)));
-        driverXbox.x().onTrue(drivetrain.applyRequestOnce(() -> drive.withRotationalRate(MaxRadiansPerSecond * -270)));
+        // // Cardinal turns
+        // driverXbox.y().onTrue(drivetrain.applyRequestOnce(() -> drive.withRotationalRate(MaxRadiansPerSecond * 0)));
+        // driverXbox.b().onTrue(drivetrain.applyRequestOnce(() -> drive.withRotationalRate(MaxRadiansPerSecond * -90)));
+        // driverXbox.a().onTrue(drivetrain.applyRequestOnce(() -> drive.withRotationalRate(MaxRadiansPerSecond * -180)));
+        // driverXbox.x().onTrue(drivetrain.applyRequestOnce(() -> drive.withRotationalRate(MaxRadiansPerSecond * -270)));
 
         // Slow directions
         // driverXbox.povUp().onTrue(drivetrain.applyRequest(() -> ))

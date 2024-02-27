@@ -106,6 +106,7 @@ public class ShooterSpeed extends SubsystemBase {
      */
     public boolean isAtTargetSpeed() {
         double errorRps = topMotor.getClosedLoopError().getValueAsDouble();
+        System.out.println(errorRps);
         return Math.abs(errorRps) <= AllowedErrorRotationsPerSecond;
     }
     // endregion
