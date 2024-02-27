@@ -22,17 +22,20 @@ public class Shoot extends SequentialCommandGroup {
     private final Index index = Index.get();
 
     public Shoot(DoubleSupplier angleDegreesSupplier, DoubleSupplier speedRpsSupplier) {
+        System.out.println("Shoot Command scheduled");
         Command angleCommand = shooterAngle.updateCommand(angleDegreesSupplier);
         Command speedCommand = shooterSpeed.updateCommand(speedRpsSupplier);
+        
 
         addCommands(
                 Commands.runOnce(() -> {
                     angleCommand.schedule();
                     speedCommand.schedule();
+                    System.out.println("Set Commands Scheduled");
                 }),
                 Commands.waitSeconds(0.25),
                 Commands.waitUntil(() -> shooterAngle.isAtTargetAngle() && shooterSpeed.isAtTargetSpeed()),
-                index.indexCommand(IndexState.Intake).withTimeout(0.7),
+                index.indexCommand(IndexState.Outtake).withTimeout(0.7),
                 Commands.waitSeconds(1),
                 Commands.runOnce(() -> {
                     angleCommand.cancel();

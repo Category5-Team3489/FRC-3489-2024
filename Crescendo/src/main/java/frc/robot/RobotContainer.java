@@ -164,7 +164,8 @@ public class RobotContainer {
         final IntakeUntilDetection intakeUntilDetection = new IntakeUntilDetection();
 
         // a and right Trigger = outtake
-        manipulatorXbox.rightTrigger().and(manipulatorXbox.a()).onTrue(intake.intakeCommand(IntakeState.Out));
+        // manipulatorXbox.rightTrigger().and(manipulatorXbox.a()).onTrue(intake.intakeCommand(IntakeState.Out));
+        manipulatorXbox.leftTrigger().onTrue(Commands.parallel(intake.intakeCommand(IntakeState.Out), index.indexCommand(IndexState.Intake)));
 
         // a = intake/stop intake
         // manipulatorXbox.a().onTrue(Commands.runOnce(() -> {
@@ -210,7 +211,7 @@ public class RobotContainer {
         manipulatorXbox.a().and(manipulatorXbox.leftTrigger()).onTrue(shooterIntake);
 
         // TODO remove after testing
-        manipulatorXbox.y().onTrue(shooterSpeed.setMotorPercent(() -> 1));
+        manipulatorXbox.y().onTrue(shooterSpeed.setMotorPercent(() -> 0.7));
 
         // Manual Shooter Angle
         // TODO Uncomment after testing
@@ -218,8 +219,8 @@ public class RobotContainer {
         manipulatorXbox.axisGreaterThan(5,0.1).whileTrue(shooterAngle.adjustManualAngle(1));
 
         // set manual speed/angle
-        // manipulatorXbox.rightBumper().onTrue(setShooterClose);
-        // manipulatorXbox.leftBumper().onTrue(setShooterFar);
+        manipulatorXbox.rightBumper().onTrue(setShooterClose);
+        manipulatorXbox.leftBumper().onTrue(setShooterFar);
 
         // TODO y = Auto Shoot
     }

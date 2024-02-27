@@ -34,15 +34,15 @@ public final class Constants {
 
     //TODO get values
     public static class ShooterSpeed {
-        public static final double CloseShooterSpeed = 0.5;
-        public static final double FarShooterSpeed = 0.6;
+        public static final double CloseShooterSpeed = 0.7;
+        public static final double FarShooterSpeed = 0.7;
 
     }
 
     //TODO get values
     public static class ShooterAngle {
-        public static final double CloseShooterAngle = 70.0;
-        public static final double FarShooterAngle = 65.0;
+        public static final double CloseShooterAngle = 27.599;
+        public static final double FarShooterAngle = 9.9;
 
     }
 

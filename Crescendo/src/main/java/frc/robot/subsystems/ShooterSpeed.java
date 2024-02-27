@@ -77,9 +77,15 @@ public class ShooterSpeed extends SubsystemBase {
     public void setSpeedRps(double speedRps) {
         if (speedRps == 0) {
             topMotor.stopMotor();
+            bottomMotor.stopMotor();
         } else {
             velocity.Slot = 0; // Closed loop slot index 0
             topMotor.setControl(velocity.withVelocity(speedRps));
+            bottomMotor.setControl(velocity.withVelocity(speedRps));
+
+            //TODO Remove after testing
+            // topMotor.set(speedRps);
+            // bottomMotor.set(speedRps);
 
         }
     }
