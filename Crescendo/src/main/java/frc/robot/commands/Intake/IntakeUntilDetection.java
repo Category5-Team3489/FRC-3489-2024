@@ -63,7 +63,7 @@ public class IntakeUntilDetection extends Command {
     @Override
     public boolean isFinished() {
         // wait to get sensor value (could have this start shooter motor)
-        // return belt.isNoteDetected();
+        // return belt.isNoteDetected();  
         return false;
     }
 }

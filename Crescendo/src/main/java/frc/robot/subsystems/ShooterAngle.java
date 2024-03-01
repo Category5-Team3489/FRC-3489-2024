@@ -30,7 +30,7 @@ public class ShooterAngle extends SubsystemBase {
     private final int RightMotorCanId = 9;
 
     // TODO update
-    private static final double CorrectionDegreesPerSecond = 5;
+    private static final double CorrectionDegreesPerSecond = 7;
 
     //TODO update gear ratio
     // Gear ratio
