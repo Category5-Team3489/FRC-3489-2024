@@ -26,6 +26,11 @@ public class CoralLimelight extends SubsystemBase {
     private CoralLimelight() {
         
         register();
+        
+    }
+
+    @Override
+    public void periodic() {
         try {
             HttpCamera limelightFeed = new HttpCamera("limelight", "http://limelight.local:5800/");//http://10.34.89.11:5800/stream.mjpg
 
@@ -38,10 +43,6 @@ public class CoralLimelight extends SubsystemBase {
             System.out.println("Limelight camera had trouble initializing");
         }
         
-    }
-
-    @Override
-    public void periodic() {
         // read values periodically
         double x = tx.getDouble(0.0);
         double y = ty.getDouble(0.0);
@@ -51,6 +52,8 @@ public class CoralLimelight extends SubsystemBase {
         SmartDashboard.putNumber("LimelightX", x);
         SmartDashboard.putNumber("LimelightY", y);
         SmartDashboard.putNumber("LimelightArea", area);
+
+        
 
     }
 

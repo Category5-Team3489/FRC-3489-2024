@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Intake.IntakeUntilDetection;
+import frc.robot.commands.Intake.Outtake;
 import frc.robot.commands.shooter.Shoot;
 import frc.robot.commands.shooter.ShooterIntake;
 import frc.robot.enums.ClimberState;
@@ -129,40 +130,62 @@ public class RobotContainer {
                 // with negative X (left)
                 ));
 
-        driverXbox.y().whileTrue(
-                drivetrain.applyRequest(() -> driveFacingAngle
-                        .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond * drivetrain.getSpeedLimit())
-                        .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond * drivetrain.getSpeedLimit())
-                        .withTargetDirection(Rotation2d.fromDegrees(0))));
-        driverXbox.b().whileTrue(
-                drivetrain.applyRequest(() -> driveFacingAngle
-                        .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond * drivetrain.getSpeedLimit())
+        // TODO Remove this cardinal direction after testing
+        // driverXbox.y().whileTrue(
+        // drivetrain.applyRequest(() -> driveFacingAngle
+        // .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond *
+        // drivetrain.getSpeedLimit())
+        // .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond *
+        // drivetrain.getSpeedLimit())
+        // .withTargetDirection(Rotation2d.fromDegrees(0))));
+        // driverXbox.b().whileTrue(
+        // drivetrain.applyRequest(() -> driveFacingAngle
+        // .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond *
+        // drivetrain.getSpeedLimit())
 
-                        .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond * drivetrain.getSpeedLimit())
-                        .withTargetDirection(Rotation2d.fromDegrees(90))));
-        driverXbox.a().whileTrue(
-                drivetrain.applyRequest(() -> driveFacingAngle
-                        .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond * drivetrain.getSpeedLimit())
+        // .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond *
+        // drivetrain.getSpeedLimit())
+        // .withTargetDirection(Rotation2d.fromDegrees(90))));
+        // driverXbox.a().whileTrue(
+        // drivetrain.applyRequest(() -> driveFacingAngle
+        // .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond *
+        // drivetrain.getSpeedLimit())
 
-                        .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond * drivetrain.getSpeedLimit())
-                        .withTargetDirection(Rotation2d.fromDegrees(180))));
-        driverXbox.x().whileTrue(
-                drivetrain.applyRequest(() -> driveFacingAngle
-                        .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond * drivetrain.getSpeedLimit())
+        // .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond *
+        // drivetrain.getSpeedLimit())
+        // .withTargetDirection(Rotation2d.fromDegrees(180))));
+        // driverXbox.x().whileTrue(
+        // drivetrain.applyRequest(() -> driveFacingAngle
+        // .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond *
+        // drivetrain.getSpeedLimit())
 
-                        .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond * drivetrain.getSpeedLimit())
-                        .withTargetDirection(Rotation2d.fromDegrees(270))));
+        // .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond *
+        // drivetrain.getSpeedLimit())
+        // .withTargetDirection(Rotation2d.fromDegrees(270))));
 
+        // Brake
         driverXbox.back().whileTrue(drivetrain.applyRequest(() -> brake));
-        // driverXbox.b().whileTrue(drivetrain
-        // .applyRequest(() -> point
-        // .withModuleDirection(new Rotation2d(-driverXbox.getLeftY(),
-        // -driverXbox.getLeftX()))));
+
+        //TODO Copy this comand to all the buttons with the joystick input from driver station after testing
+        // Point Wheels?
+        driverXbox.b().whileTrue(drivetrain
+                .applyRequest(() -> point
+                        .withModuleDirection(new Rotation2d(-driverXbox.getLeftY(),
+                                -driverXbox.getLeftX()))));
+
+        driverXbox.a().whileTrue(drivetrain
+                .applyRequest(() -> point
+                        .withModuleDirection(new Rotation2d(-1,
+                                0))));
+
+        driverXbox.x().whileTrue(drivetrain
+                .applyRequest(() -> point
+                        .withModuleDirection(new Rotation2d(0,
+                                -1))));
 
         // reset the field-centric heading on left bumper press
         driverXbox.start().onTrue(Commands.runOnce(() -> drivetrain.seedFieldRelative()));
 
-        // TODO Speed Buttons
         // Speed Buttons- Update the
         driverXbox.leftBumper().onTrue(Commands.runOnce(() -> drivetrain.setSpeedLimit(SpeedLimitState.Full)));
         driverXbox.rightBumper().onTrue(Commands.runOnce(() -> drivetrain.setSpeedLimit(SpeedLimitState.Forth)));
@@ -194,11 +217,27 @@ public class RobotContainer {
         final Index index = Index.get();
 
         final IntakeUntilDetection intakeUntilDetection = new IntakeUntilDetection();
+        final Outtake outtake = new Outtake();
 
         // a and right Trigger = outtake
         // manipulatorXbox.rightTrigger().and(manipulatorXbox.a()).onTrue(intake.intakeCommand(IntakeState.Out));
+
+        //TODO Remove after testing
         manipulatorXbox.leftTrigger().onTrue(
                 Commands.parallel(intake.intakeCommand(IntakeState.Out), index.indexCommand(IndexState.Intake)));
+
+        manipulatorXbox.rightTrigger().onTrue(Commands.runOnce(() -> {
+            if (outtake.hasOuttakeBeenSet) {
+                intake.stop();
+                index.stop();
+                outtake.hasOuttakeBeenSet = false;
+                System.out.println("stopMotors--------");
+            } else {
+                intakeUntilDetection.schedule();
+                System.out.println("Outtake Scheduled");
+            }
+        }));
+        
 
         // a = intake/stop intake
         // manipulatorXbox.a().onTrue(Commands.runOnce(() -> {
@@ -214,7 +253,7 @@ public class RobotContainer {
                 intake.stop();
                 index.stop();
                 intakeUntilDetection.hasIntakeBeenSet = false;
-                System.out.println("----------stopMotors");
+                System.out.println("stopMotors--------");
             } else {
                 intakeUntilDetection.schedule();
                 System.out.println("Scheduled");
@@ -247,7 +286,6 @@ public class RobotContainer {
         manipulatorXbox.y().onTrue(shooterSpeed.setMotorPercent(() -> 0.7));
 
         // Manual Shooter Angle
-        // TODO Uncomment after testing
         manipulatorXbox.axisLessThan(5, -0.1).whileTrue(shooterAngle.adjustManualAngle(-1));
         manipulatorXbox.axisGreaterThan(5, 0.1).whileTrue(shooterAngle.adjustManualAngle(1));
 

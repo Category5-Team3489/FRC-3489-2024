@@ -31,6 +31,7 @@ public class LEDs extends SubsystemBase {
         TeleopBlink,
         NeedNote,
         Intaked,
+        Outtake,
         ShootNote,
         DarkRed,
         Red,
@@ -57,6 +58,9 @@ public class LEDs extends SubsystemBase {
                 break;
             case DarkRed:
                 setSolidColor(59);
+                break;
+            case Outtake: //Ocean
+                setSolidColor(-0.95);
                 break;
             case Red:
                 setSolidColor(61);
