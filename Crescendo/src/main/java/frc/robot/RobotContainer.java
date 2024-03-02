@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.Cardinal;
 import frc.robot.commands.DriveSeconds;
 import frc.robot.commands.Intake.IntakeUntilDetection;
 import frc.robot.commands.Intake.Outtake;
@@ -53,7 +54,7 @@ public class RobotContainer {
      * piece
      */
 
-    private CoralLimelight coralLimelight = CoralLimelight.get();
+    // private CoralLimelight coralLimelight = CoralLimelight.get();
     private final Cat5Autos autos = new Cat5Autos();
 
     
@@ -174,26 +175,37 @@ public class RobotContainer {
         // Brake
         driverXbox.back().whileTrue(drivetrain.applyRequest(() -> brake));
 
-        //TODO Copy this comand to all the buttons with the joystick input from driver station after testing
-        // Point Wheels?
-        driverXbox.b().whileTrue(drivetrain
-                .applyRequest(() -> point
-                        .withModuleDirection(new Rotation2d(-driverXbox.getLeftY(),
-                                -driverXbox.getLeftX()))));
+        // //TODO Copy this comand to all the buttons with the joystick input from driver station after testing
+        // // Point Wheels?
+        // driverXbox.b().whileTrue(drivetrain
+        //         .applyRequest(() -> point
+        //                 .withModuleDirection(new Rotation2d(-driverXbox.getLeftY(),
+        //                         -driverXbox.getLeftX()))));
 
-        driverXbox.a().whileTrue(drivetrain
-                .applyRequest(() -> point
-                        .withModuleDirection(new Rotation2d(-1,
-                                0))));
+        // driverXbox.a().whileTrue(drivetrain
+        //         .applyRequest(() -> point
+        //                 .withModuleDirection(new Rotation2d(-1,
+        //                         0))));
 
-        driverXbox.x().whileTrue(drivetrain
-                .applyRequest(() -> point
-                        .withModuleDirection(new Rotation2d(0,
-                                -1))));
+        // driverXbox.x().whileTrue(drivetrain
+        //         .applyRequest(() -> point
+        //                 .withModuleDirection(new Rotation2d(0,
+        //                         -1))));
 
-        final DriveSeconds driveSeconds = new DriveSeconds(drivetrain, 5, 0.15);
+        final Cardinal northCardinal = new Cardinal(drivetrain, 0);
+        final Cardinal eastCardinal = new Cardinal(drivetrain, 90);
+        final Cardinal southCardinal = new Cardinal(drivetrain, 180);
+        final Cardinal westCardinal = new Cardinal(drivetrain, 270);
 
-        driverXbox.leftTrigger().onTrue(driveSeconds);
+        driverXbox.y().onTrue(northCardinal);
+        driverXbox.b().onTrue(eastCardinal);
+        driverXbox.a().onTrue(southCardinal);
+        driverXbox.x().onTrue(westCardinal);
+
+
+        // final DriveSeconds driveSeconds = new DriveSeconds(drivetrain, 5, 0.15);
+
+        // driverXbox.leftTrigger().onTrue(driveSeconds);
 
         // reset the field-centric heading on left bumper press
         driverXbox.start().onTrue(Commands.runOnce(() -> drivetrain.seedFieldRelative()));
@@ -235,8 +247,8 @@ public class RobotContainer {
         // manipulatorXbox.rightTrigger().and(manipulatorXbox.a()).onTrue(intake.intakeCommand(IntakeState.Out));
 
         //TODO Remove after testing
-        manipulatorXbox.leftTrigger().onTrue(
-                Commands.parallel(intake.intakeCommand(IntakeState.Out), index.indexCommand(IndexState.Intake)));
+        // manipulatorXbox.leftTrigger().onTrue(
+        //         Commands.parallel(intake.intakeCommand(IntakeState.Out), index.indexCommand(IndexState.Intake)));
 
         manipulatorXbox.rightTrigger().onTrue(Commands.runOnce(() -> {
             if (outtake.hasOuttakeBeenSet) {
@@ -245,7 +257,7 @@ public class RobotContainer {
                 outtake.hasOuttakeBeenSet = false;
                 System.out.println("stopMotors--------");
             } else {
-                intakeUntilDetection.schedule();
+                outtake.schedule();
                 System.out.println("Outtake Scheduled");
             }
         }));
@@ -292,7 +304,7 @@ public class RobotContainer {
         // x = Manual Shoot
         manipulatorXbox.x().onTrue(index.indexCommand(IndexState.Outtake));
         // a and left trigger = Shoter Intake
-        manipulatorXbox.a().and(manipulatorXbox.leftTrigger()).onTrue(shooterIntake);
+        manipulatorXbox.leftTrigger().onTrue(shooterIntake);
 
         // TODO remove after testing
         manipulatorXbox.y().onTrue(shooterSpeed.setMotorPercent(() -> 0.7));

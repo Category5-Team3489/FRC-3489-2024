@@ -76,6 +76,12 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
         return Math.abs(pigeon.getRotation2d().minus(target).getDegrees()) < AroundTargetHeadingThresholdDegrees;
     }
 
+    public double getCurrentHeading() {
+        return pigeon.getAngle();
+    }
+
+
+
     public double getSpeedLimit() {
         return speedLimit.getSpeedLimit();
     }
