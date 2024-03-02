@@ -5,8 +5,12 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.DriveSeconds;
 import frc.robot.commands.Intake.IntakeUntilDetection;
 import frc.robot.commands.Intake.Outtake;
+import frc.robot.commands.autos.Cat5Autos;
+import frc.robot.commands.autos.Leave;
+import frc.robot.commands.autos.Nothing;
 import frc.robot.commands.shooter.Shoot;
 import frc.robot.commands.shooter.ShooterIntake;
 import frc.robot.enums.ClimberState;
@@ -50,6 +54,9 @@ public class RobotContainer {
      */
 
     private CoralLimelight coralLimelight = CoralLimelight.get();
+    private final Cat5Autos autos = new Cat5Autos();
+
+    
 
     // https://www.swervedrivespecialties.com/products/mk4-swerve-module
     private static final double MaxMetersPerSecond = 16.5 / 3.281; // (16.5 ft/s) / (3.281 ft/meter)
@@ -71,6 +78,7 @@ public class RobotContainer {
     public RobotContainer() {
         // Configure the trigger bindings
         configureBindings();
+        addAutos();
     }
 
     /**
@@ -182,6 +190,10 @@ public class RobotContainer {
                 .applyRequest(() -> point
                         .withModuleDirection(new Rotation2d(0,
                                 -1))));
+
+        final DriveSeconds driveSeconds = new DriveSeconds(drivetrain, 5, 0.15);
+
+        driverXbox.leftTrigger().onTrue(driveSeconds);
 
         // reset the field-centric heading on left bumper press
         driverXbox.start().onTrue(Commands.runOnce(() -> drivetrain.seedFieldRelative()));
@@ -304,6 +316,16 @@ public class RobotContainer {
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
         return Commands.print("TODO Auto");
+    }
+
+    private void addAutos() {
+        final Drivetrain drivetrain = Drivetrain.get();
+
+        autos.addAuto(() -> new Nothing ()
+            .withName("NothingAuto")
+        );
+        autos.addAuto(() -> new Leave(drivetrain));
+        autos.addSelectorWidget();
     }
 
     /*
