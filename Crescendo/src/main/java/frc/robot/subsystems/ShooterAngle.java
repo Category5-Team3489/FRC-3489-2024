@@ -99,7 +99,7 @@ public class ShooterAngle extends SubsystemBase {
     private void setTargetAngle(double angleDegrees) {
         targetAngleDegrees = MathUtil.clamp(angleDegrees, ShooterAngleState.Start.getAngle(),
             ShooterAngleState.Max.getAngle());
-        System.out.println(targetAngleDegrees);
+        //System.out.println(targetAngleDegrees);
     }
 
     public Command updateCommand(DoubleSupplier angleDegreesSupplier) {

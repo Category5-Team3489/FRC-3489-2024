@@ -7,8 +7,8 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Cardinal;
 import frc.robot.commands.DriveSeconds;
-import frc.robot.commands.intake.IntakeUntilDetection;
-import frc.robot.commands.intake.Outtake;
+import frc.robot.commands.Intake.IntakeUntilDetection;
+import frc.robot.commands.Intake.Outtake;
 import frc.robot.commands.autos.Cat5Autos;
 import frc.robot.commands.autos.Leave;
 import frc.robot.commands.autos.Nothing;
@@ -325,7 +325,7 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
-        return Commands.print("TODO Auto");
+        return autos.getAutonomousCommand();
     }
 
     private void addAutos() {
@@ -338,16 +338,16 @@ public class RobotContainer {
 
             // Ensure percentages are greater than the 0.1 percent deadband above
             // Domain is [-1, 1]
-            double percentY = 0.25;
+            double percentY = 0.3;
             double percentX = 0;
             double percentOmega = 0;
             double driveTimeSeconds = 3;
 
-            double speedMultiplier = 1; // [0, 1]
+            double speedMultiplier = 0.5; // [0, 1]
 
             Command command = drivetrain.applyRequest(() -> drive
                     .withVelocityX(-percentY * MaxMetersPerSecond * speedMultiplier)
-                    .withVelocityY(-percentX * MaxMetersPerSecond * speedMultiplier)
+                    .withVelocityY(percentX * MaxMetersPerSecond * speedMultiplier)
                     .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
             return command
                     .withTimeout(driveTimeSeconds)

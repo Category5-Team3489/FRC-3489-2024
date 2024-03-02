@@ -26,13 +26,9 @@ public class CoralLimelight extends SubsystemBase {
     private CoralLimelight() {
         
         register();
-        
-    }
 
-    @Override
-    public void periodic() {
         try {
-            HttpCamera limelightFeed = new HttpCamera("limelight", "http://limelight.local:5800/");//http://10.34.89.11:5800/stream.mjpg
+            HttpCamera limelightFeed = new HttpCamera("limelight", "http://10.34.89.11:5800/stream.mjpg");//http://10.34.89.11:5800/stream.mjpg
 
             Shuffleboard.getTab("Main")
                     .add(limelightFeed)
@@ -52,6 +48,12 @@ public class CoralLimelight extends SubsystemBase {
         SmartDashboard.putNumber("LimelightX", x);
         SmartDashboard.putNumber("LimelightY", y);
         SmartDashboard.putNumber("LimelightArea", area);
+        
+    }
+
+    @Override
+    public void periodic() {
+        
 
         
 
