@@ -7,8 +7,8 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Cardinal;
 import frc.robot.commands.DriveSeconds;
-import frc.robot.commands.Intake.IntakeUntilDetection;
-import frc.robot.commands.Intake.Outtake;
+import frc.robot.commands.intake.IntakeUntilDetection;
+import frc.robot.commands.intake.Outtake;
 import frc.robot.commands.autos.Cat5Autos;
 import frc.robot.commands.autos.Leave;
 import frc.robot.commands.autos.Nothing;
@@ -56,8 +56,6 @@ public class RobotContainer {
 
     // private CoralLimelight coralLimelight = CoralLimelight.get();
     private final Cat5Autos autos = new Cat5Autos();
-
-    
 
     // https://www.swervedrivespecialties.com/products/mk4-swerve-module
     private static final double MaxMetersPerSecond = 16.5 / 3.281; // (16.5 ft/s) / (3.281 ft/meter)
@@ -175,22 +173,23 @@ public class RobotContainer {
         // Brake
         driverXbox.back().whileTrue(drivetrain.applyRequest(() -> brake));
 
-        // //TODO Copy this comand to all the buttons with the joystick input from driver station after testing
+        // //TODO Copy this comand to all the buttons with the joystick input from
+        // driver station after testing
         // // Point Wheels?
         // driverXbox.b().whileTrue(drivetrain
-        //         .applyRequest(() -> point
-        //                 .withModuleDirection(new Rotation2d(-driverXbox.getLeftY(),
-        //                         -driverXbox.getLeftX()))));
+        // .applyRequest(() -> point
+        // .withModuleDirection(new Rotation2d(-driverXbox.getLeftY(),
+        // -driverXbox.getLeftX()))));
 
         // driverXbox.a().whileTrue(drivetrain
-        //         .applyRequest(() -> point
-        //                 .withModuleDirection(new Rotation2d(-1,
-        //                         0))));
+        // .applyRequest(() -> point
+        // .withModuleDirection(new Rotation2d(-1,
+        // 0))));
 
         // driverXbox.x().whileTrue(drivetrain
-        //         .applyRequest(() -> point
-        //                 .withModuleDirection(new Rotation2d(0,
-        //                         -1))));
+        // .applyRequest(() -> point
+        // .withModuleDirection(new Rotation2d(0,
+        // -1))));
 
         final Cardinal northCardinal = new Cardinal(drivetrain, 0);
         final Cardinal eastCardinal = new Cardinal(drivetrain, 90);
@@ -201,7 +200,6 @@ public class RobotContainer {
         driverXbox.b().onTrue(eastCardinal);
         driverXbox.a().onTrue(southCardinal);
         driverXbox.x().onTrue(westCardinal);
-
 
         // final DriveSeconds driveSeconds = new DriveSeconds(drivetrain, 5, 0.15);
 
@@ -246,9 +244,10 @@ public class RobotContainer {
         // a and right Trigger = outtake
         // manipulatorXbox.rightTrigger().and(manipulatorXbox.a()).onTrue(intake.intakeCommand(IntakeState.Out));
 
-        //TODO Remove after testing
+        // TODO Remove after testing
         // manipulatorXbox.leftTrigger().onTrue(
-        //         Commands.parallel(intake.intakeCommand(IntakeState.Out), index.indexCommand(IndexState.Intake)));
+        // Commands.parallel(intake.intakeCommand(IntakeState.Out),
+        // index.indexCommand(IndexState.Intake)));
 
         manipulatorXbox.rightTrigger().onTrue(Commands.runOnce(() -> {
             if (outtake.hasOuttakeBeenSet) {
@@ -261,7 +260,6 @@ public class RobotContainer {
                 System.out.println("Outtake Scheduled");
             }
         }));
-        
 
         // a = intake/stop intake
         // manipulatorXbox.a().onTrue(Commands.runOnce(() -> {
@@ -333,11 +331,34 @@ public class RobotContainer {
     private void addAutos() {
         final Drivetrain drivetrain = Drivetrain.get();
 
-        autos.addAuto(() -> new Nothing ()
-            .withName("NothingAuto")
-        );
-        autos.addAuto(() -> new Leave(drivetrain));
+        autos.addAuto(() -> {
+            final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+                    .withDeadband(MaxMetersPerSecond * 0.1).withRotationalDeadband(MaxRadiansPerSecond * 0.1)
+                    .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+
+            // Ensure percentages are greater than the 0.1 percent deadband above
+            // Domain is [-1, 1]
+            double percentY = 0.25;
+            double percentX = 0;
+            double percentOmega = 0;
+            double driveTimeSeconds = 3;
+
+            double speedMultiplier = 1; // [0, 1]
+
+            Command command = drivetrain.applyRequest(() -> drive
+                    .withVelocityX(-percentY * MaxMetersPerSecond * speedMultiplier)
+                    .withVelocityY(-percentX * MaxMetersPerSecond * speedMultiplier)
+                    .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
+            return command
+                    .withTimeout(driveTimeSeconds)
+                    .withName("Taxi");
+        });
+
+        autos.addAuto(() -> new Nothing()
+                .withName("NothingAuto"));
+        // autos.addAuto(() -> new Leave(drivetrain));
         autos.addSelectorWidget();
+
     }
 
     /*

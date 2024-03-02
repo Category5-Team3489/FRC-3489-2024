@@ -1,4 +1,4 @@
-package frc.robot.commands.Intake;
+package frc.robot.commands.intake;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.enums.IndexState;
@@ -63,7 +63,7 @@ public class IntakeUntilDetection extends Command {
     @Override
     public boolean isFinished() {
         // wait to get sensor value (could have this start shooter motor)
-        // return belt.isNoteDetected();  
+        // return belt.isNoteDetected();
         return false;
     }
 }
