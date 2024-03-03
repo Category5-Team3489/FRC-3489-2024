@@ -32,7 +32,7 @@ public class Outtake extends Command {
         // start intake/belt
         intake.intakeCommand(IntakeState.Out).schedule();
         // TODO fix outtake enum
-        belt.indexCommand(IndexState.Intake).schedule();
+        belt.indexCommand(IndexState.Outtake).schedule();
         hasOuttakeBeenSet = true;
 
         System.out.println("----Outtake Command");

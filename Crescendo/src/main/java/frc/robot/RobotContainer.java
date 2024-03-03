@@ -303,7 +303,7 @@ public class RobotContainer {
         // b = stop Shooter
         manipulatorXbox.b().onTrue(shooterSpeed.stopCommand());
         // x = Manual Shoot
-        manipulatorXbox.x().onTrue(index.indexCommand(IndexState.Outtake));
+        manipulatorXbox.x().onTrue(index.indexCommand(IndexState.Intake));
         // a and left trigger = Shoter Intake
         manipulatorXbox.leftTrigger().onTrue(shooterIntake);
 
@@ -361,6 +361,33 @@ public class RobotContainer {
 
         autos.addAuto(() -> new Nothing()
                 .withName("NothingAuto"));
+
+        autos.addAuto(() -> {
+            final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+                    .withDeadband(MaxMetersPerSecond * 0.1).withRotationalDeadband(MaxRadiansPerSecond * 0.1)
+                    .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+
+            Command shootCommand = new Shoot(
+                () -> Constants.ShooterAngle.CloseShooterAngle,
+                () -> Constants.ShooterSpeed.CloseShooterSpeed);
+
+            // Ensure percentages are greater than the 0.1 percent deadband above
+            // Domain is [-1, 1]
+            double percentY = 0.3;
+            double percentX = 0;
+            double percentOmega = 0;
+            double driveTimeSeconds = 3;
+
+            double speedMultiplier = 0.5; // [0, 1]
+
+            Command driveCommand = drivetrain.applyRequest(() -> drive
+                    .withVelocityX(-percentY * MaxMetersPerSecond * speedMultiplier)
+                    .withVelocityY(percentX * MaxMetersPerSecond * speedMultiplier)
+                    .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
+            return shootCommand.andThen(driveCommand)
+                    .withTimeout(driveTimeSeconds)
+                    .withName("ShootTaxi");
+        });
         // autos.addAuto(() -> new Leave(drivetrain));
         autos.addSelectorWidget();
 

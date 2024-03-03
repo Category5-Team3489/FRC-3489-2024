@@ -25,7 +25,7 @@ public class ShooterIntake extends Command {
     @Override
     public void execute() {
         shooterSpeed.setSpeedPercent(ShooterSpeed.ShooterIntakeSpeedPercent);
-        index.indexCommand(IndexState.Outtake);
+        index.indexCommand(IndexState.Intake);
 
         if (index.isNoteDetected()) {
             timer.restart();

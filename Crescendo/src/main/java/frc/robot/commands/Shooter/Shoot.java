@@ -25,7 +25,6 @@ public class Shoot extends SequentialCommandGroup {
         System.out.println("Shoot Command scheduled");
         Command angleCommand = shooterAngle.updateCommand(angleDegreesSupplier);
         Command speedCommand = shooterSpeed.updateCommand(speedRpsSupplier);
-        
 
         addCommands(
                 Commands.runOnce(() -> {
@@ -35,7 +34,7 @@ public class Shoot extends SequentialCommandGroup {
                 }),
                 Commands.waitSeconds(0.25),
                 Commands.waitUntil(() -> shooterAngle.isAtTargetAngle() && shooterSpeed.isAtTargetSpeed()),
-                index.indexCommand(IndexState.Outtake).withTimeout(0.7),
+                index.indexCommand(IndexState.Intake).withTimeout(0.7),
                 Commands.waitSeconds(1),
                 Commands.runOnce(() -> {
                     angleCommand.cancel();

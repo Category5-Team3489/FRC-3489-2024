@@ -27,7 +27,6 @@ public class IntakeUntilDetection extends Command {
 
         Command angleCommand = shooterAngle.updateCommand(() -> ShooterAngleState.Max.getAngle());
 
-
         addRequirements(intake, belt, leds, shooterAngle);
     }
 
@@ -44,16 +43,15 @@ public class IntakeUntilDetection extends Command {
         // start intake/belt
         intake.intakeCommand(IntakeState.In).schedule();
         // TODO outtake
-        belt.indexCommand(IndexState.Outtake).schedule();
+        belt.indexCommand(IndexState.Intake).schedule();
 
         // angleCommand.schedule();
-
 
         hasIntakeBeenSet = true;
         // shooterAngle.setAngle(ShooterAngleState.Max.getAngle());
         // TODO uncomment angle
 
-        System.out.println("----Intake Until detection Command");
+        System.out.println("Intake Until detection Command");
     }
 
     @Override

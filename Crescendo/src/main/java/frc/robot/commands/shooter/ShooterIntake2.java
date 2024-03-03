@@ -29,9 +29,9 @@ public class ShooterIntake2 extends Command {
     public void execute() {
 
         // start intake/belt
-        shooterSpeed.setMotorPercent( () -> -0.2).schedule();
+        shooterSpeed.setMotorPercent(() -> -0.2).schedule();
         // TODO outtake
-        belt.indexCommand(IndexState.Intake).schedule();
+        belt.indexCommand(IndexState.Outtake).schedule();
 
         System.out.println("----Shooter2 Until detection Command");
     }

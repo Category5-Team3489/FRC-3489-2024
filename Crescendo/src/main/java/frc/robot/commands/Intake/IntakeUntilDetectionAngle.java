@@ -24,19 +24,18 @@ public class IntakeUntilDetectionAngle extends SequentialCommandGroup {
     public IntakeUntilDetectionAngle() {
         System.out.println("Intake Command scheduled");
         Command angleCommand = shooterAngle.updateCommand(() -> ShooterAngleState.Max.getAngle());
-        
 
         addCommands(
                 Commands.runOnce(() -> {
                     angleCommand.schedule();
                     intake.intakeCommand(IntakeState.In).schedule();
-                    index.indexCommand(IndexState.Outtake).schedule();
+                    index.indexCommand(IndexState.Intake).schedule();
                     System.out.println("Set Commands Scheduled");
                     hasIntakeBeenSet = true;
                 }),
                 Commands.waitSeconds(0.75));
-                Commands.runOnce(() -> {
-                angleCommand.cancel();
-            });
+        Commands.runOnce(() -> {
+            angleCommand.cancel();
+        });
     }
 }
