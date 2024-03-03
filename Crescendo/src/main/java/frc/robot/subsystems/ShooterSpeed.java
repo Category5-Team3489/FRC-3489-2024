@@ -21,7 +21,7 @@ public class ShooterSpeed extends SubsystemBase {
     // endregion
 
     // region ---------------- Constants ----------------
-    public static final double ShooterIntakeSpeedPercent = -0.4;
+    public static final double ShooterIntakeSpeedPercent = -0.2;
     private static final double AllowedErrorRotationsPerSecond = 5;
 
     private class MotorBuilder {

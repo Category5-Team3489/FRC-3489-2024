@@ -30,11 +30,11 @@ public class ShooterAngle extends SubsystemBase {
     private final int RightMotorCanId = 9;
 
     // TODO update
-    private static final double CorrectionDegreesPerSecond = 14;
+    private static final double CorrectionDegreesPerSecond = 10;
 
     //TODO update gear ratio
     // Gear ratio
-    private static final double MotorRotationsPerRevolution = (58.0/12.0) * (58.0/14.0) * (64.0/12.0);
+    private static final double MotorRotationsPerRevolution = (58.0/12.0) * (58.0/14.0) * (64.0/12.0);//99.6  change to 10 and 18?
     // Convert revolutions to degrees (Used in PID)
     private static final double MotorRotationsPerDegree = MotorRotationsPerRevolution / 360.0;
     private static final double DegreesPerMotorRotation = 1.0 / MotorRotationsPerDegree;
@@ -50,7 +50,9 @@ public class ShooterAngle extends SubsystemBase {
     private final CANSparkMax leftMotor = new CANSparkMax(LeftMotorCanId, MotorType.kBrushless);
     private final CANSparkMax rightMotor = new CANSparkMax(RightMotorCanId, MotorType.kBrushless);
 
-    private final SparkPIDController pidController = leftMotor.getPIDController();
+    private final SparkPIDController pidControllerLeft = leftMotor.getPIDController();
+    private final SparkPIDController pidControllerRight = rightMotor.getPIDController();
+
     private final RelativeEncoder encoder = leftMotor.getEncoder();
     // endregion
 
@@ -63,13 +65,14 @@ public class ShooterAngle extends SubsystemBase {
 
     private ShooterAngle() {
         // leftMotor.setInverted(true);
-        // leftMotor.follow(rightMotor);
+        // rightMotor.follow(leftMotor);
     }
 
     private void setAngle(double angleDegrees) {
         setTargetAngle(angleDegrees);
         double targetRotations = angleDegrees * MotorRotationsPerDegree;
-        pidController.setReference(targetRotations, ControlType.kPosition, 0);
+        pidControllerLeft.setReference(targetRotations, ControlType.kPosition, 0);
+        pidControllerRight.setReference(-targetRotations, ControlType.kPosition, 0);
     }
 
     public boolean isAtTargetAngle() {
@@ -99,7 +102,7 @@ public class ShooterAngle extends SubsystemBase {
     private void setTargetAngle(double angleDegrees) {
         targetAngleDegrees = MathUtil.clamp(angleDegrees, ShooterAngleState.Start.getAngle(),
             ShooterAngleState.Max.getAngle());
-        //System.out.println(targetAngleDegrees);
+        System.out.println(targetAngleDegrees);
     }
 
     public Command updateCommand(DoubleSupplier angleDegreesSupplier) {

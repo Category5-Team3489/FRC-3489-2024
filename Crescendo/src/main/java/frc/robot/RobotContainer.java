@@ -8,12 +8,14 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Cardinal;
 import frc.robot.commands.DriveSeconds;
 import frc.robot.commands.Intake.IntakeUntilDetection;
+import frc.robot.commands.Intake.IntakeUntilDetectionAngle;
 import frc.robot.commands.Intake.Outtake;
 import frc.robot.commands.autos.Cat5Autos;
 import frc.robot.commands.autos.Leave;
 import frc.robot.commands.autos.Nothing;
 import frc.robot.commands.shooter.Shoot;
 import frc.robot.commands.shooter.ShooterIntake;
+import frc.robot.commands.shooter.ShooterIntake2;
 import frc.robot.enums.ClimberState;
 import frc.robot.enums.IndexState;
 import frc.robot.enums.IntakeState;
@@ -238,7 +240,7 @@ public class RobotContainer {
         final Intake intake = Intake.get();
         final Index index = Index.get();
 
-        final IntakeUntilDetection intakeUntilDetection = new IntakeUntilDetection();
+        final IntakeUntilDetectionAngle intakeUntilDetection = new IntakeUntilDetectionAngle();
         final Outtake outtake = new Outtake();
 
         // a and right Trigger = outtake
@@ -289,6 +291,7 @@ public class RobotContainer {
         final ShooterAngle shooterAngle = ShooterAngle.get();
         final Index index = Index.get();
         final ShooterIntake shooterIntake = new ShooterIntake();
+        final ShooterIntake2 shooterIntake2 = new ShooterIntake2();
 
         final Shoot setShooterFar = new Shoot(
                 () -> Constants.ShooterAngle.FarShooterAngle,
@@ -303,6 +306,8 @@ public class RobotContainer {
         manipulatorXbox.x().onTrue(index.indexCommand(IndexState.Outtake));
         // a and left trigger = Shoter Intake
         manipulatorXbox.leftTrigger().onTrue(shooterIntake);
+
+        manipulatorXbox.back().onTrue(shooterIntake2);
 
         // TODO remove after testing
         manipulatorXbox.y().onTrue(shooterSpeed.setMotorPercent(() -> 0.7));

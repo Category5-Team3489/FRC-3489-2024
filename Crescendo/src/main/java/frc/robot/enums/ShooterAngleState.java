@@ -3,7 +3,7 @@ package frc.robot.enums;
 public enum ShooterAngleState {
     //TODO Update values
     Start(5.0),
-    Max(56.0);
+    Max(62.0);
 
     private final double shooterAngle;
 

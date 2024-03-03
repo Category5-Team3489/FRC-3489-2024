@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Main;
 
 public class CoralLimelight extends SubsystemBase {
 
@@ -28,7 +27,7 @@ public class CoralLimelight extends SubsystemBase {
         register();
 
         try {
-            HttpCamera limelightFeed = new HttpCamera("limelight", "http://10.34.89.11:5800/stream.mjpg");//http://10.34.89.11:5800/stream.mjpg
+            HttpCamera limelightFeed = new HttpCamera("limelight", "http://limelight.local:5800/stream.mjg");//http://10.34.89.11:5800/stream.mjpg
 
             Shuffleboard.getTab("Main")
                     .add(limelightFeed)

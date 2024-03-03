@@ -1,4 +1,4 @@
-package frc.robot.commands.Intake;
+package frc.robot.commands.shooter;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.enums.IndexState;
@@ -8,52 +8,32 @@ import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LEDs;
 import frc.robot.subsystems.ShooterAngle;
+import frc.robot.subsystems.ShooterSpeed;
 import frc.robot.subsystems.LEDs.LedState;
 
-public class IntakeUntilDetection extends Command {
+public class ShooterIntake2 extends Command {
 
-    private final Intake intake;
+    private final ShooterSpeed shooterSpeed;
     private final Index belt;
-    private final LEDs leds;
     private final ShooterAngle shooterAngle;
 
-    public boolean hasIntakeBeenSet = false;
-
-    public IntakeUntilDetection() {
-        this.intake = Intake.get();
+    public ShooterIntake2() {
+        this.shooterSpeed = ShooterSpeed.get();
         this.belt = Index.get();
-        this.leds = LEDs.get();
         this.shooterAngle = ShooterAngle.get();
 
-        Command angleCommand = shooterAngle.updateCommand(() -> ShooterAngleState.Max.getAngle());
-
-
-        addRequirements(intake, belt, leds, shooterAngle);
+        addRequirements(belt, shooterAngle, shooterSpeed);
     }
-
-    // TODO Maybe spin up shooter motors after a piece is detected
 
     @Override
     public void execute() {
 
-        // Check to see if note is loaded, via index class
-        // if (belt.isNoteDetected()) {
-        // return;
-        // }
-
         // start intake/belt
-        intake.intakeCommand(IntakeState.In).schedule();
+        shooterSpeed.setMotorPercent( () -> -0.2).schedule();
         // TODO outtake
-        belt.indexCommand(IndexState.Outtake).schedule();
+        belt.indexCommand(IndexState.Intake).schedule();
 
-        // angleCommand.schedule();
-
-
-        hasIntakeBeenSet = true;
-        // shooterAngle.setAngle(ShooterAngleState.Max.getAngle());
-        // TODO uncomment angle
-
-        System.out.println("----Intake Until detection Command");
+        System.out.println("----Shooter2 Until detection Command");
     }
 
     @Override
@@ -63,7 +43,6 @@ public class IntakeUntilDetection extends Command {
         // belt.indexCommand(IndexState.Stop).cancel();
         // intake.intakeCommand(IntakeState.Off).cancel();
         System.out.println("End");
-        leds.setLeds(LedState.Intaked);
         // TODO reset shooter angle to home?
     }
 
