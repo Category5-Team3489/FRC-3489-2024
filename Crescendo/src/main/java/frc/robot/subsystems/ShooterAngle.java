@@ -4,6 +4,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Robot;
 import frc.robot.enums.ShooterAngleState;
 
@@ -110,6 +111,9 @@ public class ShooterAngle extends SubsystemBase {
             setTargetAngle(angleDegreesSupplier.getAsDouble());
         }, this);
     }
+
+
+
     // endregion
 
     // manual shooting

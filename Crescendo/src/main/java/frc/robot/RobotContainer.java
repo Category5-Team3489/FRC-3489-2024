@@ -245,6 +245,13 @@ public class RobotContainer {
         final IntakeUntilDetectionAngle intakeUntilDetection = new IntakeUntilDetectionAngle();
         final Outtake outtake = new Outtake();
 
+        Trigger laserTrigger = new Trigger(index.laserSensor::get);
+        //TODO Test This with robot
+        laserTrigger.onTrue(Commands.runOnce(() -> {
+            intake.stop();
+            index.stop();
+        }));
+        
         
 
         // a and right Trigger = outtake
@@ -397,7 +404,7 @@ public class RobotContainer {
                     .withVelocityX(-percentY * MaxMetersPerSecond * speedMultiplier)
                     .withVelocityY(percentX * MaxMetersPerSecond * speedMultiplier)
                     .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
-            return shootCommand.andThen(Commands.waitSeconds(2)).andThen(index.indexCommand(IndexState.Intake))
+            return shootCommand.andThen(Commands.waitSeconds(2)).andThen(index.indexCommand(IndexState.Intake))//.andThen(driveCommand)
                     // .withTimeout(driveTimeSeconds)
                     .withName("ShootTaxi");
         });

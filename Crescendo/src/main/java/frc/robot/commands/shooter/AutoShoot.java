@@ -33,7 +33,8 @@ public class AutoShoot extends SequentialCommandGroup {
                     System.out.println("Set Commands Scheduled");
                 }),
                 Commands.waitSeconds(0.25),
-                Commands.waitUntil(() -> shooterAngle.isAtTargetAngle() && shooterSpeed.isAtTargetSpeed()),
+                //Commands.waitUntil(() -> shooterAngle.isAtTargetAngle() && shooterSpeed.isAtTargetSpeed()),
+                Commands.waitSeconds(2),
                 index.indexCommand(IndexState.Intake).withTimeout(0.7),
                 Commands.waitSeconds(1),
                 Commands.runOnce(() -> {
