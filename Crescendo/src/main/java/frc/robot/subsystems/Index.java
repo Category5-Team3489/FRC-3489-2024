@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.enums.IndexState;
@@ -18,11 +19,12 @@ public class Index extends SubsystemBase {
 
     // Constants
     private static final int MotorId = 14;
-    private static final int LaserSensorChannel = 0;
+    private static final int LaserSensorChannel = 9;
 
     // NEO 550
     private final CANSparkMax motor;
     private final DigitalInput laserSensor;
+
 
     private Index() {
         motor = new CANSparkMax(MotorId, MotorType.kBrushless);
@@ -32,7 +34,8 @@ public class Index extends SubsystemBase {
 
     @Override
     public void periodic() {
-        //System.out.println("Laser Sensor-----  " + laserSensor.get());
+        System.out.println("Laser Sensor-------  " + laserSensor.get());
+        System.out.println("Note state" + isNoteDetected());
     }
 
     public Command indexCommand(IndexState state) {
@@ -48,7 +51,7 @@ public class Index extends SubsystemBase {
     }
 
     public boolean isNoteDetected() {
-        return laserSensor.get();
+        return !laserSensor.get();
     }
 
     // encoder position change (constant) PID

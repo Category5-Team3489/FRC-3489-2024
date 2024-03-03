@@ -27,7 +27,7 @@ public class CoralLimelight extends SubsystemBase {
         register();
 
         try {
-            HttpCamera limelightFeed = new HttpCamera("limelight", "http://limelight.local:5800/stream.mjg");//http://10.34.89.11:5800/stream.mjpg
+            HttpCamera limelightFeed = new HttpCamera("limelight", "http://10.34.89.99:5800/stream.mjg");//http://10.34.89.11:5800/stream.mjpg
 
             Shuffleboard.getTab("Main")
                     .add(limelightFeed)

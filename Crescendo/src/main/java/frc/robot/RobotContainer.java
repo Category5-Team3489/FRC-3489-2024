@@ -13,12 +13,13 @@ import frc.robot.commands.Intake.Outtake;
 import frc.robot.commands.autos.Cat5Autos;
 import frc.robot.commands.autos.Leave;
 import frc.robot.commands.autos.Nothing;
-import frc.robot.commands.shooter.Shoot;
+import frc.robot.commands.shooter.SetShooter;
 import frc.robot.commands.shooter.ShooterIntake;
 import frc.robot.commands.shooter.ShooterIntake2;
 import frc.robot.enums.ClimberState;
 import frc.robot.enums.IndexState;
 import frc.robot.enums.IntakeState;
+import frc.robot.enums.ShooterAngleState;
 import frc.robot.enums.SpeedLimitState;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CoralLimelight;
@@ -38,6 +39,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.ShooterSpeed;
 
 /**
@@ -243,6 +245,8 @@ public class RobotContainer {
         final IntakeUntilDetectionAngle intakeUntilDetection = new IntakeUntilDetectionAngle();
         final Outtake outtake = new Outtake();
 
+        
+
         // a and right Trigger = outtake
         // manipulatorXbox.rightTrigger().and(manipulatorXbox.a()).onTrue(intake.intakeCommand(IntakeState.Out));
 
@@ -262,6 +266,11 @@ public class RobotContainer {
                 System.out.println("Outtake Scheduled");
             }
         }));
+
+        // Trigger test = new Trigger(index.isNoteDetected());
+
+        // index.isNoteDetected().onTrue(index.stop());
+        
 
         // a = intake/stop intake
         // manipulatorXbox.a().onTrue(Commands.runOnce(() -> {
@@ -293,10 +302,10 @@ public class RobotContainer {
         final ShooterIntake shooterIntake = new ShooterIntake();
         final ShooterIntake2 shooterIntake2 = new ShooterIntake2();
 
-        final Shoot setShooterFar = new Shoot(
+        final SetShooter setShooterFar = new SetShooter(
                 () -> Constants.ShooterAngle.FarShooterAngle,
                 () -> Constants.ShooterSpeed.FarShooterSpeed);
-        final Shoot setShooterClose = new Shoot(
+        final SetShooter setShooterClose = new SetShooter(
                 () -> Constants.ShooterAngle.CloseShooterAngle,
                 () -> Constants.ShooterSpeed.CloseShooterSpeed);
 
@@ -309,12 +318,14 @@ public class RobotContainer {
 
         manipulatorXbox.back().onTrue(shooterIntake2);
 
+        manipulatorXbox.start().onTrue(shooterAngle.updateCommand(() -> ShooterAngleState.Start.getAngle()));
+
         // TODO remove after testing
         manipulatorXbox.y().onTrue(shooterSpeed.setMotorPercent(() -> 0.7));
 
         // Manual Shooter Angle
-        manipulatorXbox.axisLessThan(5, -0.1).whileTrue(shooterAngle.adjustManualAngle(-1));
-        manipulatorXbox.axisGreaterThan(5, 0.1).whileTrue(shooterAngle.adjustManualAngle(1));
+        manipulatorXbox.axisLessThan(5, -0.1).whileTrue(shooterAngle.adjustManualAngle(1));
+        manipulatorXbox.axisGreaterThan(5, 0.1).whileTrue(shooterAngle.adjustManualAngle(-1));
 
         // set manual speed/angle
         manipulatorXbox.rightBumper().onTrue(setShooterClose);
@@ -335,6 +346,7 @@ public class RobotContainer {
 
     private void addAutos() {
         final Drivetrain drivetrain = Drivetrain.get();
+        final Index index = Index.get();
 
         autos.addAuto(() -> {
             final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -367,9 +379,10 @@ public class RobotContainer {
                     .withDeadband(MaxMetersPerSecond * 0.1).withRotationalDeadband(MaxRadiansPerSecond * 0.1)
                     .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-            Command shootCommand = new Shoot(
+            Command shootCommand = new SetShooter(
                 () -> Constants.ShooterAngle.CloseShooterAngle,
                 () -> Constants.ShooterSpeed.CloseShooterSpeed);
+
 
             // Ensure percentages are greater than the 0.1 percent deadband above
             // Domain is [-1, 1]
@@ -384,8 +397,8 @@ public class RobotContainer {
                     .withVelocityX(-percentY * MaxMetersPerSecond * speedMultiplier)
                     .withVelocityY(percentX * MaxMetersPerSecond * speedMultiplier)
                     .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
-            return shootCommand.andThen(driveCommand)
-                    .withTimeout(driveTimeSeconds)
+            return shootCommand.andThen(Commands.waitSeconds(2)).andThen(index.indexCommand(IndexState.Intake))
+                    // .withTimeout(driveTimeSeconds)
                     .withName("ShootTaxi");
         });
         // autos.addAuto(() -> new Leave(drivetrain));
