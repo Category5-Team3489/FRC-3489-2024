@@ -106,6 +106,9 @@ public class RobotContainer {
         manipulatorXbox.povDownRight().whileTrue(climber.climberCommand(ClimberState.PovDownRight));
         manipulatorXbox.povUpLeft().whileTrue(climber.climberCommand(ClimberState.PovUpLeft));
         manipulatorXbox.povUpRight().whileTrue(climber.climberCommand(ClimberState.PovUpRight));
+
+        //TODO Uncomment after getting correct angle/position
+        //manipulatorXbox.back().onTrue(climber.setServos());
     }
 
     private void bindDriveTrain() {
@@ -119,9 +122,13 @@ public class RobotContainer {
                                                                                                           // deadband
                 .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
                                                                          // driving in open loop
+
         final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
         final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
         final SwerveRequest.FieldCentricFacingAngle driveFacingAngle = new SwerveRequest.FieldCentricFacingAngle();
+
+        driveFacingAngle.HeadingController.setP(0.01); // TODO change update value
+        driveFacingAngle.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
 
         drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
                 drivetrain.applyRequest(() -> drive
@@ -135,44 +142,45 @@ public class RobotContainer {
                                                                                                                  // left
                                                                                                                  // with
                         // negative
-                        // TODO add speed limit to rotations // X (left)
+                        // X (left)
                         .withRotationalRate(-driverXbox.getRightX() * MaxRadiansPerSecond * drivetrain.getSpeedLimit()) // Drive
                                                                                                                         // counterclockwise
                 // with negative X (left)
                 ));
 
-        // TODO Remove this cardinal direction after testing
-        // driverXbox.y().whileTrue(
-        // drivetrain.applyRequest(() -> driveFacingAngle
-        // .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond *
-        // drivetrain.getSpeedLimit())
-        // .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond *
-        // drivetrain.getSpeedLimit())
-        // .withTargetDirection(Rotation2d.fromDegrees(0))));
-        // driverXbox.b().whileTrue(
-        // drivetrain.applyRequest(() -> driveFacingAngle
-        // .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond *
-        // drivetrain.getSpeedLimit())
+        // TODO test Cardinal Directions
 
-        // .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond *
-        // drivetrain.getSpeedLimit())
-        // .withTargetDirection(Rotation2d.fromDegrees(90))));
-        // driverXbox.a().whileTrue(
-        // drivetrain.applyRequest(() -> driveFacingAngle
-        // .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond *
-        // drivetrain.getSpeedLimit())
+        driverXbox.y().whileTrue(
+                drivetrain.applyRequest(() -> driveFacingAngle
+                        .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond *
+                                drivetrain.getSpeedLimit())
+                        .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond *
+                                drivetrain.getSpeedLimit())
+                        .withTargetDirection(Rotation2d.fromDegrees(0))));
+        driverXbox.b().whileTrue(
+                drivetrain.applyRequest(() -> driveFacingAngle
+                        .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond *
+                                drivetrain.getSpeedLimit())
 
-        // .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond *
-        // drivetrain.getSpeedLimit())
-        // .withTargetDirection(Rotation2d.fromDegrees(180))));
-        // driverXbox.x().whileTrue(
-        // drivetrain.applyRequest(() -> driveFacingAngle
-        // .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond *
-        // drivetrain.getSpeedLimit())
+                        .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond *
+                                drivetrain.getSpeedLimit())
+                        .withTargetDirection(Rotation2d.fromDegrees(90))));
+        driverXbox.a().whileTrue(
+                drivetrain.applyRequest(() -> driveFacingAngle
+                        .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond *
+                                drivetrain.getSpeedLimit())
 
-        // .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond *
-        // drivetrain.getSpeedLimit())
-        // .withTargetDirection(Rotation2d.fromDegrees(270))));
+                        .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond *
+                                drivetrain.getSpeedLimit())
+                        .withTargetDirection(Rotation2d.fromDegrees(180))));
+        driverXbox.x().whileTrue(
+                drivetrain.applyRequest(() -> driveFacingAngle
+                        .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond *
+                                drivetrain.getSpeedLimit())
+
+                        .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond *
+                                drivetrain.getSpeedLimit())
+                        .withTargetDirection(Rotation2d.fromDegrees(270))));
 
         // Brake
         driverXbox.back().whileTrue(drivetrain.applyRequest(() -> brake));
@@ -195,15 +203,15 @@ public class RobotContainer {
         // .withModuleDirection(new Rotation2d(0,
         // -1))));
 
-        final Cardinal northCardinal = new Cardinal(drivetrain, 0);
-        final Cardinal eastCardinal = new Cardinal(drivetrain, 90);
-        final Cardinal southCardinal = new Cardinal(drivetrain, 180);
-        final Cardinal westCardinal = new Cardinal(drivetrain, 270);
+        // final Cardinal northCardinal = new Cardinal(drivetrain, 0);
+        // final Cardinal eastCardinal = new Cardinal(drivetrain, 90);
+        // final Cardinal southCardinal = new Cardinal(drivetrain, 180);
+        // final Cardinal westCardinal = new Cardinal(drivetrain, 270);
 
-        driverXbox.y().onTrue(northCardinal);
-        driverXbox.b().onTrue(eastCardinal);
-        driverXbox.a().onTrue(southCardinal);
-        driverXbox.x().onTrue(westCardinal);
+        // driverXbox.y().onTrue(northCardinal);
+        // driverXbox.b().onTrue(eastCardinal);
+        // driverXbox.a().onTrue(southCardinal);
+        // driverXbox.x().onTrue(westCardinal);
 
         // final DriveSeconds driveSeconds = new DriveSeconds(drivetrain, 5, 0.15);
 
@@ -219,16 +227,6 @@ public class RobotContainer {
         driverXbox.leftBumper().onFalse(Commands.runOnce(() -> drivetrain.setSpeedLimit(SpeedLimitState.Half)));
         driverXbox.rightBumper().onFalse(Commands.runOnce(() -> drivetrain.setSpeedLimit(SpeedLimitState.Half)));
 
-        // TODO Cardinal Directions
-        // // Cardinal turns
-        // driverXbox.y().onTrue(drivetrain.applyRequestOnce(() ->
-        // drive.withRotationalRate(MaxRadiansPerSecond * 0)));
-        // driverXbox.b().onTrue(drivetrain.applyRequestOnce(() ->
-        // drive.withRotationalRate(MaxRadiansPerSecond * -90)));
-        // driverXbox.a().onTrue(drivetrain.applyRequestOnce(() ->
-        // drive.withRotationalRate(MaxRadiansPerSecond * -180)));
-        // driverXbox.x().onTrue(drivetrain.applyRequestOnce(() ->
-        // drive.withRotationalRate(MaxRadiansPerSecond * -270)));
 
         // Slow directions
         // driverXbox.povUp().onTrue(drivetrain.applyRequest(() -> ))
@@ -246,13 +244,11 @@ public class RobotContainer {
         final Outtake outtake = new Outtake();
 
         Trigger laserTrigger = new Trigger(index.laserSensor::get);
-        //TODO Test This with robot
+        // TODO Test This with robot
         laserTrigger.onTrue(Commands.runOnce(() -> {
             intake.stop();
             index.stop();
         }));
-        
-        
 
         // a and right Trigger = outtake
         // manipulatorXbox.rightTrigger().and(manipulatorXbox.a()).onTrue(intake.intakeCommand(IntakeState.Out));
@@ -277,7 +273,6 @@ public class RobotContainer {
         // Trigger test = new Trigger(index.isNoteDetected());
 
         // index.isNoteDetected().onTrue(index.stop());
-        
 
         // a = intake/stop intake
         // manipulatorXbox.a().onTrue(Commands.runOnce(() -> {
@@ -320,11 +315,13 @@ public class RobotContainer {
         manipulatorXbox.b().onTrue(shooterSpeed.stopCommand());
         // x = Manual Shoot
         manipulatorXbox.x().onTrue(index.indexCommand(IndexState.Intake));
-        // a and left trigger = Shoter Intake
-        manipulatorXbox.leftTrigger().onTrue(shooterIntake);
 
-        manipulatorXbox.back().onTrue(shooterIntake2);
+        // TODO Remove After Testing
+        //manipulatorXbox.leftTrigger().onTrue(shooterIntake);
 
+        manipulatorXbox.leftTrigger().onTrue(shooterIntake2);
+
+        //back = Shooter Home Angle
         manipulatorXbox.start().onTrue(shooterAngle.updateCommand(() -> ShooterAngleState.Start.getAngle()));
 
         // TODO remove after testing
@@ -387,9 +384,8 @@ public class RobotContainer {
                     .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
             Command shootCommand = new SetShooter(
-                () -> Constants.ShooterAngle.CloseShooterAngle,
-                () -> Constants.ShooterSpeed.CloseShooterSpeed);
-
+                    () -> Constants.ShooterAngle.CloseShooterAngle,
+                    () -> Constants.ShooterSpeed.CloseShooterSpeed);
 
             // Ensure percentages are greater than the 0.1 percent deadband above
             // Domain is [-1, 1]
@@ -404,7 +400,7 @@ public class RobotContainer {
                     .withVelocityX(-percentY * MaxMetersPerSecond * speedMultiplier)
                     .withVelocityY(percentX * MaxMetersPerSecond * speedMultiplier)
                     .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
-            return shootCommand.andThen(Commands.waitSeconds(2)).andThen(index.indexCommand(IndexState.Intake))//.andThen(driveCommand)
+            return shootCommand.andThen(Commands.waitSeconds(2)).andThen(index.indexCommand(IndexState.Intake))// .andThen(driveCommand)
                     // .withTimeout(driveTimeSeconds)
                     .withName("ShootTaxi");
         });
