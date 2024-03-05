@@ -92,8 +92,8 @@ public class RobotContainer {
     private void configureBindings() {
         bindDriveTrain();
         // bindClimber();
-        bindIntakeIndex();
-        bindShooter();
+        // bindIntakeIndex();
+        // bindShooter();
     }
 
     private void bindClimber() {
@@ -127,7 +127,7 @@ public class RobotContainer {
         final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
         final SwerveRequest.FieldCentricFacingAngle driveFacingAngle = new SwerveRequest.FieldCentricFacingAngle();
 
-        driveFacingAngle.HeadingController.setP(0.01); // TODO change update value
+        driveFacingAngle.HeadingController.setP(10); // TODO change update value
         driveFacingAngle.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
 
         drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically

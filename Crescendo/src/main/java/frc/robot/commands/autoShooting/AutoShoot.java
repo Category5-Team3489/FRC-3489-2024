@@ -13,82 +13,88 @@
 // import frc.robot.subsystems.ShooterSpeed;
 
 // public class AutoShoot extends Command {
-//     private final AprilLimelight limelight = AprilLimelight.get();
-//     private final Drivetrain drivetrain = Drivetrain.get();
-//     private final Index index = Index.get();
-//     private final ShooterAngle shooterAngle = ShooterAngle.get();
-//     private final ShooterSpeed shooterSpeed = ShooterSpeed.get();
+// private final AprilLimelight limelight = AprilLimelight.get();
+// private final Drivetrain drivetrain = Drivetrain.get();
+// private final Index index = Index.get();
+// private final ShooterAngle shooterAngle = ShooterAngle.get();
+// private final ShooterSpeed shooterSpeed = ShooterSpeed.get();
 
-//     private static double ProportionalGain = 0.18;
-//     private static double MaxStrafeMetersPerSecond = 0.5;
-//     private static double MaxDistanceMetersPerSecond = 0.75;
-//     private static double StrafeToleranceDegrees = 1.5;
-//     private static double DistanceToleranceDegrees = 1.5;
-//     private static Rotation2d TargetAngle = Rotation2d.fromDegrees(180);
-//     private static double SpeedLimiter = 0.5;
-//     private static double MaxOmegaDegreesPerSecond = 90;
-//     private static double TargetXSetpointDegrees = -4.16;
-//     private static double TargetYSetpointDegrees = -19.28;
+// private static double ProportionalGain = 0.18;
+// private static double MaxStrafeMetersPerSecond = 0.5;
+// private static double MaxDistanceMetersPerSecond = 0.75;
+// private static double StrafeToleranceDegrees = 1.5;
+// private static double DistanceToleranceDegrees = 1.5;
+// private static Rotation2d TargetAngle = Rotation2d.fromDegrees(180);
+// private static double SpeedLimiter = 0.5;
+// private static double MaxOmegaDegreesPerSecond = 90;
+// private static double TargetXSetpointDegrees = -4.16;
+// private static double TargetYSetpointDegrees = -19.28;
 
-//     private PIDController strafeController = new PIDController(ProportionalGain, 0, 0);
+// private PIDController strafeController = new PIDController(ProportionalGain,
+// 0, 0);
 
-//     private double xMetersPerSecond = 0;
-//     private double yMetersPerSecond = 0;
+// private double xMetersPerSecond = 0;
+// private double yMetersPerSecond = 0;
 
-//     public AutoShoot() {
+// public AutoShoot() {
 
-//     }
+// }
 
-//     @Override
-//     public void initialize() {
-//         if (index.isNoteDetected()) {
-//             this.cancel();
-//         }
+// @Override
+// public void initialize() {
+// if (index.isNoteDetected()) {
+// this.cancel();
+// }
 
-//         limelight.setDesiredPipeline(LimelightPipeline.Shooting);
+// limelight.setDesiredPipeline(LimelightPipeline.Shooting);
 
-//         strafeController.setTolerance(StrafeToleranceDegrees);
-//     }
+// strafeController.setTolerance(StrafeToleranceDegrees);
+// }
 
-//     @Override
-//     public void execute() {
-//         if (!limelight.isActivePipeline(LimelightPipeline.Shooting)) {
-//             drivetrain.driveFieldRelative(xMetersPerSecond, yMetersPerSecond, SpeedLimiter, TargetAngle, MaxOmegaDegreesPerSecond);
-//             return;
-//         }
+// @Override
+// public void execute() {
+// if (!limelight.isActivePipeline(LimelightPipeline.Shooting)) {
+// drivetrain.driveFieldRelative(xMetersPerSecond, yMetersPerSecond,
+// SpeedLimiter, TargetAngle, MaxOmegaDegreesPerSecond);
+// return;
+// }
 
-//         double targetX = limelight.getTargetX();
-//         if (!Double.isNaN(targetX)) {
-//             yMetersPerSecond = -strafeController.calculate(targetX, TargetXSetpointDegrees);
-//             yMetersPerSecond = MathUtil.clamp(yMetersPerSecond, -MaxStrafeMetersPerSecond, MaxStrafeMetersPerSecond);
-//         }
-//         else {
-//             yMetersPerSecond = 0;
-//         }
+// double targetX = limelight.getTargetX();
+// if (!Double.isNaN(targetX)) {
+// yMetersPerSecond = -strafeController.calculate(targetX,
+// TargetXSetpointDegrees);
+// yMetersPerSecond = MathUtil.clamp(yMetersPerSecond,
+// -MaxStrafeMetersPerSecond, MaxStrafeMetersPerSecond);
+// }
+// else {
+// yMetersPerSecond = 0;
+// }
 
-//         double targetY = limelight.getTargetY();
-//         if (!Double.isNaN(targetY)) {
-//             xMetersPerSecond = MathUtil.clamp(xMetersPerSecond, -MaxDistanceMetersPerSecond, MaxDistanceMetersPerSecond);
-//         }
-//         else {
-//             xMetersPerSecond = 0;
-//         }
+// double targetY = limelight.getTargetY();
+// if (!Double.isNaN(targetY)) {
+// xMetersPerSecond = MathUtil.clamp(xMetersPerSecond,
+// -MaxDistanceMetersPerSecond, MaxDistanceMetersPerSecond);
+// }
+// else {
+// xMetersPerSecond = 0;
+// }
 
-//         drivetrain.driveFieldRelative(xMetersPerSecond, yMetersPerSecond, SpeedLimiter, TargetAngle, MaxOmegaDegreesPerSecond);
+// drivetrain.driveFieldRelative(xMetersPerSecond, yMetersPerSecond,
+// SpeedLimiter, TargetAngle, MaxOmegaDegreesPerSecond);
 
-//     }
+// }
 
-//     @Override
-//     public void end(boolean interrupted) {
-//         drivetrain.brakeTranslation();
+// @Override
+// public void end(boolean interrupted) {
+// drivetrain.brakeTranslation();
 
-//         limelight.printTargetData();
-//     }
+// limelight.printTargetData();
+// }
 
-//     @Override
-//     public boolean isFinished() {
-//         return strafeController.atSetpoint();
-//     }
+// @Override
+// public boolean isFinished() {
+// return strafeController.atSetpoint();
+// }
 
 // }
 
@@ -97,9 +103,8 @@
 // // adjust speed
 // // move belt to shoot
 
-
-
-// // - start spinning shooter motors (should happen as soon as we intake a note)
+// // - start spinning shooter motors (should happen as soon as we intake a
+// note)
 // // - press button
 // // - detect april tag
 // // - calculate offset from center of shooter

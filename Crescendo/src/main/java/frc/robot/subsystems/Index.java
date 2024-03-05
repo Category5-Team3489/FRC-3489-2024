@@ -40,8 +40,8 @@ public class Index extends SubsystemBase {
 
     @Override
     public void periodic() {
-        System.out.println("Laser Sensor-------  " + laserSensor.get());
-        System.out.println("Note state" + isNoteDetected());
+        //System.out.println("Laser Sensor-------  " + laserSensor.get());
+        //System.out.println("Note state" + isNoteDetected());
     }
 
     public Command indexCommand(IndexState state) {
