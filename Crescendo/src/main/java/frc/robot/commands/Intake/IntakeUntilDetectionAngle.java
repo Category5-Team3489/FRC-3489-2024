@@ -20,7 +20,7 @@ public class IntakeUntilDetectionAngle extends SequentialCommandGroup {
     private final Intake intake = Intake.get();
     private final ShooterSpeed shooterSpeed = ShooterSpeed.get();
 
-    public boolean hasIntakeBeenSet = false;
+    
 
     public IntakeUntilDetectionAngle() {
         System.out.println("Intake Command scheduled");
@@ -33,7 +33,7 @@ public class IntakeUntilDetectionAngle extends SequentialCommandGroup {
                     index.indexCommand(IndexState.Intake).schedule();
                     shooterSpeed.stopCommand();
                     System.out.println("Set Commands Scheduled");
-                    hasIntakeBeenSet = true;
+                    intake.hasIntakeBeenSet = true;
                 }),
                 Commands.waitSeconds(0.75));
         Commands.runOnce(() -> {

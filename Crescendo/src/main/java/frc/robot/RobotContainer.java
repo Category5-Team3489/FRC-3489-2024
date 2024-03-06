@@ -33,6 +33,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
+import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -92,8 +93,8 @@ public class RobotContainer {
     private void configureBindings() {
         bindDriveTrain();
         // bindClimber();
-        // bindIntakeIndex();
-        // bindShooter();
+        bindIntakeIndex();
+        bindShooter();
     }
 
     private void bindClimber() {
@@ -127,7 +128,8 @@ public class RobotContainer {
         final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
         final SwerveRequest.FieldCentricFacingAngle driveFacingAngle = new SwerveRequest.FieldCentricFacingAngle();
 
-        driveFacingAngle.HeadingController.setP(10); // TODO change update value
+        driveFacingAngle.HeadingController.setP(8); // TODO change update value
+        driveFacingAngle.HeadingController.setD(0.2);
         driveFacingAngle.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
 
         drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
@@ -244,10 +246,15 @@ public class RobotContainer {
         final Outtake outtake = new Outtake();
 
         Trigger laserTrigger = new Trigger(index.laserSensor::get);
+        
         // TODO Test This with robot
-        laserTrigger.onTrue(Commands.runOnce(() -> {
-            intake.stop();
-            index.stop();
+        laserTrigger
+        .debounce(0.29, DebounceType.kRising)
+        .onTrue(Commands.runOnce(() -> {
+            if(intake.hasIntakeBeenSet) {
+                intake.stop();
+                index.stop();
+            }
         }));
 
         // a and right Trigger = outtake
@@ -284,13 +291,14 @@ public class RobotContainer {
         // }));
 
         manipulatorXbox.a().onTrue(Commands.runOnce(() -> {
-            if (intakeUntilDetection.hasIntakeBeenSet) {
+            if (intake.hasIntakeBeenSet) {
                 intake.stop();
                 index.stop();
-                intakeUntilDetection.hasIntakeBeenSet = false;
+                intake.hasIntakeBeenSet = false;
                 System.out.println("stopMotors--------");
             } else {
                 intakeUntilDetection.schedule();
+                
                 System.out.println("Scheduled");
             }
         }));
@@ -303,6 +311,9 @@ public class RobotContainer {
         final Index index = Index.get();
         final ShooterIntake shooterIntake = new ShooterIntake();
         final ShooterIntake2 shooterIntake2 = new ShooterIntake2();
+
+        final Intake intake = Intake.get();
+        
 
         final SetShooter setShooterFar = new SetShooter(
                 () -> Constants.ShooterAngle.FarShooterAngle,
@@ -322,18 +333,18 @@ public class RobotContainer {
         manipulatorXbox.leftTrigger().onTrue(shooterIntake2);
 
         //back = Shooter Home Angle
-        manipulatorXbox.start().onTrue(shooterAngle.updateCommand(() -> ShooterAngleState.Start.getAngle()));
+        manipulatorXbox.start().onTrue(shooterAngle.updateCommand(() -> ShooterAngleState.Start.getAngle()).finallyDo(() -> intake.hasIntakeBeenSet = false));
 
         // TODO remove after testing
         manipulatorXbox.y().onTrue(shooterSpeed.setMotorPercent(() -> 0.7));
 
         // Manual Shooter Angle
-        manipulatorXbox.axisLessThan(5, -0.1).whileTrue(shooterAngle.adjustManualAngle(1));
-        manipulatorXbox.axisGreaterThan(5, 0.1).whileTrue(shooterAngle.adjustManualAngle(-1));
+        manipulatorXbox.axisLessThan(5, -0.1).whileTrue(shooterAngle.adjustManualAngle(1).finallyDo(() -> intake.hasIntakeBeenSet = false));
+        manipulatorXbox.axisGreaterThan(5, 0.1).whileTrue(shooterAngle.adjustManualAngle(-1).finallyDo(() -> intake.hasIntakeBeenSet = false));
 
         // set manual speed/angle
-        manipulatorXbox.rightBumper().onTrue(setShooterClose);
-        manipulatorXbox.leftBumper().onTrue(setShooterFar);
+        manipulatorXbox.rightBumper().onTrue(setShooterClose.finallyDo(() -> intake.hasIntakeBeenSet = false));
+        manipulatorXbox.leftBumper().onTrue(setShooterFar.finallyDo(() -> intake.hasIntakeBeenSet = false));
 
         // TODO y = Auto Shoot
     }

@@ -1,8 +1,8 @@
-package frc.robot.cat5lib;
+package frc.robot.cat5Lib;
 
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
-import frc.robot.cat5lib.DistanceLookupTable.Mapping;
+import frc.robot.cat5Lib.DistanceLookupTable.Mapping;
 
 public class Cat5LibTest {
     public void run() {

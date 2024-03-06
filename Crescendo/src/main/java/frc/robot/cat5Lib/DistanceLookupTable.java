@@ -1,4 +1,4 @@
-package frc.robot.cat5lib;
+package frc.robot.cat5Lib;
 
 import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
 

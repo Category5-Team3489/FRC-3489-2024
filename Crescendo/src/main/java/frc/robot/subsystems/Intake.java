@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
@@ -18,10 +19,12 @@ public class Intake extends SubsystemBase {
   // Constants
 
   // Devices
-  private final CANSparkMax motor;
+  private final CANSparkFlex motor;
+
+  public boolean hasIntakeBeenSet = false;
 
   private Intake() {
-    motor = new CANSparkMax(11, MotorType.kBrushless);
+    motor = new CANSparkFlex(11, MotorType.kBrushless);
   }
 
 
