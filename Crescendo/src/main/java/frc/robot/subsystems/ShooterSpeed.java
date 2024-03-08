@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -31,6 +33,7 @@ public class ShooterSpeed extends SubsystemBase {
         private static final double VoltsPerRotationPerSecondOfError = 12.0 / 50; // kP
         private static final double VoltsPerRotationOfError = 0.0; // kI
         private static final double VoltsPerRotationPerSecondSquaredOfError = 0.0; // kD
+
         // Falcon 500 is a 500kV motor, 500rpm per V = 8.333 rps per V,
         // 1 / 8.33 = 0.12 volts / rotation per second
         private static final double VoltsPerRotationPerSecond = 0.12; // kV
@@ -64,12 +67,20 @@ public class ShooterSpeed extends SubsystemBase {
     // region ---------------- Devices ----------------
     private final TalonFX topMotor = new MotorBuilder().build(13);
     private final TalonFX bottomMotor = new MotorBuilder().build(12);
+
+    public double speedPercent = 0;
+
     // https://v6.docs.ctr-electronics.com/en/stable/docs/migration/migration-guide/closed-loop-guide.html
     private final VelocityVoltage velocity = new VelocityVoltage(0);
     // endregion
 
     private ShooterSpeed() {
         bottomMotor.setInverted(true);
+
+        Shuffleboard.getTab("Main")
+                    .addDouble("Shooter speed", () -> speedPercent)
+                    .withSize(1, 1)
+                    .withPosition(2, 3);
     }
 
     // region Subsystem
@@ -78,10 +89,13 @@ public class ShooterSpeed extends SubsystemBase {
         if (speedRps == 0) {
             topMotor.stopMotor();
             bottomMotor.stopMotor();
+            speedPercent = 0;
         } else {
             velocity.Slot = 0; // Closed loop slot index 0
             topMotor.setControl(velocity.withVelocity(speedRps));
             bottomMotor.setControl(velocity.withVelocity(speedRps));
+            speedPercent = speedRps;
+
 
             //TODO Remove after testing
             // topMotor.set(speedRps);
@@ -94,9 +108,11 @@ public class ShooterSpeed extends SubsystemBase {
         if (speedPercent == 0) {
             topMotor.stopMotor();
             bottomMotor.stopMotor();
+            speedPercent = 0;
         } else {
             topMotor.set(speedPercent);
             bottomMotor.set(speedPercent);
+            this.speedPercent = speedPercent;
         }
     }
 

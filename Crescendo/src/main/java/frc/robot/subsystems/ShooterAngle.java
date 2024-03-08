@@ -1,6 +1,8 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -67,6 +69,10 @@ public class ShooterAngle extends SubsystemBase {
     private ShooterAngle() {
         // leftMotor.setInverted(true);
         // rightMotor.follow(leftMotor);
+        Shuffleboard.getTab("Main")
+                    .addDouble("Shooter Angle", () -> targetAngleDegrees)
+                    .withSize(1, 1)
+                    .withPosition(2, 1);
     }
 
     private void setAngle(double angleDegrees) {

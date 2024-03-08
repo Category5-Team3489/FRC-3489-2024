@@ -16,4 +16,9 @@ public enum IntakeState {
         return intakeSpeed;
     }
 
+    public String getStateName(IntakeState intakeState) {
+        
+        return intakeState.toString();
+    }
+
 }

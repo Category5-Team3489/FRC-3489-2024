@@ -4,6 +4,8 @@ import com.revrobotics.CANSparkFlex;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -12,9 +14,12 @@ import frc.robot.enums.IntakeState;
 public class Intake extends SubsystemBase {
   private static final Intake instance = new Intake();
 
+  public IntakeState intakeState = IntakeState.Off;
+
   public static Intake get() {
     return instance;
   }
+
 
   // Constants
 
@@ -25,6 +30,11 @@ public class Intake extends SubsystemBase {
 
   private Intake() {
     motor = new CANSparkFlex(11, MotorType.kBrushless);
+
+    Shuffleboard.getTab("Main")
+                    .addString("intake state", () -> intakeState.toString())
+                    .withSize(1, 1)
+                    .withPosition(2, 2);
   }
 
 
@@ -33,6 +43,7 @@ public class Intake extends SubsystemBase {
 
     return Commands.runOnce(() -> {
       System.out.println("=====Move Intake");
+      intakeState = state;
 
       motor.set(state.getSpeed());
     }, this);
