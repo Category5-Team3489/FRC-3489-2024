@@ -46,7 +46,7 @@ public class Index extends SubsystemBase {
 
     public Command indexCommand(IndexState state) {
         return Commands.runOnce(() -> {
-            System.out.println("index");
+            System.out.println("======================index");
             motor.set(state.getSpeedPercent());
 
         }, this);

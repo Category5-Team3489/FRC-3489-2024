@@ -396,7 +396,9 @@ public class RobotContainer {
 
             Command shootCommand = new SetShooter(
                     () -> Constants.ShooterAngle.CloseShooterAngle,
-                    () -> Constants.ShooterSpeed.CloseShooterSpeed);
+                    () -> Constants.ShooterSpeed.CloseShooterSpeed).withTimeout(2);
+
+        Command shooterIndex = index.indexCommand(IndexState.Intake);
 
             // Ensure percentages are greater than the 0.1 percent deadband above
             // Domain is [-1, 1]
@@ -411,7 +413,7 @@ public class RobotContainer {
                     .withVelocityX(-percentY * MaxMetersPerSecond * speedMultiplier)
                     .withVelocityY(percentX * MaxMetersPerSecond * speedMultiplier)
                     .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
-            return shootCommand.andThen(Commands.waitSeconds(2)).andThen(index.indexCommand(IndexState.Intake))// .andThen(driveCommand)
+            return shootCommand.andThen(() -> shooterIndex.schedule()).andThen(driveCommand)
                     // .withTimeout(driveTimeSeconds)
                     .withName("ShootTaxi");
         });
