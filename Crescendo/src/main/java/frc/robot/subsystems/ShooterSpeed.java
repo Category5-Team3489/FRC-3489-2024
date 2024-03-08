@@ -84,7 +84,6 @@ public class ShooterSpeed extends SubsystemBase {
     }
 
     // region Subsystem
-    //TODO add bottom motor
     public void setSpeedRps(double speedRps) {
         if (speedRps == 0) {
             topMotor.stopMotor();

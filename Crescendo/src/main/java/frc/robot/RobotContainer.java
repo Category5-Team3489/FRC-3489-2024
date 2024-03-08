@@ -37,6 +37,7 @@ import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -59,7 +60,7 @@ public class RobotContainer {
      * piece
      */
 
-    // private CoralLimelight coralLimelight = CoralLimelight.get();
+    private CoralLimelight coralLimelight = CoralLimelight.get();
     private final Cat5Autos autos = new Cat5Autos();
 
     // https://www.swervedrivespecialties.com/products/mk4-swerve-module
@@ -92,7 +93,7 @@ public class RobotContainer {
 
     private void configureBindings() {
         bindDriveTrain();
-        // bindClimber();
+        bindClimber();
         bindIntakeIndex();
         bindShooter();
     }
@@ -108,8 +109,18 @@ public class RobotContainer {
         manipulatorXbox.povUpLeft().whileTrue(climber.climberCommand(ClimberState.PovUpLeft));
         manipulatorXbox.povUpRight().whileTrue(climber.climberCommand(ClimberState.PovUpRight));
 
-        //TODO Uncomment after getting correct angle/position
-        //manipulatorXbox.back().onTrue(climber.setServos());
+        manipulatorXbox.back().onTrue(Commands.runOnce(() -> {
+            if (climber.isClimberLocked) {
+                climber.setServos(120, 0).schedule();
+            } else {
+                climber.setServos(0, 120).schedule();
+            }
+        }));
+
+        //TODO Test this
+        Trigger servoLockTimTrigger = new Trigger(() -> DriverStation.getMatchTime() >= 135);
+
+        servoLockTimTrigger.onTrue(climber.setServos(0, 120));
     }
 
     private void bindDriveTrain() {
@@ -402,6 +413,38 @@ public class RobotContainer {
 
             // Ensure percentages are greater than the 0.1 percent deadband above
             // Domain is [-1, 1]
+            double percentY = 0;
+            double percentX = 0.3;
+            double percentOmega = 0;
+            double driveTimeSeconds = 4;
+
+            double speedMultiplier = 0.5; // [0, 1]
+
+            Command driveCommand = drivetrain.applyRequest(() -> drive
+                    .withVelocityX(percentX * MaxMetersPerSecond * speedMultiplier)
+                    .withVelocityY(-percentY * MaxMetersPerSecond * speedMultiplier)
+                    .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
+
+            Command intake = new IntakeUntilDetectionAngle();
+
+        return Commands.parallel(shootCommand, Commands.waitSeconds(2)).andThen(() -> shooterIndex.schedule()).withTimeout(2).andThen(() -> intake.schedule()).andThen(driveCommand)
+                    .withTimeout(driveTimeSeconds)
+                    .withName("ShootTaxi");
+        });
+
+        autos.addAuto(() -> {
+            final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+                    .withDeadband(MaxMetersPerSecond * 0.1).withRotationalDeadband(MaxRadiansPerSecond * 0.1)
+                    .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+
+            Command shootCommand = new SetShooter(
+                    () -> Constants.ShooterAngle.CloseShooterAngle,
+                    () -> Constants.ShooterSpeed.CloseShooterSpeed).withTimeout(2);
+
+        Command shooterIndex = index.indexCommand(IndexState.Intake);
+
+            // Ensure percentages are greater than the 0.1 percent deadband above
+            // Domain is [-1, 1]
             double percentY = 0.3;
             double percentX = 0;
             double percentOmega = 0;
@@ -409,13 +452,8 @@ public class RobotContainer {
 
             double speedMultiplier = 0.5; // [0, 1]
 
-            Command driveCommand = drivetrain.applyRequest(() -> drive
-                    .withVelocityX(-percentY * MaxMetersPerSecond * speedMultiplier)
-                    .withVelocityY(percentX * MaxMetersPerSecond * speedMultiplier)
-                    .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
-            return shootCommand.andThen(() -> shooterIndex.schedule()).andThen(driveCommand)
-                    // .withTimeout(driveTimeSeconds)
-                    .withName("ShootTaxi");
+            return Commands.parallel(shootCommand, Commands.waitSeconds(2)).andThen(() -> shooterIndex.schedule()).withTimeout(2)
+                    .withName("Shoot");
         });
         // autos.addAuto(() -> new Leave(drivetrain));
         autos.addSelectorWidget();

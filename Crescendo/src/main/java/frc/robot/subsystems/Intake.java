@@ -35,6 +35,11 @@ public class Intake extends SubsystemBase {
                     .addString("intake state", () -> intakeState.toString())
                     .withSize(1, 1)
                     .withPosition(2, 2);
+
+    Shuffleboard.getTab("Main")
+                    .addDouble("intake speed", () -> motor.getAppliedOutput())
+                    .withSize(1, 1)
+                    .withPosition(3, 2);
   }
 
 
