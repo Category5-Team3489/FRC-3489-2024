@@ -55,7 +55,7 @@ public class Climber extends SubsystemBase {
             rightServo.setAngle(rightAngle);
             leftServo.setAngle(leftAngle);
 
-
+            //if 
             if (rightAngle == 120 && leftAngle == 0) {
                 isClimberLocked = false;
             } else {

@@ -472,14 +472,20 @@ public class RobotContainer {
             double percentY = 0;
             double percentX = 0.3;
             double percentOmega = 0;
-            double driveTimeSeconds = 4;
+            double driveTimeSeconds = 2;
 
             double speedMultiplier = 0.5; // [0, 1]
+
+            // Command driveCommandForward = drivetrain.applyRequest(() -> drive
+            //         .withVelocityX(percentX * MaxMetersPerSecond * speedMultiplier)
+            //         .withVelocityY(-percentY * MaxMetersPerSecond * speedMultiplier)
+            //         .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
 
             Command driveCommandForward = drivetrain.applyRequest(() -> drive
                     .withVelocityX(percentX * MaxMetersPerSecond * speedMultiplier)
                     .withVelocityY(-percentY * MaxMetersPerSecond * speedMultiplier)
                     .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
+
 
             // Command driveCommandBack = drivetrain.applyRequest(() -> drive
             // .withVelocityX(-percentX * MaxMetersPerSecond * speedMultiplier)
@@ -490,18 +496,23 @@ public class RobotContainer {
 
             final Intake intake = Intake.get();
 
+            
+
+            // Command intake = Commands.runOnce(() -> new
+            // IntakeUntilDetectionAngle().schedule());
+            final IntakeUntilDetectionAngle intakeUntilDetection = new IntakeUntilDetectionAngle();
+
             laserTrigger
                     .debounce(0.29, DebounceType.kRising)
                     .onTrue(Commands.runOnce(() -> {
                         if (intake.hasIntakeBeenSet) {
                             intake.stop();
                             index.stop();
+
+                            //TODO Test this when time
+                            // intakeUntilDetection.cancel();
                         }
                     }));
-
-            // Command intake = Commands.runOnce(() -> new
-            // IntakeUntilDetectionAngle().schedule());
-            final IntakeUntilDetectionAngle intakeUntilDetection = new IntakeUntilDetectionAngle();
 
             // Command shootCommand = Commands.parallel(closeShootCommand,
             // Commands.waitSeconds(3))
@@ -510,17 +521,21 @@ public class RobotContainer {
             return Commands.parallel(closeShootCommand, Commands.waitSeconds(3))
                     .andThen(Commands.parallel(shooterIndex), Commands.waitSeconds(2))
                     .andThen(() -> closeShootCommand.cancel())
-                    .andThen(Commands.parallel(driveCommandForward, intakeUntilDetection).withTimeout(driveTimeSeconds)) // set
+                    //TODO seperate and remove ll
+                    
+                    .andThen(driveCommandForward.withTimeout(driveTimeSeconds)) // set
+                    .andThen(intakeUntilDetection.withTimeout(driveTimeSeconds))
                                                                                                                          // intake
                                                                                                                          // but
                                                                                                                          // not
                                                                                                                          // drive
 
-                    // .andThen(() -> intakeUntilDetection.schedule())
+                    // .andThen(Commands.parallel(farShootCommand, Commands.waitSeconds(3)))
+                    // .andThen(Commands.parallel(shooterIndex2), Commands.waitSeconds(2))
 
-                    // .withTimeout(driveTimeSeconds)
                     .andThen(Commands.parallel(farShootCommand, Commands.waitSeconds(3)))
-                    .andThen(Commands.parallel(shooterIndex2), Commands.waitSeconds(2))
+                    .andThen(Commands.race(shooterIndex2), Commands.waitSeconds(2))
+
                     .withName("ShootIntakeShoot");
         });
 
