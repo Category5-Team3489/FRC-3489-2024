@@ -33,7 +33,7 @@ public class CoralLimelight extends SubsystemBase {
                     .add(limelightFeed)
                     .withWidget(BuiltInWidgets.kCameraStream)
                     .withSize(5, 4)
-                    .withPosition(2, 0);
+                    .withPosition(5, 0);
         } catch (Exception e) {
             System.out.println("Limelight camera had trouble initializing");
         }
