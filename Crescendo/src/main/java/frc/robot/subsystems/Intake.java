@@ -47,7 +47,7 @@ public class Intake extends SubsystemBase {
   public Command intakeCommand(IntakeState state) {
 
     return Commands.runOnce(() -> {
-      System.out.println("=====Move Intake" + state.getSpeed());
+      System.out.println("=====TESTING" + state.getSpeed());
       intakeState = state;
 
       motor.set(state.getSpeed());

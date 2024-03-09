@@ -34,8 +34,10 @@ public final class Constants {
 
     //TODO get values
     public static class ShooterSpeed {
-        public static final double CloseShooterSpeed = 1500;    //2000 was too fast- broke ziptie in speaker
-        public static final double FarShooterSpeed = 1500;      //2000 was too fast
+        public static final double CloseShooterSpeed = 60;    //2000 was too fast- broke ziptie in speaker    //1500 was also too fast
+        public static final double FarShooterSpeed = 60;      //2000 was too fast
+        public static final double AutoShooterSpeed = 60;
+        public static final double AmpShooterSpeed = 30;    //TODO update
 
     }
 
@@ -43,6 +45,10 @@ public final class Constants {
     public static class ShooterAngle {
         public static final double CloseShooterAngle = 31.599;
         public static final double FarShooterAngle = 9.9;
+        public static final double AutoShooterAngle = 29;   //TODO update
+        public static final double AmpShooterAngle = 20;   //TODO update
+
+
 
     }
 

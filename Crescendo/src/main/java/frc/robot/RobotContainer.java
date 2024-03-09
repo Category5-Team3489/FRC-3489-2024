@@ -117,7 +117,7 @@ public class RobotContainer {
             }
         }));
 
-        //TODO Test this
+        // TODO Test this
         Trigger servoLockTimTrigger = new Trigger(() -> DriverStation.getMatchTime() >= 135);
 
         servoLockTimTrigger.onTrue(climber.setServos(0, 120));
@@ -129,9 +129,10 @@ public class RobotContainer {
 
         final Drivetrain drivetrain = Drivetrain.get();
         final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-                .withDeadband(MaxMetersPerSecond * 0.1).withRotationalDeadband(MaxRadiansPerSecond * 0.1) // Add a
-                                                                                                          // 10%
-                                                                                                          // deadband
+                .withDeadband(MaxMetersPerSecond * 0.1)
+                .withRotationalDeadband(MaxRadiansPerSecond * 0.1) // Add a
+                                                                   // 10%
+                                                                   // deadband
                 .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
                                                                          // driving in open loop
 
@@ -145,19 +146,22 @@ public class RobotContainer {
 
         drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
                 drivetrain.applyRequest(() -> drive
-                        .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond * drivetrain.getSpeedLimit()) // Drive
-                                                                                                                 // forward
-                                                                                                                 // with
-                                                                                                                 // negative
-                                                                                                                 // Y
+                        .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond
+                                * drivetrain.getSpeedLimit()) // Drive
+                                                              // forward
+                                                              // with
+                                                              // negative
+                                                              // Y
                         // (forward)
-                        .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond * drivetrain.getSpeedLimit()) // Drive
-                                                                                                                 // left
-                                                                                                                 // with
+                        .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond
+                                * drivetrain.getSpeedLimit()) // Drive
+                                                              // left
+                                                              // with
                         // negative
                         // X (left)
-                        .withRotationalRate(-driverXbox.getRightX() * MaxRadiansPerSecond * drivetrain.getSpeedLimit()) // Drive
-                                                                                                                        // counterclockwise
+                        .withRotationalRate(-driverXbox.getRightX() * MaxRadiansPerSecond
+                                * drivetrain.getSpeedLimit()) // Drive
+                                                              // counterclockwise
                 // with negative X (left)
                 ));
 
@@ -235,11 +239,12 @@ public class RobotContainer {
 
         // Speed Buttons- Update the
         driverXbox.leftBumper().onTrue(Commands.runOnce(() -> drivetrain.setSpeedLimit(SpeedLimitState.Full)));
-        driverXbox.rightBumper().onTrue(Commands.runOnce(() -> drivetrain.setSpeedLimit(SpeedLimitState.Forth)));
+        driverXbox.rightBumper()
+                .onTrue(Commands.runOnce(() -> drivetrain.setSpeedLimit(SpeedLimitState.Forth)));
         // Reset the speed when button is released
         driverXbox.leftBumper().onFalse(Commands.runOnce(() -> drivetrain.setSpeedLimit(SpeedLimitState.Half)));
-        driverXbox.rightBumper().onFalse(Commands.runOnce(() -> drivetrain.setSpeedLimit(SpeedLimitState.Half)));
-
+        driverXbox.rightBumper()
+                .onFalse(Commands.runOnce(() -> drivetrain.setSpeedLimit(SpeedLimitState.Half)));
 
         // Slow directions
         // driverXbox.povUp().onTrue(drivetrain.applyRequest(() -> ))
@@ -257,16 +262,17 @@ public class RobotContainer {
         final Outtake outtake = new Outtake();
 
         Trigger laserTrigger = new Trigger(index.laserSensor::get);
-        
+
         // TODO Test This with robot
         laserTrigger
-        .debounce(0.29, DebounceType.kRising)
-        .onTrue(Commands.runOnce(() -> {
-            if(intake.hasIntakeBeenSet) {
-                intake.stop();
-                index.stop();
-            }
-        }));
+                .debounce(0.29, DebounceType.kRising)
+                .onTrue(Commands.runOnce(() -> {
+                    if (intake.hasIntakeBeenSet) {
+                        intake.hasIntakeBeenSet = false;
+                        intake.stop();
+                        index.stop();
+                    }
+                }));
 
         // a and right Trigger = outtake
         // manipulatorXbox.rightTrigger().and(manipulatorXbox.a()).onTrue(intake.intakeCommand(IntakeState.Out));
@@ -309,7 +315,7 @@ public class RobotContainer {
                 System.out.println("stopMotors--------");
             } else {
                 intakeUntilDetection.schedule();
-                
+
                 System.out.println("Scheduled");
             }
         }));
@@ -324,7 +330,6 @@ public class RobotContainer {
         final ShooterIntake2 shooterIntake2 = new ShooterIntake2();
 
         final Intake intake = Intake.get();
-        
 
         final SetShooter setShooterFar = new SetShooter(
                 () -> Constants.ShooterAngle.FarShooterAngle,
@@ -333,29 +338,38 @@ public class RobotContainer {
                 () -> Constants.ShooterAngle.CloseShooterAngle,
                 () -> Constants.ShooterSpeed.CloseShooterSpeed);
 
+        final SetShooter setShooterAmp = new SetShooter(
+                () -> Constants.ShooterAngle.AmpShooterAngle,
+                () -> Constants.ShooterSpeed.AmpShooterSpeed);
+
         // b = stop Shooter
         manipulatorXbox.b().onTrue(shooterSpeed.stopCommand());
         // x = Manual Shoot
         manipulatorXbox.x().onTrue(index.indexCommand(IndexState.Intake));
 
         // TODO Remove After Testing
-        //manipulatorXbox.leftTrigger().onTrue(shooterIntake);
+        // manipulatorXbox.leftTrigger().onTrue(shooterIntake);
 
         manipulatorXbox.leftTrigger().onTrue(shooterIntake2);
 
-        //back = Shooter Home Angle
-        manipulatorXbox.start().onTrue(shooterAngle.updateCommand(() -> ShooterAngleState.Start.getAngle()).finallyDo(() -> intake.hasIntakeBeenSet = false));
+        // back = Shooter Home Angle
+        manipulatorXbox.start().onTrue(shooterAngle.updateCommand(() -> ShooterAngleState.Start.getAngle())
+                .finallyDo(() -> intake.hasIntakeBeenSet = false));
 
         // TODO remove after testing
         manipulatorXbox.y().onTrue(shooterSpeed.setMotorPercent(() -> 0.7));
 
         // Manual Shooter Angle
-        manipulatorXbox.axisLessThan(5, -0.1).whileTrue(shooterAngle.adjustManualAngle(1).finallyDo(() -> intake.hasIntakeBeenSet = false));
-        manipulatorXbox.axisGreaterThan(5, 0.1).whileTrue(shooterAngle.adjustManualAngle(-1).finallyDo(() -> intake.hasIntakeBeenSet = false));
+        manipulatorXbox.axisLessThan(5, -0.1).whileTrue(
+                shooterAngle.adjustManualAngle(1).finallyDo(() -> intake.hasIntakeBeenSet = false));
+        manipulatorXbox.axisGreaterThan(5, 0.1).whileTrue(
+                shooterAngle.adjustManualAngle(-1).finallyDo(() -> intake.hasIntakeBeenSet = false));
 
         // set manual speed/angle
         manipulatorXbox.rightBumper().onTrue(setShooterClose.finallyDo(() -> intake.hasIntakeBeenSet = false));
-        manipulatorXbox.leftBumper().onTrue(setShooterFar.finallyDo(() -> intake.hasIntakeBeenSet = false));
+        // manipulatorXbox.leftBumper().onTrue(setShooterFar.finallyDo(() -> intake.hasIntakeBeenSet = false));
+        manipulatorXbox.leftBumper().onTrue(setShooterAmp.finallyDo(() -> intake.hasIntakeBeenSet = false));
+
 
         // TODO y = Auto Shoot
     }
@@ -376,7 +390,8 @@ public class RobotContainer {
 
         autos.addAuto(() -> {
             final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-                    .withDeadband(MaxMetersPerSecond * 0.1).withRotationalDeadband(MaxRadiansPerSecond * 0.1)
+                    .withDeadband(MaxMetersPerSecond * 0.1)
+                    .withRotationalDeadband(MaxRadiansPerSecond * 0.1)
                     .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
             // Ensure percentages are greater than the 0.1 percent deadband above
@@ -402,14 +417,19 @@ public class RobotContainer {
 
         autos.addAuto(() -> {
             final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-                    .withDeadband(MaxMetersPerSecond * 0.1).withRotationalDeadband(MaxRadiansPerSecond * 0.1)
+                    .withDeadband(MaxMetersPerSecond * 0.1)
+                    .withRotationalDeadband(MaxRadiansPerSecond * 0.1)
                     .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-            Command shootCommand = new SetShooter(
+            Command closeShootCommand = new SetShooter(
                     () -> Constants.ShooterAngle.CloseShooterAngle,
                     () -> Constants.ShooterSpeed.CloseShooterSpeed).withTimeout(2);
 
-        Command shooterIndex = index.indexCommand(IndexState.Intake);
+            Command farShootCommand = new SetShooter(
+                    () -> Constants.ShooterAngle.AutoShooterAngle,
+                    () -> Constants.ShooterSpeed.AutoShooterSpeed).withTimeout(2);
+
+            Command shooterIndex = index.indexCommand(IndexState.Intake);
 
             // Ensure percentages are greater than the 0.1 percent deadband above
             // Domain is [-1, 1]
@@ -420,39 +440,86 @@ public class RobotContainer {
 
             double speedMultiplier = 0.5; // [0, 1]
 
-            Command driveCommand = drivetrain.applyRequest(() -> drive
+            Command driveCommandForward = drivetrain.applyRequest(() -> drive
                     .withVelocityX(percentX * MaxMetersPerSecond * speedMultiplier)
                     .withVelocityY(-percentY * MaxMetersPerSecond * speedMultiplier)
                     .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
 
-            Command intake = new IntakeUntilDetectionAngle();
+            Command driveCommandBack = drivetrain.applyRequest(() -> drive
+                    .withVelocityX(-percentX * MaxMetersPerSecond * speedMultiplier)
+                    .withVelocityY(percentY * MaxMetersPerSecond * speedMultiplier)
+                    .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
 
-        return Commands.parallel(shootCommand, Commands.waitSeconds(2)).andThen(() -> shooterIndex.schedule()).withTimeout(2).andThen(() -> intake.schedule()).andThen(driveCommand)
+            Trigger laserTrigger = new Trigger(index.laserSensor::get);
+
+            final Intake intake = Intake.get();
+
+            laserTrigger
+                    .debounce(0.29, DebounceType.kRising)
+                    .onTrue(Commands.runOnce(() -> {
+                        if (intake.hasIntakeBeenSet) {
+                            intake.stop();
+                            index.stop();
+                        }
+                    }));
+
+            // Command intake = Commands.runOnce(() -> new
+            // IntakeUntilDetectionAngle().schedule());
+            final IntakeUntilDetectionAngle intakeUntilDetection = new IntakeUntilDetectionAngle();
+
+            return Commands.parallel(closeShootCommand, Commands.waitSeconds(3))
+                    .andThen(Commands.parallel(shooterIndex), Commands.waitSeconds(2))
+                    .andThen(() -> intakeUntilDetection.schedule()).andThen(driveCommandForward)
                     .withTimeout(driveTimeSeconds)
-                    .withName("ShootTaxi");
+                    .andThen(Commands.parallel(closeShootCommand, Commands.waitSeconds(3)))
+                    .andThen(Commands.parallel(shooterIndex), Commands.waitSeconds(2))
+                    .withName("ShootIntakeShoot");
         });
 
+        //Shoot Taxi
         autos.addAuto(() -> {
             final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-                    .withDeadband(MaxMetersPerSecond * 0.1).withRotationalDeadband(MaxRadiansPerSecond * 0.1)
+                    .withDeadband(MaxMetersPerSecond * 0.1)
+                    .withRotationalDeadband(MaxRadiansPerSecond * 0.1)
                     .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
             Command shootCommand = new SetShooter(
                     () -> Constants.ShooterAngle.CloseShooterAngle,
                     () -> Constants.ShooterSpeed.CloseShooterSpeed).withTimeout(2);
 
-        Command shooterIndex = index.indexCommand(IndexState.Intake);
+            Command shooterIndex = index.indexCommand(IndexState.Intake);
 
             // Ensure percentages are greater than the 0.1 percent deadband above
             // Domain is [-1, 1]
-            double percentY = 0.3;
-            double percentX = 0;
+            double percentY = 0;
+            double percentX = 0.3;
             double percentOmega = 0;
-            double driveTimeSeconds = 3;
+            double driveTimeSeconds = 4;
 
             double speedMultiplier = 0.5; // [0, 1]
 
-            return Commands.parallel(shootCommand, Commands.waitSeconds(2)).andThen(() -> shooterIndex.schedule()).withTimeout(2)
+            Command driveCommandForward = drivetrain.applyRequest(() -> drive
+                    .withVelocityX(percentX * MaxMetersPerSecond * speedMultiplier)
+                    .withVelocityY(-percentY * MaxMetersPerSecond * speedMultiplier)
+                    .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
+
+            return Commands.parallel(shootCommand, Commands.waitSeconds(3))
+                    .andThen(Commands.parallel(shooterIndex), Commands.waitSeconds(2))
+                    .andThen(driveCommandForward)
+                    .withTimeout(driveTimeSeconds)
+                    .withName("ShootTaxi");
+        });
+
+        //Shoot
+        autos.addAuto(() -> {
+            Command shootCommand = new SetShooter(
+                    () -> Constants.ShooterAngle.CloseShooterAngle,
+                    () -> Constants.ShooterSpeed.CloseShooterSpeed).withTimeout(2);
+
+            Command shooterIndex = index.indexCommand(IndexState.Intake);
+
+            return Commands.parallel(shootCommand, Commands.waitSeconds(2))
+                    .andThen(() -> shooterIndex.schedule()).withTimeout(2)
                     .withName("Shoot");
         });
         // autos.addAuto(() -> new Leave(drivetrain));
