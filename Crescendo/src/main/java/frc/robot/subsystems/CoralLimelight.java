@@ -17,7 +17,7 @@ public class CoralLimelight extends SubsystemBase {
         return instance;
     }
 
-    private final NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    private final NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight-intake");
     private final NetworkTableEntry tx = table.getEntry("tx");
     private final NetworkTableEntry ty = table.getEntry("ty");
     private final NetworkTableEntry ta = table.getEntry("ta");
@@ -27,13 +27,11 @@ public class CoralLimelight extends SubsystemBase {
         register();
 
         try {
-            HttpCamera limelightFeed = new HttpCamera("limelight", "http://10.34.89.99:5800/stream.mjg");//http://10.34.89.11:5800/stream.mjpg
+            HttpCamera limelightFeed = new HttpCamera("limelight-intake", "http://10.34.89.99:5800/stream.mjg");//http://10.34.89.11:5800/stream.mjpg
 
             Shuffleboard.getTab("Main")
                     .add(limelightFeed)
-                    .withWidget(BuiltInWidgets.kCameraStream)
-                    .withSize(5, 4)
-                    .withPosition(5, 0);
+                    .withWidget(BuiltInWidgets.kCameraStream);
         } catch (Exception e) {
             System.out.println("Limelight camera had trouble initializing");
         }

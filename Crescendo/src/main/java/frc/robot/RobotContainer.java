@@ -10,6 +10,7 @@ import frc.robot.commands.DriveSeconds;
 import frc.robot.commands.Intake.IntakeUntilDetection;
 import frc.robot.commands.Intake.IntakeUntilDetectionAngle;
 import frc.robot.commands.Intake.Outtake;
+// import frc.robot.commands.autoShooting.AutoShootTest;
 import frc.robot.commands.autos.Cat5Autos;
 import frc.robot.commands.autos.Leave;
 import frc.robot.commands.autos.Nothing;
@@ -21,6 +22,7 @@ import frc.robot.enums.IndexState;
 import frc.robot.enums.IntakeState;
 import frc.robot.enums.ShooterAngleState;
 import frc.robot.enums.SpeedLimitState;
+import frc.robot.subsystems.AprilLimelight;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CoralLimelight;
 import frc.robot.subsystems.Drivetrain;
@@ -61,6 +63,7 @@ public class RobotContainer {
      */
 
     private CoralLimelight coralLimelight = CoralLimelight.get();
+    private AprilLimelight aprilLimelight = AprilLimelight.get();
     private final Cat5Autos autos = new Cat5Autos();
 
     // https://www.swervedrivespecialties.com/products/mk4-swerve-module
@@ -342,6 +345,8 @@ public class RobotContainer {
                 () -> Constants.ShooterAngle.AmpShooterAngle,
                 () -> Constants.ShooterSpeed.AmpShooterSpeed);
 
+        // final AutoShootTest autoShootTest = new AutoShootTest(null, shooterAngle, aprilLimelight)
+
         // b = stop Shooter
         manipulatorXbox.b().onTrue(shooterSpeed.stopCommand());
         // x = Manual Shoot
@@ -372,6 +377,7 @@ public class RobotContainer {
         manipulatorXbox.leftBumper().onTrue(setShooterAmp.finallyDo(() -> intake.hasIntakeBeenSet = false));
 
         // TODO y = Auto Shoot
+        // manipulatorXbox.y().onTrue(au)
     }
 
     /**
@@ -570,7 +576,7 @@ public class RobotContainer {
                     .andThen(Commands.parallel(shooterIndex), Commands.waitSeconds(2))
                     .andThen(driveCommandForward)
                     .withTimeout(driveTimeSeconds)
-                    .withName("ShootTaxi");
+                    .withName("ShootTaxi");     //If shooting from angle, turn robot on facing flat then angle it
         });
 
         // Shoot

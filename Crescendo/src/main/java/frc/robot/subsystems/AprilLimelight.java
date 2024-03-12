@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.cscore.HttpCamera;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -9,18 +10,19 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.enums.LimelightPipeline;
 
 public class AprilLimelight extends SubsystemBase {
-    
 
     // Constants
     private final static LimelightPipeline DefaultPipeline = LimelightPipeline.Shooting;
 
     // Devices
-    private final NetworkTable limelight = NetworkTableInstance.getDefault().getTable("limelight");
+    private final NetworkTable limelight = NetworkTableInstance.getDefault().getTable("limelight-shooter");
 
     private final DoubleArraySubscriber camerapose_targetspaceSubscriber = limelight
             .getDoubleArrayTopic("camerapose_targetspace").subscribe(new double[] {});
@@ -36,17 +38,30 @@ public class AprilLimelight extends SubsystemBase {
     // State
     private Timer activePipelineTimer = new Timer();
     private LimelightPipeline desiredPipeline = DefaultPipeline;
-    private long activePipeline = -1;
+    private long activePipeline = 0;
 
     private static AprilLimelight instance = new AprilLimelight();
 
     public static AprilLimelight get() {
-      return instance;
+        return instance;
     }
+    
+
     private AprilLimelight() {
         // super(robotContainer);
 
         activePipelineTimer.restart();
+
+        try {
+            HttpCamera limelightFeed = new HttpCamera("limelight-shooter", "http://10.34.89.103:5800/stream.mjg");//http://10.34.89.11:5800/stream.mjpg
+
+            Shuffleboard.getTab("Main")
+                    .add(limelightFeed)
+                    .withWidget(BuiltInWidgets.kCameraStream);
+        } catch (Exception e) {
+            System.out.println("Limelight camera had trouble initializing");
+        }
+        Shuffleboard.getTab("Main").addDouble("Tag", () -> getTargetX());
     }
 
     @Override
@@ -89,7 +104,7 @@ public class AprilLimelight extends SubsystemBase {
         desiredPipeline = pipeline;
     }
 
-    //Gets the ID of the Tag
+    // Gets the ID of the Tag
     public long getTagId() {
         return tagIdEntry.getInteger(-1);
     }
@@ -116,5 +131,4 @@ public class AprilLimelight extends SubsystemBase {
         System.out.println(builder.toString());
     }
 
-    
 }
