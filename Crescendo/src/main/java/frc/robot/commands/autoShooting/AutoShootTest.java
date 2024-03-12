@@ -1,52 +1,39 @@
-// package frc.robot.commands.autoShooting;
+package frc.robot.commands.autoShooting;
 
-// import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-// import edu.wpi.first.wpilibj2.command.Command;
-// import frc.robot.subsystems.AprilLimelight;
-// import frc.robot.subsystems.Drivetrain;
-// import frc.robot.subsystems.Index;
-// import frc.robot.subsystems.Intake;
-// import frc.robot.subsystems.ShooterAngle;
-// import frc.robot.subsystems.ShooterSpeed;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.AprilLimelight;
+import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.ShooterAngle;
 
-// public class AutoShootTest extends Command {
+public class AutoShootTest extends Command {
 
-//     private Drivetrain drivetrain = Drivetrain.get();
+    private Drivetrain drivetrain = Drivetrain.get();
 
-//     private final ShooterAngle shooterAngle = ShooterAngle.get();
-//     private final AprilLimelight limelight = AprilLimelight.get();
+    private final ShooterAngle shooterAngle = ShooterAngle.get();
+    private final AprilLimelight limelight = AprilLimelight.get();
 
+    private double xRange = 30;
+    private double yRange = 1;
 
-//     public AutoShootTest() {
-//         this.drivetrain = drivetrain;
-//         this.shooterAngle = shooterAngle;
-//         this.limelight = limelight;
+    public PIDController aimController = new PIDController(0.0001, 0, 0);
 
-//         addRequirements(drivetrain, shooterAngle, limelight);
+    public AutoShootTest() {
 
-//         double targetX = limelight.getTargetX();
-//         double targetY = limelight.getTargetY();
+        addRequirements(drivetrain, shooterAngle, limelight);
+    }
 
-//         Shuffleboard.getTab("Testing")
-//                 .addDouble("Limelight X", () -> targetX)
-//                 .withSize(1, 1)
-//                 .withPosition(5, 2);
+    @Override
+    public void execute() {
+        double X = limelight.getTargetX();
+        double Y = limelight.getTargetY();
 
-//         Shuffleboard.getTab("Testing")
-//                 .addDouble("Limelight Y", () -> targetY)
-//                 .withSize(1, 1)
-//                 .withPosition(2, 2);
-//     }
+    }
 
-//     @Override
-//     public void execute() {
-//         double targetX = limelight.getTargetX();
-//         double targetY = limelight.getTargetY();
-//     }
+    // rotate to target based on tx/pid
+    // set shooter angle based on distance from apriltag
+    // set shooter speed to constant speed
+    // index piece
 
-//     // rotate to target based on tx/pid
-//     // set shooter angle based on distance from apriltag
-//     // set shooter speed to constant speed
-//     // index piece
-
-// }
+}

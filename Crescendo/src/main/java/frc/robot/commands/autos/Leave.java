@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.DrivetrainConstants;
 import frc.robot.commands.DriveSeconds;
-import frc.robot.commands.shooter.SetShooter;
+import frc.robot.commands.shooter.SetShooterSpeedAndAngle;
 import frc.robot.subsystems.Drivetrain;
 
 public class Leave extends Command {

@@ -49,7 +49,8 @@ public class Intake extends SubsystemBase {
     return Commands.runOnce(() -> {
       System.out.println("=====TESTING" + state.getSpeed());
       intakeState = state;
-
+      //TODO TEST
+      hasIntakeBeenSet = true;
       motor.set(state.getSpeed());
     }, this);
   }
@@ -60,5 +61,7 @@ public class Intake extends SubsystemBase {
   public void stop() {
     System.out.println("Stop Intake");
     motor.stopMotor();
+    //TODO TEST
+    hasIntakeBeenSet = false;
   }
 }

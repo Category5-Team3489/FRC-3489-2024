@@ -62,6 +62,16 @@ public class AprilLimelight extends SubsystemBase {
             System.out.println("Limelight camera had trouble initializing");
         }
         Shuffleboard.getTab("Main").addDouble("Tag", () -> getTargetX());
+
+        Shuffleboard.getTab("Testing")
+                .addDouble("Limelight X", () -> getTargetX())
+                .withSize(1, 1)
+                .withPosition(5, 2);
+
+        Shuffleboard.getTab("Testing")
+                .addDouble("Limelight Y", () -> getTargetY())
+                .withSize(1, 1)
+                .withPosition(2, 2);
     }
 
     @Override
