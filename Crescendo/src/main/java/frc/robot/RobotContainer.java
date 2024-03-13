@@ -126,7 +126,7 @@ public class RobotContainer {
         driveFacingAngle.HeadingController.setD(0.2);
         driveFacingAngle.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
 
-        drivetrain.setDefaultCommand( // Drivetrain will execute this command periodically
+        drivetrain.setDefaultCommand(// Drivetrain will execute this command periodically
                 drivetrain.applyRequest(() -> drive
                         .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond
                                 * drivetrain.getSpeedLimit()) // Drive
