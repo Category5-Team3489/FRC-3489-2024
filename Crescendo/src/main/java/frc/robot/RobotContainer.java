@@ -5,20 +5,15 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Cardinal;
-import frc.robot.commands.DriveSeconds;
-import frc.robot.commands.Intake.IntakeUntilDetection;
 import frc.robot.commands.Intake.IntakeUntilDetectionAngle;
 import frc.robot.commands.Intake.Outtake;
 import frc.robot.commands.autoShooting.AutoShootTest;
 import frc.robot.commands.autos.Cat5Autos;
-import frc.robot.commands.autos.Leave;
 import frc.robot.commands.autos.Nothing;
 import frc.robot.commands.shooter.SetShooterSpeedAndAngle;
 import frc.robot.commands.shooter.ShooterIntake2;
 import frc.robot.enums.ClimberState;
 import frc.robot.enums.IndexState;
-import frc.robot.enums.IntakeState;
 import frc.robot.enums.ShooterAngleState;
 import frc.robot.enums.SpeedLimitState;
 import frc.robot.subsystems.AprilLimelight;
@@ -55,15 +50,10 @@ import frc.robot.subsystems.ShooterSpeed;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-    // ---------------- IDEAS ----------------
-    /**
-     * Automatic shooter rotation and speed control when close to target and have a
-     * piece
-     */
+    private final Cat5Autos autos = new Cat5Autos();
 
     private CoralLimelight coralLimelight = CoralLimelight.get();
     private AprilLimelight aprilLimelight = AprilLimelight.get();
-    private final Cat5Autos autos = new Cat5Autos();
 
     // https://www.swervedrivespecialties.com/products/mk4-swerve-module
     private static final double MaxMetersPerSecond = 16.5 / 3.281; // (16.5 ft/s) / (3.281 ft/meter)
@@ -87,11 +77,6 @@ public class RobotContainer {
         configureBindings();
         addAutos();
     }
-
-    /**
-     * Configure bindings with: - xbox.*().*(Command) - new
-     * Trigger(BooleanSupplier).*(Command)
-     */
 
     private void configureBindings() {
         bindDriveTrain();
