@@ -41,18 +41,18 @@ public final class Constants {
         public static final int ConeLEDButton = 8;
     }
 
-    // TODO get values
     public static class ShooterSpeed {
-        public static final double CloseShooterSpeed = 60.0 / 100; // 2000 was too fast- broke ziptie in speaker //1500
+        public static final double DefaultSpeedPercent = 0.6;
+        public static final double CloseShooterSpeed = 60.0 / 100; // 2000 was too fast- broke ziptie in
+                                                                   // speaker //1500
                                                                    // was also
         // too fast
-        public static final double FarShooterSpeed = 60.0 / 100; // 2000 was too fast
-        public static final double AutoShooterSpeed = 60.0 / 100;
+        // public static final double FarShooterSpeed = 60.0 / 100; // 2000 was too fast
+        // public static final double AutoShooterSpeed = 60.0 / 100;
         public static final double AmpShooterSpeed = 30.0 / 100; // TODO update
 
     }
 
-    // TODO get values
     public static class ShooterAngle {
         public static final double CloseShooterAngle = 31.599 / 0.88216761184;
         public static final double FarShooterAngle = 9.9;

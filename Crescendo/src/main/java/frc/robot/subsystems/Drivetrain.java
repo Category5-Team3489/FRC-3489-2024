@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -50,6 +51,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
         if (Utils.isSimulation()) {
             startSimThread();
         }
+
         this.pigeon = new Pigeon2(driveTrainConstants.Pigeon2Id);
     }
 
@@ -65,12 +67,21 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
         return run(() -> this.setControl(requestSupplier.get()));
     }
 
-    public Command applyRequestOnce(Supplier<SwerveRequest> requestSupplier) {
-        return runOnce(() -> this.setControl(requestSupplier.get()));
+    public Command applyFieldCentricFacingAngle(DoubleSupplier degrees, DoubleSupplier velocityX,
+            DoubleSupplier velocityY) {
+        final SwerveRequest.FieldCentricFacingAngle request = new SwerveRequest.FieldCentricFacingAngle();
+
+        request.HeadingController.setP(8);
+        request.HeadingController.setD(0.2);
+        request.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
+
+        return applyRequest(() -> request
+                .withVelocityX(velocityX.getAsDouble())
+                .withVelocityY(velocityY.getAsDouble())
+                .withTargetDirection(Rotation2d.fromDegrees(degrees.getAsDouble())));
     }
 
     public boolean isAroundTargetHeading() {
-        
         Rotation2d target = Rotation2d.fromDegrees(90);
 
         return Math.abs(pigeon.getRotation2d().minus(target).getDegrees()) < AroundTargetHeadingThresholdDegrees;
@@ -80,8 +91,6 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
         return pigeon.getAngle();
     }
 
-
-
     public double getSpeedLimit() {
         return speedLimit.getSpeedLimit();
     }
@@ -89,23 +98,6 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
     public void setSpeedLimit(SpeedLimitState speedLimitState) {
         speedLimit = speedLimitState;
     }
-
-    
-
-    // public void povDrive(int degrees) {
-    //     if (xMetersPerSecond == 0 && yMetersPerSecond == 0) {
-    //         //int degrees = robotContainer.input.getDrivePovAngleDegrees();
-    //         if (degrees != -1) {
-    //             degrees += 90;
-
-    //             xPercent = Math.sin(Math.toRadians(degrees));
-    //             yPercent = Math.cos(Math.toRadians(degrees));
-
-    //             xMetersPerSecond = xPercent * PovSpeedMetersPerSecond;
-    //             yMetersPerSecond = yPercent * PovSpeedMetersPerSecond;
-    //         }
-    //     }
-    // }
 
     private void startSimThread() {
         m_lastSimTime = Utils.getCurrentTimeSeconds();

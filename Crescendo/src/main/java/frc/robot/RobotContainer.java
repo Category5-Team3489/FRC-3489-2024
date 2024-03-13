@@ -281,7 +281,7 @@ public class RobotContainer {
 
         final SetShooterSpeedAndAngle setShooterFar = new SetShooterSpeedAndAngle(
                 Constants.ShooterAngle.FarShooterAngle,
-                Constants.ShooterSpeed.FarShooterSpeed);
+                Constants.ShooterSpeed.DefaultSpeedPercent);
         final SetShooterSpeedAndAngle setShooterClose = new SetShooterSpeedAndAngle(
                 Constants.ShooterAngle.CloseShooterAngle,
                 Constants.ShooterSpeed.CloseShooterSpeed);
@@ -413,7 +413,7 @@ public class RobotContainer {
 
             Command farShootCommand = new SetShooterSpeedAndAngle(
                     Constants.ShooterAngle.AutoShooterAngle,
-                    Constants.ShooterSpeed.AutoShooterSpeed).withTimeout(2);
+                    Constants.ShooterSpeed.DefaultSpeedPercent).withTimeout(2);
 
             Command shooterIndex = index.indexCommand(IndexState.Intake);
             Command shooterIndex2 = index.indexCommand(IndexState.Intake);
