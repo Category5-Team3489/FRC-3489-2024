@@ -34,8 +34,9 @@ public final class Constants {
 
     // TODO get values
     public static class ShooterSpeed {
-        public static final double CloseShooterSpeed = 60.0 / 100; // 2000 was too fast- broke ziptie in speaker //1500 was also
-                                                           // too fast
+        public static final double CloseShooterSpeed = 60.0 / 100; // 2000 was too fast- broke ziptie in speaker //1500
+                                                                   // was also
+        // too fast
         public static final double FarShooterSpeed = 60.0 / 100; // 2000 was too fast
         public static final double AutoShooterSpeed = 60.0 / 100;
         public static final double AmpShooterSpeed = 30.0 / 100; // TODO update
