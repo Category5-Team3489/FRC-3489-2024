@@ -17,6 +17,15 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    public static class Drivetrain {
+        // https://www.swervedrivespecialties.com/products/mk4-swerve-module
+        public static final double MaxMetersPerSecond = 16.5 / 3.281; // (16.5 ft/s) / (3.281 ft/meter)
+        private static final double DrivetrainHypotenuseMeters = Math.hypot(
+                DrivetrainConstants.kFrontLeftXPosInches / 39.37,
+                -DrivetrainConstants.kFrontLeftYPosInches / 39.37);
+        public static final double MaxRadiansPerSecond = MaxMetersPerSecond / -DrivetrainHypotenuseMeters;
+    }
+
     public static class OperatorConstants {
         public static final int DriverControllerPort = 0;
         public static final int ManipulatorControllerPort = 1;

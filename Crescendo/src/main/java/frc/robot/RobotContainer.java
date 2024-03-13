@@ -50,18 +50,13 @@ import frc.robot.subsystems.ShooterSpeed;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+    private static final double MaxMetersPerSecond = Constants.Drivetrain.MaxMetersPerSecond;
+    private static final double MaxRadiansPerSecond = Constants.Drivetrain.MaxRadiansPerSecond;
+
     private final Cat5Autos autos = new Cat5Autos();
 
     private CoralLimelight coralLimelight = CoralLimelight.get();
     private AprilLimelight aprilLimelight = AprilLimelight.get();
-
-    // https://www.swervedrivespecialties.com/products/mk4-swerve-module
-    private static final double MaxMetersPerSecond = 16.5 / 3.281; // (16.5 ft/s) / (3.281 ft/meter)
-    // private static final double MaxAngularRate = 1.5 * Math.PI; // 3/4 of a
-    // rotation per second max angular velocity
-    private static final double MaxRadiansPerSecond = MaxMetersPerSecond
-            / Math.hypot(DrivetrainConstants.kFrontLeftXPosInches / 39.37,
-                    DrivetrainConstants.kFrontLeftYPosInches / 39.37);
 
     // ---------------- INPUT DEVICES ----------------
     private final CommandXboxController manipulatorXbox = new CommandXboxController(
