@@ -33,12 +33,12 @@ public class Intake extends SubsystemBase {
         Shuffleboard.getTab("Main")
                 .addString("intake state", () -> intakeState.toString())
                 .withSize(1, 1)
-                .withPosition(2, 2);
+                .withPosition(7, 0);
 
         Shuffleboard.getTab("Main")
                 .addDouble("intake speed", () -> motor.getAppliedOutput())
                 .withSize(1, 1)
-                .withPosition(3, 2);
+                .withPosition(8, 0);
     }
 
     public Command intakeCommand(IntakeState state) {

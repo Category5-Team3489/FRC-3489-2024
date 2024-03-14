@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Intake.IntakeUntilDetectionAngle;
 import frc.robot.commands.Intake.Outtake;
+import frc.robot.commands.autoShooting.AutoShoot;
 import frc.robot.commands.autoShooting.AutoShootTest;
 import frc.robot.commands.autos.Cat5Autos;
 import frc.robot.commands.autos.Nothing;
@@ -17,7 +18,7 @@ import frc.robot.enums.IndexState;
 import frc.robot.enums.ShooterAngleState;
 import frc.robot.enums.SpeedLimitState;
 import frc.robot.subsystems.AprilLimelight;
-import frc.robot.subsystems.Climber;
+// import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CoralLimelight;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Index;
@@ -75,40 +76,36 @@ public class RobotContainer {
 
     private void configureBindings() {
         bindDriveTrain();
-        bindClimber();
+        // bindClimber();
         bindIntakeIndex();
         bindShooter();
     }
 
-    private void bindClimber() {
-        final Climber climber = Climber.get();
-        manipulatorXbox.povUp().whileTrue(climber.climberCommand(ClimberState.PovUp));
-        manipulatorXbox.povDown().whileTrue(climber.climberCommand(ClimberState.PovDown));
-        manipulatorXbox.povLeft().whileTrue(climber.climberCommand(ClimberState.PovLeft));
-        manipulatorXbox.povRight().whileTrue(climber.climberCommand(ClimberState.PovRight));
-        manipulatorXbox.povDownLeft().whileTrue(climber.climberCommand(ClimberState.PovDownLeft));
-        manipulatorXbox.povDownRight().whileTrue(climber.climberCommand(ClimberState.PovDownRight));
-        manipulatorXbox.povUpLeft().whileTrue(climber.climberCommand(ClimberState.PovUpLeft));
-        manipulatorXbox.povUpRight().whileTrue(climber.climberCommand(ClimberState.PovUpRight));
+    // private void bindClimber() {
+    //     final Climber climber = Climber.get();
+    //     manipulatorXbox.povUp().whileTrue(climber.climberCommand(ClimberState.PovUp));
+    //     manipulatorXbox.povDown().whileTrue(climber.climberCommand(ClimberState.PovDown));
+    //     manipulatorXbox.povLeft().whileTrue(climber.climberCommand(ClimberState.PovLeft));
+    //     manipulatorXbox.povRight().whileTrue(climber.climberCommand(ClimberState.PovRight));
+    //     manipulatorXbox.povDownLeft().whileTrue(climber.climberCommand(ClimberState.PovDownLeft));
+    //     manipulatorXbox.povDownRight().whileTrue(climber.climberCommand(ClimberState.PovDownRight));
+    //     manipulatorXbox.povUpLeft().whileTrue(climber.climberCommand(ClimberState.PovUpLeft));
+    //     manipulatorXbox.povUpRight().whileTrue(climber.climberCommand(ClimberState.PovUpRight));
 
-        manipulatorXbox.back().onTrue(Commands.runOnce(() -> {
-            if (climber.isClimberLocked) {
-                climber.setServos(120, 0).schedule();
-            } else {
-                climber.setServos(0, 120).schedule();
-            }
-        }));
+    //     manipulatorXbox.back().onTrue(Commands.runOnce(() -> {
+    //         if (climber.isClimberLocked) {
+    //             climber.setServos(120, 0).schedule();
+    //         } else {
+    //             climber.setServos(0, 120).schedule();
+    //         }
+    //     }));
 
-        // TODO Test this
-        Trigger servoLockTimTrigger = new Trigger(() -> DriverStation.getMatchTime() >= 135);
+    //     Trigger servoLockTimTrigger = new Trigger(() -> DriverStation.getMatchTime() >= 135);
 
-        servoLockTimTrigger.onTrue(climber.setServos(0, 120));
-    }
+    //     servoLockTimTrigger.onTrue(climber.setServos(0, 120));
+    // }
 
     private void bindDriveTrain() {
-
-        // TODO slow directions
-
         final Drivetrain drivetrain = Drivetrain.get();
         final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
                 .withDeadband(MaxMetersPerSecond * 0.1)
@@ -179,6 +176,36 @@ public class RobotContainer {
                                 drivetrain.getSpeedLimit())
                         .withTargetDirection(Rotation2d.fromDegrees(270))));
 
+        //POV slow driving
+        driverXbox.pov(0).whileTrue(
+                drivetrain.applyRequest(
+                        () -> driveFacingAngle.withVelocityY(0.2 * MaxMetersPerSecond * drivetrain.getSpeedLimit())));
+        driverXbox.pov(45).whileTrue(
+                drivetrain.applyRequest(
+                        () -> driveFacingAngle.withVelocityX(0.2 * MaxMetersPerSecond * drivetrain.getSpeedLimit())
+                                .withVelocityY(0.2 * MaxMetersPerSecond * drivetrain.getSpeedLimit())));
+        driverXbox.pov(90).whileTrue(
+                drivetrain.applyRequest(
+                        () -> driveFacingAngle.withVelocityX(0.2 * MaxMetersPerSecond * drivetrain.getSpeedLimit())));
+        driverXbox.pov(135).whileTrue(
+                drivetrain.applyRequest(
+                        () -> driveFacingAngle.withVelocityX(0.2 * MaxMetersPerSecond * drivetrain.getSpeedLimit())
+                                .withVelocityY(0.2 * MaxMetersPerSecond * drivetrain.getSpeedLimit())));
+        driverXbox.pov(180).whileTrue(
+                drivetrain.applyRequest(
+                        () -> driveFacingAngle.withVelocityY(-0.2 * MaxMetersPerSecond * drivetrain.getSpeedLimit())));
+        driverXbox.pov(225).whileTrue(
+                drivetrain.applyRequest(
+                        () -> driveFacingAngle.withVelocityY(-0.2 * MaxMetersPerSecond * drivetrain.getSpeedLimit())
+                                .withVelocityX(-0.2 * MaxMetersPerSecond * drivetrain.getSpeedLimit())));
+        driverXbox.pov(270).whileTrue(
+                drivetrain.applyRequest(
+                        () -> driveFacingAngle.withVelocityX(-0.2 * MaxMetersPerSecond * drivetrain.getSpeedLimit())));
+        driverXbox.pov(315).whileTrue(
+                drivetrain.applyRequest(
+                        () -> driveFacingAngle.withVelocityY(0.2 * MaxMetersPerSecond * drivetrain.getSpeedLimit())
+                                .withVelocityX(-0.2 * MaxMetersPerSecond * drivetrain.getSpeedLimit())));
+
         // Brake
         driverXbox.back().whileTrue(drivetrain.applyRequest(() -> brake));
 
@@ -193,9 +220,6 @@ public class RobotContainer {
         driverXbox.leftBumper().onFalse(Commands.runOnce(() -> drivetrain.setSpeedLimit(SpeedLimitState.Half)));
         driverXbox.rightBumper()
                 .onFalse(Commands.runOnce(() -> drivetrain.setSpeedLimit(SpeedLimitState.Half)));
-
-        // TODO Slow directions
-        // driverXbox.povUp().onTrue(drivetrain.applyRequest(() -> ))
 
         if (Utils.isSimulation()) {
             drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
@@ -221,9 +245,6 @@ public class RobotContainer {
                         index.stop();
                     }
                 }));
-
-        // a and right Trigger = outtake
-        // manipulatorXbox.rightTrigger().and(manipulatorXbox.a()).onTrue(intake.intakeCommand(IntakeState.Out));
 
         // TODO Remove after testing
         // manipulatorXbox.leftTrigger().onTrue(
@@ -290,7 +311,7 @@ public class RobotContainer {
                 Constants.ShooterAngle.AmpShooterAngle,
                 Constants.ShooterSpeed.AmpShooterSpeed);
 
-        final AutoShootTest autoShootTest = new AutoShootTest();
+        final AutoShoot autoShoot = new AutoShoot();
 
         // b = stop Shooter
         manipulatorXbox.b().onTrue(shooterSpeed.stopCommand());
@@ -322,7 +343,7 @@ public class RobotContainer {
         manipulatorXbox.leftBumper().onTrue(setShooterAmp.finallyDo(() -> intake.hasIntakeBeenSet = false));
 
         // TODO y = Auto Shoot
-        // manipulatorXbox.y().onTrue(autoShoot);
+        manipulatorXbox.y().onTrue(autoShoot);
     }
 
     /**

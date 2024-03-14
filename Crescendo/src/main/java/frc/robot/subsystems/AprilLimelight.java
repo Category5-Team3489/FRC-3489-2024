@@ -25,7 +25,10 @@ public class AprilLimelight extends SubsystemBase {
     private AprilLimelight() {
         // setupAprilLimelightFeed();
 
-        Shuffleboard.getTab("Main").addDouble("Tag", () -> getTagId());
+        Shuffleboard.getTab("Main")
+            .addDouble("Tag", () -> getTagId())
+            .withSize(1, 1)
+            .withPosition(7, 2);
 
         Shuffleboard.getTab("Testing")
                 .addDouble("Limelight X", () -> getTargetX())

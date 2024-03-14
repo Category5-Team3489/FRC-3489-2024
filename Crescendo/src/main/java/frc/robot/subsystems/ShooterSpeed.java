@@ -30,7 +30,7 @@ public class ShooterSpeed extends SubsystemBase {
         Shuffleboard.getTab("Main")
                 .addDouble("Shooter speed", () -> speedPercent)
                 .withSize(1, 1)
-                .withPosition(2, 3);
+                .withPosition(8, 1);
     }
 
     private void setSpeedPercent(double speedPercent) {

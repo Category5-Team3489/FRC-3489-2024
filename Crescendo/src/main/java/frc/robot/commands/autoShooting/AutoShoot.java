@@ -1,10 +1,14 @@
 package frc.robot.commands.autoShooting;
 
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+
 import edu.wpi.first.math.controller.BangBangController;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
+import frc.robot.enums.IndexState;
 import frc.robot.subsystems.AprilLimelight;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Index;
@@ -18,16 +22,22 @@ public class AutoShoot extends Command {
     private final ShooterSpeed shooterSpeed = ShooterSpeed.get();
     private final Index index = Index.get();
 
-    private final Command driveCommand = drivetrain.applyFieldCentricFacingAngle(
-            () -> getDrivetrainAngle(),
-            () -> getDrivetrainVelocityX(),
-            () -> getDrivetrainVelocityY());
+    final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric();
 
-    private double drivetrainAngle = 0;
+    Command driveCommandForward = drivetrain.applyRequest(() -> drive
+            .withVelocityX(getDrivetrainVelocityX())
+            .withVelocityY(getDrivetrainVelocityX())
+            .withRotationalRate(getDrivetrainAngleRate()));
+
+    private double drivetrainAngleRate = 0;
     private double drivetrainVelocityX = 0;
     private double drivetrainVelocityY = 0;
 
-    // private final BangBangController
+    private double rotationSpeed = 0.4 * Constants.Drivetrain.MaxRadiansPerSecond;
+
+    private final double targetXRange = 5;
+    private final double maxYMeterRange = 4;
+    private final double minYMeterRange = 0.2;
 
     public AutoShoot() {
         // In Parallel:
@@ -58,18 +68,60 @@ public class AutoShoot extends Command {
 
         // Return if april tag is not visible
         if (Double.isNaN(targetX) || Double.isNaN(targetY)) {
-            drivetrainAngle = 0;
+            drivetrainAngleRate = 0;
             drivetrainVelocityX = 0;
             drivetrainVelocityY = 0.5;
             return;
         }
 
+        double angle = getShooterAngle(targetY);
+        shooterAngle.updateCommand(angle);
+
+        // if the distance from april tag > Max values in table
+        if (estimateFloorDistance(targetY) > maxYMeterRange) {
+            drivetrainVelocityY = 0.2 * Constants.Drivetrain.MaxMetersPerSecond;      //drive forward
+
+          //if robot is against Speaker
+        } else if (estimateFloorDistance(targetY) < minYMeterRange) {
+            //If x-value inside of range
+            if (Math.abs(targetX) <= targetXRange) {
+                // shoot note
+                index.indexCommand(IndexState.Intake);
+            }
+            // if we are in the negative, move right
+            else if (targetX < 0) {
+                 drivetrainVelocityX = 0.2 * Constants.Drivetrain.MaxMetersPerSecond;
+            } 
+            // if we are in the positive, move left
+            else if (targetX > 0) {
+                 drivetrainVelocityX = -0.2 * Constants.Drivetrain.MaxMetersPerSecond;
+            }
+        }
+
+        // set shooter angle based on ty calculation
+
         // April is visible
+        // if (targetX > targetXRange) {
+        // drivetrainAngleRate = -0.5;
+        // } else if (targetX > targetXRange) {
+        // drivetrainAngleRate = 0.5;
+        // } else {
+        // index.indexCommand(IndexState.Intake);
+        // }
+
+        // Apriltag is visible
+        if (Math.abs(targetX) < targetXRange) {
+            index.indexCommand(IndexState.Intake);
+        } else if (targetX < 0) {
+            drivetrainAngleRate = rotationSpeed;
+        } else if (targetX > 0) {
+            drivetrainAngleRate = rotationSpeed;
+        }
 
     }
 
-    private double getDrivetrainAngle() {
-        return drivetrainAngle;
+    private double getDrivetrainAngleRate() {
+        return drivetrainAngleRate;
     }
 
     private double getDrivetrainVelocityX() {
@@ -83,5 +135,10 @@ public class AutoShoot extends Command {
     private double estimateFloorDistance(double targetY) {
         // TODO Fill in Daniel's fancy math
         return 0;
+    }
+
+    private double getShooterAngle(double ty) {
+        // TODO fill in with shooter look up table
+        return 35.8;
     }
 }

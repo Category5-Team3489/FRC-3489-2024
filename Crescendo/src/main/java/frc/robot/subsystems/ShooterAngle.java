@@ -58,7 +58,7 @@ public class ShooterAngle extends SubsystemBase {
         Shuffleboard.getTab("Main")
                 .addDouble("Target Shooter Angle", () -> targetAngleDegrees)
                 .withSize(1, 1)
-                .withPosition(2, 1);
+                .withPosition(7, 1);
     }
 
     @Override
