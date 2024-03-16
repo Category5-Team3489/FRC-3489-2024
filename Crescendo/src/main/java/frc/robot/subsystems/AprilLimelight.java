@@ -21,6 +21,7 @@ public class AprilLimelight extends SubsystemBase {
     private final NetworkTableEntry targetXEntry = limelight.getEntry("tx");
     private final NetworkTableEntry targetYEntry = limelight.getEntry("ty");
     private final NetworkTableEntry targetAreaEntry = limelight.getEntry("ta");
+    private final NetworkTableEntry targetVisibleEntry = limelight.getEntry("tv");
 
     private AprilLimelight() {
         // setupAprilLimelightFeed();
@@ -67,5 +68,9 @@ public class AprilLimelight extends SubsystemBase {
 
     public double getTargetArea() {
         return targetAreaEntry.getDouble(Double.NaN);
+    }
+
+    public long getTargetVisible() {
+        return targetVisibleEntry.getInteger(0);
     }
 }
