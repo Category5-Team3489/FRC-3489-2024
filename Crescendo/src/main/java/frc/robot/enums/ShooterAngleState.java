@@ -2,8 +2,8 @@ package frc.robot.enums;
 
 public enum ShooterAngleState {
     // TODO Might be division
-    Start(5.0 / 0.88216761184),
-    Max(62.0 / 0.88216761184);
+    Start(5.0),
+    Max(62.0);
 
     private final double shooterAngle;
 

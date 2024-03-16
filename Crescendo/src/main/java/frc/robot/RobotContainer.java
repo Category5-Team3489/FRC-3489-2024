@@ -177,7 +177,7 @@ public class RobotContainer {
                         .withTargetDirection(Rotation2d.fromDegrees(270))));
 
         //POV slow driving
-        driverXbox.pov(0).whileTrue(
+        driverXbox.pov(360).whileTrue(
                 drivetrain.applyRequest(
                         () -> driveFacingAngle.withVelocityY(0.2 * MaxMetersPerSecond * drivetrain.getSpeedLimit())));
         driverXbox.pov(45).whileTrue(
@@ -328,7 +328,7 @@ public class RobotContainer {
                 .finallyDo(() -> intake.hasIntakeBeenSet = false));
 
         // TODO remove after testing
-        manipulatorXbox.y().onTrue(shooterSpeed.updateCommand(() -> 0.7));
+        manipulatorXbox.y().onTrue(shooterSpeed.updateCommand(() -> 0.6));
 
         // Manual Shooter Angle
         manipulatorXbox.axisLessThan(5, -0.1).whileTrue(
@@ -343,7 +343,7 @@ public class RobotContainer {
         manipulatorXbox.leftBumper().onTrue(setShooterAmp.finallyDo(() -> intake.hasIntakeBeenSet = false));
 
         // TODO y = Auto Shoot
-        manipulatorXbox.y().onTrue(autoShoot);
+        // manipulatorXbox.y().onTrue(autoShoot);
     }
 
     /**

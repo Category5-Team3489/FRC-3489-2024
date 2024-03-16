@@ -41,7 +41,7 @@ public class IntakeUntilDetection extends Command {
         // }
 
         // start intake/belt
-        intake.intakeCommand(IntakeState.In).schedule();
+        intake.intakeCommand(IntakeState.centerIn, IntakeState.falconIn).schedule();
         // TODO outtake
         belt.indexCommand(IndexState.Intake).schedule();
 
@@ -68,7 +68,7 @@ public class IntakeUntilDetection extends Command {
     @Override
     public boolean isFinished() {
         // wait to get sensor value (could have this start shooter motor)
-        //return belt.isNoteDetected();
+        // return belt.isNoteDetected();
         return false;
     }
 }

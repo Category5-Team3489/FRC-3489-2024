@@ -21,6 +21,7 @@ public class AutoShoot extends Command {
     private final ShooterAngle shooterAngle = ShooterAngle.get();
     private final ShooterSpeed shooterSpeed = ShooterSpeed.get();
     private final Index index = Index.get();
+    
 
     final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric();
 
@@ -54,17 +55,24 @@ public class AutoShoot extends Command {
         Commands.runOnce(() -> Commands.parallel(
                 shooterSpeed.updateCommand(Constants.ShooterSpeed.DefaultSpeedPercent),
                 drivetrain.applyFieldCentricFacingAngle(() -> 0, () -> 0, () -> 0)));
+        
     }
 
     @Override
     public void initialize() {
+        // System.out.println("Lime Light pressed============================");
 
+        
     }
 
     @Override
     public void execute() {
+        // System.out.println("Lime light execute");
         double targetX = aprilLimelight.getTargetX();
         double targetY = aprilLimelight.getTargetY();
+        
+
+        
 
         // Return if april tag is not visible
         if (Double.isNaN(targetX) || Double.isNaN(targetY)) {
@@ -77,9 +85,12 @@ public class AutoShoot extends Command {
         double angle = getShooterAngle(targetY);
         shooterAngle.updateCommand(angle);
 
+        // System.out.println(angle + "ANGLE+++++++++++++++");
+
         // if the distance from april tag > Max values in table
         if (estimateFloorDistance(targetY) > maxYMeterRange) {
             drivetrainVelocityY = 0.2 * Constants.Drivetrain.MaxMetersPerSecond;      //drive forward
+            System.out.println("if statment");
 
           //if robot is against Speaker
         } else if (estimateFloorDistance(targetY) < minYMeterRange) {
@@ -134,7 +145,7 @@ public class AutoShoot extends Command {
 
     private double estimateFloorDistance(double targetY) {
         // TODO Fill in Daniel's fancy math
-        return 0;
+        return 8;
     }
 
     private double getShooterAngle(double ty) {

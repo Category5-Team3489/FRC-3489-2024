@@ -54,7 +54,7 @@ public final class Constants {
     }
 
     public static class ShooterAngle {
-        public static final double CloseShooterAngle = 31.599 / 0.88216761184;
+        public static final double CloseShooterAngle = 31.599;
         public static final double FarShooterAngle = 9.9;
         public static final double AutoShooterAngle = 29; // TODO update
         public static final double AmpShooterAngle = 20; // TODO update

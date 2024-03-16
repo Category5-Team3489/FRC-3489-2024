@@ -30,7 +30,7 @@ public class Outtake extends Command {
     public void execute() {
 
         // start intake/belt
-        intake.intakeCommand(IntakeState.Out).schedule();
+        intake.intakeCommand(IntakeState.centerOut, IntakeState.falconOut).schedule();
         // TODO fix outtake enum
         belt.indexCommand(IndexState.Outtake).schedule();
         hasOuttakeBeenSet = true;

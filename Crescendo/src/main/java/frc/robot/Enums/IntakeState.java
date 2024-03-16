@@ -2,9 +2,11 @@ package frc.robot.enums;
 
 public enum IntakeState {
     // TODO update values
-    Out(1),
-    In(-1),
-    Off(0);
+    centerOut(1),
+    centerIn(-1),
+    Off(0),
+    falconIn(0.4),
+    falconOut(-0.4);
 
     private final double intakeSpeed;
 
@@ -17,7 +19,7 @@ public enum IntakeState {
     }
 
     public String getStateName(IntakeState intakeState) {
-        
+
         return intakeState.toString();
     }
 
