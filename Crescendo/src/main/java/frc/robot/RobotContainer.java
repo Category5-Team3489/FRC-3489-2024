@@ -257,7 +257,7 @@ public class RobotContainer {
 
                 // TODO Test This with robot
                 laserTrigger
-                                .debounce(0.29, DebounceType.kRising)
+                                .debounce(0.20, DebounceType.kRising)   //0.29
                                 .onTrue(Commands.runOnce(() -> {
                                         if (intake.hasIntakeBeenSet) {
                                                 // intake.hasIntakeBeenSet = false;
@@ -580,6 +580,75 @@ public class RobotContainer {
                                         .withTimeout(driveTimeSeconds)
                                         .withName("ShootTaxi"); // If shooting from angle, turn robot on facing flat
                                                                 // then angle it
+                });
+
+                autos.addAuto(() -> {
+                        final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+                                        .withDeadband(MaxMetersPerSecond * 0.1)
+                                        .withRotationalDeadband(MaxRadiansPerSecond * 0.1)
+                                        .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+
+                        Command closeShootCommand = new SetShooterSpeedAndAngle(
+                                        Constants.ShooterAngle.CloseShooterAngle,
+                                        Constants.ShooterSpeed.CloseShooterSpeed).withTimeout(2);
+
+                        Command autoShoot = new AutoShoot().withTimeout(2);
+
+                        Command shooterIndex = index.indexCommand(IndexState.Intake);
+                        Command shooterIndex2 = index.indexCommand(IndexState.Intake);
+
+                        // Ensure percentages are greater than the 0.1 percent deadband above
+                        // Domain is [-1, 1]
+                        double percentY = 0;
+                        double percentX = 0.3;
+                        double percentOmega = 0;
+                        double driveTimeSeconds = 2;
+
+                        double speedMultiplier = 0.5; // [0, 1]
+
+                        Command driveCommandForward = drivetrain.applyRequest(() -> drive
+                                        .withVelocityX(percentX * MaxMetersPerSecond * speedMultiplier)
+                                        .withVelocityY(-percentY * MaxMetersPerSecond * speedMultiplier)
+                                        .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
+
+                        Command driveCommandForward2 = drivetrain.applyRequest(() -> drive
+                                        .withVelocityX(percentX * MaxMetersPerSecond * speedMultiplier)
+                                        .withVelocityY(-percentY * MaxMetersPerSecond * speedMultiplier)
+                                        .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
+
+                        Trigger laserTrigger = new Trigger(index.laserSensor::get);
+
+                        final Intake intake = Intake.get();
+
+                        final IntakeUntilDetectionAngle intakeUntilDetection = new IntakeUntilDetectionAngle();
+
+                        laserTrigger
+                                        .debounce(0.29, DebounceType.kRising)
+                                        .onTrue(Commands.runOnce(() -> {
+                                                if (intake.hasIntakeBeenSet) {
+                                                        intake.stop();
+                                                        index.stop();
+
+                                                        // TODO Test this when time
+                                                        // intakeUntilDetection.cancel();
+                                                }
+                                        }));
+
+                        // Command shootCommand = Commands.parallel(closeShootCommand,
+                        // Commands.waitSeconds(3))
+                        // .andThen(Commands.parallel(shooterIndex), Commands.waitSeconds(2));
+
+                        return Commands.parallel(closeShootCommand, Commands.waitSeconds(3))
+                                        .andThen(Commands.parallel(shooterIndex), Commands.waitSeconds(2))
+                                        .andThen(() -> closeShootCommand.cancel())
+
+                                        .andThen(intakeUntilDetection)
+                                        .andThen(driveCommandForward.withTimeout(driveTimeSeconds))
+
+
+                                        .andThen(autoShoot)
+
+                                        .withName("ShootIntakeAutoShoot");
                 });
 
                 // Shoot
