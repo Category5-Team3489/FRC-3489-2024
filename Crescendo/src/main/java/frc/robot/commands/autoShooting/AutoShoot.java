@@ -7,6 +7,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.BangBangController;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -37,11 +38,16 @@ public class AutoShoot extends Command {
     Command shootSpeed = shooterSpeed.updateCommand(Constants.ShooterSpeed.DefaultSpeedPercent);
 
     Command angleCommand = shooterAngle
-            .updateCommand(getShooterAngle(estimateFloorDistance(() -> aprilLimelight.getTargetY())));
+            .updateCommand(() -> getShooterAngle(estimateFloorDistance(aprilLimelight.getTargetY())));
 
-    Command waitIndexCommand = Commands.waitSeconds(4).andThen(indexCommand.withTimeout(3).andThen(() -> cancel()));
+    // Command waitIndexCommand = Commands.waitSeconds(4).andThen(indexCommand);
 
     private double angle = 35;
+
+    private Timer indexTimer = new Timer();
+    private Timer shooterTimer = new Timer();
+
+
 
     private double drivetrainAngleRate = 0;
     private double drivetrainVelocityX = 0;
@@ -49,7 +55,7 @@ public class AutoShoot extends Command {
 
     private double rotationSpeed = 0.05 * Constants.Drivetrain.MaxRadiansPerSecond;
 
-    private final double targetXRange = 20;
+    private final double targetXRange = 5;
     private final double maxYMeterRange = 4;
     private final double minYMeterRange = 0.2;
 
@@ -75,6 +81,15 @@ public class AutoShoot extends Command {
     public void initialize() {
         double targetY = aprilLimelight.getTargetY();
 
+        indexTimer.stop();
+        shooterTimer.stop();
+
+        indexTimer.reset();
+        shooterTimer.reset();
+
+        shooterTimer.start();
+
+
         driveCommandForward.schedule();
 
         shootSpeed.schedule();
@@ -97,13 +112,13 @@ public class AutoShoot extends Command {
         double targetY = aprilLimelight.getTargetY();
         double targetV = aprilLimelight.getTargetVisible();
 
-        double floorDistance = estimateFloorDistance(() -> targetY);
+        double floorDistance = estimateFloorDistance(targetY);
         System.out.println("DISTANCE = " + floorDistance);
 
         // Return if april tag is not visible
         if (targetV == 0) {
             drivetrainAngleRate = 0;
-            drivetrainVelocityX = 0.5;
+            drivetrainVelocityX = -0.5;
             drivetrainVelocityY = 0;
             System.out.println("Double.isNaN(targetX) || Double.isNaN(targetY)");
             return;
@@ -138,12 +153,10 @@ public class AutoShoot extends Command {
 
         // Apriltag is visible
         if (Math.abs(targetX) < targetXRange) {
-            // angleCommand.schedule();
-            // indexCommand.schedule();
-            waitIndexCommand.schedule();
 
+            indexAfterShooterSpeed(3);
             driveCommandForward.cancel();
-            // System.out.println("index");
+
 
         } else if (targetX < 0) {
             drivetrainAngleRate = -rotationSpeed;
@@ -153,6 +166,16 @@ public class AutoShoot extends Command {
             driveCommandForward.schedule();
         }
 
+    }
+
+    private void indexAfterShooterSpeed(double time) {
+        if (shooterTimer.hasElapsed(time)) {
+            indexTimer.start();
+            if (!indexTimer.hasElapsed(2)) {
+                indexCommand.schedule();
+            }
+        }
+        
     }
 
     private double getDrivetrainAngleRate() {
@@ -167,8 +190,8 @@ public class AutoShoot extends Command {
         return drivetrainVelocityY;
     }
 
-    private double estimateFloorDistance(DoubleSupplier targetY) {
-        double distance = 44.06 / Math.tan(Math.toRadians(49 + targetY.getAsDouble()));
+    private double estimateFloorDistance(double targetY) {
+        double distance = 44.06 / Math.tan(Math.toRadians(49 + targetY));
         System.out.println("Distance === " + distance);
         return distance;
     }
@@ -183,9 +206,16 @@ public class AutoShoot extends Command {
     public void end(boolean interrupted) {
         driveCommandForward.cancel();
         indexCommand.cancel();
+        System.out.println("INDEX Cancled");
         shootSpeed.cancel();
         angleCommand.cancel();
+        index.stop();
         System.out.println("Cancled");
+    }
+
+    @Override
+    public boolean isFinished() {
+        return indexTimer.hasElapsed(2);
     }
 
     // private void calculateThetaButton_Click() {

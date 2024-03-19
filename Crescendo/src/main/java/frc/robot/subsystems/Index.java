@@ -29,19 +29,20 @@ public class Index extends SubsystemBase {
     private final CANSparkMax motor;
     public final DigitalInput laserSensor;
 
-
     private Index() {
         motor = new CANSparkMax(MotorId, MotorType.kBrushless);
         laserSensor = new DigitalInput(LaserSensorChannel);
 
+    }
 
-        
+    public double getMotorSpeed() {
+        return motor.get();
     }
 
     @Override
     public void periodic() {
-        //System.out.println("Laser Sensor-------  " + laserSensor.get());
-        //System.out.println("Note state" + isNoteDetected());
+        // System.out.println("Laser Sensor------- " + laserSensor.get());
+        // System.out.println("Note state" + isNoteDetected());
     }
 
     public Command indexCommand(IndexState state) {
@@ -59,10 +60,6 @@ public class Index extends SubsystemBase {
     public boolean isNoteDetected() {
         return !laserSensor.get();
     }
-
-
-
-    
 
     // encoder position change (constant) PID
 

@@ -55,6 +55,9 @@ public class RobotContainer {
         private static final double MaxMetersPerSecond = Constants.Drivetrain.MaxMetersPerSecond;
         private static final double MaxRadiansPerSecond = Constants.Drivetrain.MaxRadiansPerSecond;
 
+        private final Command autoShoot = new AutoShoot().onlyWhile(() -> isNotDriving());
+
+
         private final Cat5Autos autos = new Cat5Autos();
 
         // ---------------- INPUT DEVICES ----------------
@@ -253,16 +256,19 @@ public class RobotContainer {
                 final IntakeUntilDetectionAngle intakeUntilDetection = new IntakeUntilDetectionAngle();
                 final Outtake outtake = new Outtake();
 
+
+
                 Trigger laserTrigger = new Trigger(index.laserSensor::get);
 
                 // TODO Test This with robot
                 laserTrigger
-                                .debounce(0.20, DebounceType.kRising)   //0.29
+                                //.debounce(0.06, DebounceType.kRising)   //0.29
                                 .onTrue(Commands.runOnce(() -> {
-                                        if (intake.hasIntakeBeenSet) {
+                                        if (intake.hasIntakeBeenSet && !autoShoot.isScheduled() && index.getMotorSpeed() < 0) {
                                                 // intake.hasIntakeBeenSet = false;
                                                 intake.stop();
                                                 index.stop();
+                                                System.out.print("Laser Stop");
                                         }
                                 }));
 
@@ -339,7 +345,6 @@ public class RobotContainer {
         final SetShooterSpeedAngleDifferent setShooterAmp = new SetShooterSpeedAngleDifferent(
                 Constants.ShooterAngle.AmpShooterAngle, 0.4, 0.30);
 
-        final Command autoShoot = new AutoShoot().onlyWhile(() -> isNotDriving());
 
         
 
