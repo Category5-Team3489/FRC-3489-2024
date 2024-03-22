@@ -23,7 +23,6 @@
 // public class SideShootIntakeShoot extends Command {
 //     private final Drivetrain drivetrain = Drivetrain.get();
 //     private final ShooterAngle shooterAngle = ShooterAngle.get();
-//     private final ShooterSpeed shooterSpeed = ShooterSpeed.get();
 //     private final Index index = Index.get();
 //     private final Intake intake = Intake.get();
 
@@ -31,7 +30,6 @@
 //     private static final double MaxRadiansPerSecond = Constants.Drivetrain.MaxRadiansPerSecond;
 
 //     Trigger laserTrigger = new Trigger(index.laserSensor::get);
-
 
 //     final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
 //             .withDeadband(MaxMetersPerSecond * 0.1)
@@ -43,16 +41,19 @@
 //             Constants.ShooterSpeed.CloseShooterSpeed).withTimeout(2);
 
 //     Command autoShoot = new AutoShoot().withTimeout(2);
+//     Command autoShoot2 = new AutoShoot().withTimeout(2);
+
 
 //     Command shooterIndex = index.indexCommand(IndexState.Intake);
 //     Command shooterIndex2 = index.indexCommand(IndexState.Intake);
 
 //     // Ensure percentages are greater than the 0.1 percent deadband above
 //     // Domain is [-1, 1]
-//     double percentY = 0;
-//     double percentX = 0.3;
-//     double percentOmega = 0;
-//     double driveTimeSeconds = 2.6;  //3 was to far for limelight-- 2 was not enough for intake
+//     double percentY = 0.3;
+//     double percentX = 0;
+//     double percentOmega = 2;
+//     double driveTimeSeconds = 2.6; // 3 was to far for limelight-- 2 was not enough for intake
+//     double driveTimeSeconds2 = 2;
 
 //     double speedMultiplier = 0.5; // [0, 1]
 
@@ -66,49 +67,46 @@
 //             .withVelocityY(-percentY * MaxMetersPerSecond * speedMultiplier)
 //             .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
 
+//     Command driveCommandForward3 = drivetrain.applyRequest(() -> drive
+//             .withVelocityX(percentX * MaxMetersPerSecond * speedMultiplier)
+//             .withVelocityY(-percentY * MaxMetersPerSecond * speedMultiplier)
+//             .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
 
 //     final IntakeUntilDetectionAngle intakeUntilDetection = new IntakeUntilDetectionAngle();
 
-//     laserTrigger
-//             .debounce(0.29, DebounceType.kRising)
-//             .onTrue(Commands.runOnce(() -> {
-//                 if (intake.hasIntakeBeenSet) {
-//                     intake.stop();
-//                     index.stop();
+    
+//     public Command sideShootIntakeShoot() {
 
-//                     // TODO Test this when time
-//                     // intakeUntilDetection.cancel();
-//                 }
-//             }));
+//         // start facing april tag
+//         // auto stoot
+//         // rotate to straight
+//         // drive forward and intake
+//         // drive back to see april tag
+//         // auto shoot
 
-// private Command sideShootIntakeShoot() {
+//         return Commands.runOnce(() -> autoShoot.schedule())
+//                 .andThen(driveCommandForward.withTimeout(driveTimeSeconds))
 
-//     return Commands.parallel(closeShootCommand, Commands.waitSeconds(3))
-//             .andThen(Commands.parallel(shooterIndex), Commands.waitSeconds(2))
-//             .andThen(() -> closeShootCommand.cancel())
+//                 .andThen(() -> shooterAngle.updateCommand(ShooterAngleState.Max.getAngle()).schedule())
+//                 .andThen(intake.intakeCommand(IntakeState.centerIn, IntakeState.falconIn))
+//                 .andThen(index.indexCommand(IndexState.Intake))
 
-//             .andThen(() -> System.out.println("===============shoot Cancle"))
+//                 .andThen(driveCommandForward2.withTimeout(driveTimeSeconds2))
 
-//             .andThen(intake.intakeCommand(IntakeState.centerIn, IntakeState.falconIn))
-//             .andThen(index.indexCommand(IndexState.Intake))
 
-//             .andThen(() -> shooterAngle.updateCommand(ShooterAngleState.Max.getAngle()).schedule())
-//             .andThen(intake.intakeCommand(IntakeState.centerIn, IntakeState.falconIn))
-//             .andThen(index.indexCommand(IndexState.Intake))
+//                 .andThen(() -> laserTrigger
+//                         .debounce(0.29, DebounceType.kRising)
+//                         .onTrue(Commands.runOnce(() -> {
+//                             if (intake.hasIntakeBeenSet) {
+//                                 intake.stop();
+//                                 index.stop();
+//                             }
+//                         })))
 
-//             .andThen(driveCommandForward.withTimeout(driveTimeSeconds))
+//                 .andThen(driveCommandForward3.withTimeout(1))
 
-//             .andThen(() -> laserTrigger
-//                     .debounce(0.29, DebounceType.kRising)
-//                     .onTrue(Commands.runOnce(() -> {
-//                         if (intake.hasIntakeBeenSet) {
-//                             intake.stop();
-//                             index.stop();
-//                         }
-//                     })))
+//                 .andThen(autoShoot2)
 
-//             .andThen(autoShoot)
-
-//             .withName("ShootIntakeAutoShoot");
-//                 }
-// });}
+//                 .withName("ShootIntakeAutoShoot");
+//     }
+// }
