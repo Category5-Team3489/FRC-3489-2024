@@ -11,7 +11,7 @@ import frc.robot.commands.autoShooting.AutoShoot;
 import frc.robot.commands.autoShooting.AutoShootTest;
 import frc.robot.commands.autos.Cat5Autos;
 import frc.robot.commands.autos.Nothing;
-import frc.robot.commands.autos.SideShootIntakeShoot;
+// import frc.robot.commands.autos.SideShootIntakeShoot;
 import frc.robot.commands.shooter.SetShooterSpeedAndAngle;
 import frc.robot.commands.shooter.SetShooterSpeedAngleDifferent;
 import frc.robot.commands.shooter.ShooterIntake2;
@@ -405,7 +405,7 @@ public class RobotContainer {
         final Drivetrain drivetrain = Drivetrain.get();
         final Index index = Index.get();
 
-        final SideShootIntakeShoot sideShootIntakeShoot = new SideShootIntakeShoot();
+        // final SideShootIntakeShoot sideShootIntakeShoot = new SideShootIntakeShoot();
 
         autos.addAuto(() -> {
             final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
@@ -781,7 +781,7 @@ public class RobotContainer {
 
         //             .andThen(autoShoot2)
 
-        //             .withName("SideShootIntakeAutoShoot");
+        //             .withName("SideShootIntakeAuto");
 
         // });
 
