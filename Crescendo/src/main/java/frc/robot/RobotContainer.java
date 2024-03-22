@@ -262,9 +262,9 @@ public class RobotContainer {
 
                 // TODO Test This with robot
                 laserTrigger
-                                //.debounce(0.06, DebounceType.kRising)   //0.29
+                                .debounce(0.29, DebounceType.kRising)   //0.29
                                 .onTrue(Commands.runOnce(() -> {
-                                        if (intake.hasIntakeBeenSet && !autoShoot.isScheduled() && index.getMotorSpeed() < 0) {
+                                        if (intake.hasIntakeBeenSet && !autoShoot.isScheduled()){ //&& index.getMotorSpeed() < 0) {
                                                 // intake.hasIntakeBeenSet = false;
                                                 intake.stop();
                                                 index.stop();
@@ -413,7 +413,7 @@ public class RobotContainer {
                         // Ensure percentages are greater than the 0.1 percent deadband above
                         // Domain is [-1, 1]
                         double percentY = 0.3;
-                        double percentX = 0;
+                        double percentX = 0.3;
                         double percentOmega = 0;
                         double driveTimeSeconds = 3;
 
@@ -647,8 +647,16 @@ public class RobotContainer {
                                         .andThen(Commands.parallel(shooterIndex), Commands.waitSeconds(2))
                                         .andThen(() -> closeShootCommand.cancel())
 
-                                        .andThen(intakeUntilDetection)
+                                        .andThen(() -> System.out.println("===============shoot Cancle"))
+
+                                        // .andThen(Commands.parallel(driveCommandForward.withTimeout(driveTimeSeconds), intakeUntilDetection))
+
+                                        // .andThen(Commands.parallel(driveCommandForward.withTimeout(driveTimeSeconds), intakeUntilDetection.withTimeout(driveTimeSeconds)))
+
+
                                         .andThen(driveCommandForward.withTimeout(driveTimeSeconds))
+                                        .andThen(intakeUntilDetection.withTimeout(2))
+
 
 
                                         .andThen(autoShoot)
