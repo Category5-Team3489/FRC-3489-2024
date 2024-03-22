@@ -93,8 +93,10 @@ public class AutoShoot extends Command {
         driveCommandForward.schedule();
 
         shootSpeed.schedule();
+        System.out.println("SHOOT SPEED START");
         // angle = getShooterAngle(targetY);
         angleCommand.schedule();
+        System.out.println("Angle command start");
         // init drive command
 
     }
