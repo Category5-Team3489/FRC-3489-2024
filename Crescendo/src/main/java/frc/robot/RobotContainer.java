@@ -343,7 +343,7 @@ public class RobotContainer {
         // );
 
         final SetShooterSpeedAngleDifferent setShooterAmp = new SetShooterSpeedAngleDifferent(
-                Constants.ShooterAngle.AmpShooterAngle, 0.4, 0.30);
+                Constants.ShooterAngle.AmpShooterAngle, 0.4, 0.30);  //40, 30 = amp  //60-60 = trap
 
         // b = stop Shooter
         manipulatorXbox.b().onTrue(shooterSpeed.stopCommand());
@@ -377,13 +377,16 @@ public class RobotContainer {
         // TODO y = Auto Shoot
         // manipulatorXbox.y().onTrue(autoShoot);
 
-        manipulatorXbox.y().onTrue(Commands.runOnce(() -> {
-            if (autoShoot.isScheduled()) {
-                autoShoot.cancel();
-            } else {
-                autoShoot.schedule();
-            }
-        }));
+        // manipulatorXbox.y().onTrue(Commands.runOnce(() -> {
+        //     if (autoShoot.isScheduled()) {
+        //         autoShoot.cancel();
+        //     } else {
+        //         autoShoot.schedule();
+        //     }
+        // }));
+
+        //TODO Test
+        manipulatorXbox.y().onTrue(Commands.runOnce(() -> autoShoot.schedule()));
 
     }
 
@@ -604,7 +607,7 @@ public class RobotContainer {
             double percentY = 0;
             double percentX = 0.3;
             double percentOmega = 0;
-            double driveTimeSeconds = 2.6;  //3 was to far for limelight-- 2 was not enough for intake
+            double driveTimeSeconds = 2.5;  //3 was to far for limelight-- 2 was not enough for intake
 
             double speedMultiplier = 0.5; // [0, 1]
 
@@ -614,7 +617,7 @@ public class RobotContainer {
                     .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
 
             Command driveCommandForward2 = drivetrain.applyRequest(() -> drive
-                    .withVelocityX(percentX * MaxMetersPerSecond * speedMultiplier)
+                    .withVelocityX(-percentX * MaxMetersPerSecond * speedMultiplier)
                     .withVelocityY(-percentY * MaxMetersPerSecond * speedMultiplier)
                     .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
 
@@ -677,7 +680,9 @@ public class RobotContainer {
                                 }
                             })))
 
-                    .andThen(autoShoot)
+                    .andThen(driveCommandForward2.withTimeout(1))
+
+                    .andThen(() -> autoShoot.schedule())
 
                     .withName("ShootIntakeAutoShoot");
         });

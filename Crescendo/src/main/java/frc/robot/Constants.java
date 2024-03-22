@@ -59,6 +59,8 @@ public final class Constants {
         public static final double AutoShooterAngle = 29; // TODO update
         public static final double AmpShooterAngle = 17.79999999999997; // TODO update
 
+        public static final double TrapShooterAngle = 31.99999999999992;
+
     }
 
     // public static class AprilLimelight {

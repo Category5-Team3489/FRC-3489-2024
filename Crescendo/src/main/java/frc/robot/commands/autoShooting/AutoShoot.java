@@ -156,7 +156,7 @@ public class AutoShoot extends Command {
         // Apriltag is visible
         if (Math.abs(targetX) < targetXRange) {
 
-            indexAfterShooterSpeed(3);
+            indexAfterShooterSpeed(1);
             driveCommandForward.cancel();
 
 
