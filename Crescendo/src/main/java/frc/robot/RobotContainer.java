@@ -10,7 +10,9 @@ import frc.robot.commands.Intake.Outtake;
 import frc.robot.commands.autoShooting.AutoShoot;
 import frc.robot.commands.autoShooting.AutoShootTest;
 import frc.robot.commands.autos.Cat5Autos;
+// import frc.robot.commands.autos.CenterShootIntakeShoot;
 import frc.robot.commands.autos.Nothing;
+// import frc.robot.commands.autos.ThreePieceAuto;
 // import frc.robot.commands.autos.SideShootIntakeShoot;
 import frc.robot.commands.shooter.SetShooterSpeedAndAngle;
 import frc.robot.commands.shooter.SetShooterSpeedAngleDifferent;
@@ -590,6 +592,16 @@ public class RobotContainer {
                                             // then angle it
         });
 
+        // autos.addAuto(() -> {
+        //     CenterShootIntakeShoot centerTwoPiece = new CenterShootIntakeShoot();
+        //     return centerTwoPiece.centerShootIntakeShoot();
+        // });
+
+        // autos.addAuto(() -> {
+        //     ThreePieceAuto threePiece = new ThreePieceAuto();
+        //     return threePiece.threePieceAuto();
+        // });
+
         autos.addAuto(() -> {
             final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
                     .withDeadband(MaxMetersPerSecond * 0.1)
@@ -715,42 +727,47 @@ public class RobotContainer {
         //             .withRotationalDeadband(MaxRadiansPerSecond * 0.1)
         //             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-        //     Command closeShootCommand = new SetShooterSpeedAndAngle(
-        //             Constants.ShooterAngle.CloseShooterAngle,
-        //             Constants.ShooterSpeed.CloseShooterSpeed).withTimeout(2);
-
         //     Command autoShoot = new AutoShoot().withTimeout(2);
         //     Command autoShoot2 = new AutoShoot().withTimeout(2);
 
-        //     Command shooterIndex = index.indexCommand(IndexState.Intake);
-        //     Command shooterIndex2 = index.indexCommand(IndexState.Intake);
-
         //     // Ensure percentages are greater than the 0.1 percent deadband above
         //     // Domain is [-1, 1]
-        //     double percentY = 0.3;
+
+        //     // Rotate/drive side
+        //     double percentY = 0;
         //     double percentX = 0;
         //     double percentOmega = 2;
-        //     double driveTimeSeconds = 2.6; // 3 was to far for limelight-- 2 was not enough for intake
-        //     double driveTimeSeconds2 = 2;
+
+        //     // intake drive
+        //     double percentY2 = 0;
+        //     double percentX2 = 0.3;
+        //     double percentOmega2 = 0;
+
+        //     // drive back
+        //     double percentY3 = 0;
+        //     double percentX3 = -0.3;
+        //     double percentOmega3 = 0;
+
+        //     double driveTimeSeconds = 0.2; // 3 was to far for limelight-- 2 was not enough for intake
+        //     double driveTimeSeconds2 = 2.5;
+        //     double driveTimeSeconds3 = 1;
 
         //     double speedMultiplier = 0.5; // [0, 1]
 
-        //     Command driveCommandForward = drivetrain.applyRequest(() -> drive
+        //     Command driveCommandSideRotate = drivetrain.applyRequest(() -> drive
         //             .withVelocityX(percentX * MaxMetersPerSecond * speedMultiplier)
         //             .withVelocityY(-percentY * MaxMetersPerSecond * speedMultiplier)
         //             .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
 
-        //     Command driveCommandForward2 = drivetrain.applyRequest(() -> drive
-        //             .withVelocityX(percentX * MaxMetersPerSecond * speedMultiplier)
-        //             .withVelocityY(-percentY * MaxMetersPerSecond * speedMultiplier)
-        //             .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
+        //     Command driveCommandIntake = drivetrain.applyRequest(() -> drive
+        //             .withVelocityX(percentX2 * MaxMetersPerSecond * speedMultiplier)
+        //             .withVelocityY(-percentY2 * MaxMetersPerSecond * speedMultiplier)
+        //             .withRotationalRate(-percentOmega2 * MaxRadiansPerSecond * speedMultiplier));
 
-        //     Command driveCommandForward3 = drivetrain.applyRequest(() -> drive
-        //             .withVelocityX(percentX * MaxMetersPerSecond * speedMultiplier)
-        //             .withVelocityY(-percentY * MaxMetersPerSecond * speedMultiplier)
-        //             .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
-
-        //     final IntakeUntilDetectionAngle intakeUntilDetection = new IntakeUntilDetectionAngle();
+        //     Command driveCommandBack = drivetrain.applyRequest(() -> drive
+        //             .withVelocityX(percentX3 * MaxMetersPerSecond * speedMultiplier)
+        //             .withVelocityY(-percentY3 * MaxMetersPerSecond * speedMultiplier)
+        //             .withRotationalRate(-percentOmega3 * MaxRadiansPerSecond * speedMultiplier));
 
         //     // start facing april tag
         //     // auto stoot
@@ -759,14 +776,17 @@ public class RobotContainer {
         //     // drive back to see april tag
         //     // auto shoot
 
+        //     // TODO if that does not work
+        //     // return autoShoot
+
         //     return Commands.runOnce(() -> autoShoot.schedule())
-        //             .andThen(driveCommandForward.withTimeout(driveTimeSeconds))
+        //             .andThen(driveCommandSideRotate.withTimeout(driveTimeSeconds))
 
         //             .andThen(() -> shooterAngle.updateCommand(ShooterAngleState.Max.getAngle()).schedule())
         //             .andThen(intake.intakeCommand(IntakeState.centerIn, IntakeState.falconIn))
         //             .andThen(index.indexCommand(IndexState.Intake))
 
-        //             .andThen(driveCommandForward2.withTimeout(driveTimeSeconds2))
+        //             .andThen(driveCommandIntake.withTimeout(driveTimeSeconds2))
 
         //             .andThen(() -> laserTrigger
         //                     .debounce(0.29, DebounceType.kRising)
@@ -777,13 +797,105 @@ public class RobotContainer {
         //                         }
         //                     })))
 
-        //             .andThen(driveCommandForward3.withTimeout(1))
+        //             .andThen(driveCommandBack.withTimeout(driveTimeSeconds3))
 
         //             .andThen(autoShoot2)
 
-        //             .withName("SideShootIntakeAuto");
+        //             .withName("RightSideShootIntakeAuto");
 
         // });
+
+        // autos.addAuto(() -> {
+
+        //     Trigger laserTrigger = new Trigger(index.laserSensor::get);
+
+        //     ShooterAngle shooterAngle = ShooterAngle.get();
+        //     Intake intake = Intake.get();
+
+        //     final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+        //             .withDeadband(MaxMetersPerSecond * 0.1)
+        //             .withRotationalDeadband(MaxRadiansPerSecond * 0.1)
+        //             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+
+        //     Command autoShoot = new AutoShoot().withTimeout(2);
+        //     Command autoShoot2 = new AutoShoot().withTimeout(2);
+
+        //     // Ensure percentages are greater than the 0.1 percent deadband above
+        //     // Domain is [-1, 1]
+
+        //     // Rotate/drive side
+        //     double percentY = 0;
+        //     double percentX = 0;
+        //     double percentOmega = -2;
+
+        //     // intake drive
+        //     double percentY2 = 0;
+        //     double percentX2 = 0.3;
+        //     double percentOmega2 = 0;
+
+        //     // drive back
+        //     double percentY3 = 0;
+        //     double percentX3 = -0.3;
+        //     double percentOmega3 = 0;
+
+        //     double driveTimeSeconds = 0.2; // 3 was to far for limelight-- 2 was not enough for intake
+        //     double driveTimeSeconds2 = 2.5;
+        //     double driveTimeSeconds3 = 1;
+
+        //     double speedMultiplier = 0.5; // [0, 1]
+
+        //     Command driveCommandSideRotate = drivetrain.applyRequest(() -> drive
+        //             .withVelocityX(percentX * MaxMetersPerSecond * speedMultiplier)
+        //             .withVelocityY(-percentY * MaxMetersPerSecond * speedMultiplier)
+        //             .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
+
+        //     Command driveCommandIntake = drivetrain.applyRequest(() -> drive
+        //             .withVelocityX(percentX2 * MaxMetersPerSecond * speedMultiplier)
+        //             .withVelocityY(-percentY2 * MaxMetersPerSecond * speedMultiplier)
+        //             .withRotationalRate(-percentOmega2 * MaxRadiansPerSecond * speedMultiplier));
+
+        //     Command driveCommandBack = drivetrain.applyRequest(() -> drive
+        //             .withVelocityX(percentX3 * MaxMetersPerSecond * speedMultiplier)
+        //             .withVelocityY(-percentY3 * MaxMetersPerSecond * speedMultiplier)
+        //             .withRotationalRate(-percentOmega3 * MaxRadiansPerSecond * speedMultiplier));
+
+        //     // start facing april tag
+        //     // auto stoot
+        //     // rotate to straight
+        //     // drive forward and intake
+        //     // drive back to see april tag
+        //     // auto shoot
+
+        //     // TODO if that does not work
+        //     // return autoShoot
+
+        //     return Commands.runOnce(() -> autoShoot.schedule())
+        //             .andThen(driveCommandSideRotate.withTimeout(driveTimeSeconds))
+
+        //             .andThen(() -> shooterAngle.updateCommand(ShooterAngleState.Max.getAngle()).schedule())
+        //             .andThen(intake.intakeCommand(IntakeState.centerIn, IntakeState.falconIn))
+        //             .andThen(index.indexCommand(IndexState.Intake))
+
+        //             .andThen(driveCommandIntake.withTimeout(driveTimeSeconds2))
+
+        //             .andThen(() -> laserTrigger
+        //                     .debounce(0.29, DebounceType.kRising)
+        //                     .onTrue(Commands.runOnce(() -> {
+        //                         if (intake.hasIntakeBeenSet) {
+        //                             intake.stop();
+        //                             index.stop();
+        //                         }
+        //                     })))
+
+        //             .andThen(driveCommandBack.withTimeout(driveTimeSeconds3))
+
+        //             .andThen(autoShoot2)
+
+        //             .withName("LeftSideShootIntakeAuto");
+
+        // });
+
+        
 
         // autos.addAuto(() -> {
         // return sideShootIntakeShoot.sideShootIntakeShoot()
