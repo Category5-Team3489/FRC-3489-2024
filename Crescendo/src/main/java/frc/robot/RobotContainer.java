@@ -78,7 +78,8 @@ public class RobotContainer {
         private final CommandXboxController driverXbox = new CommandXboxController(
                         OperatorConstants.DriverControllerPort);
 
-        private final XboxController tesController = new XboxController(2);
+        //TODO Test with port 0 -> add to drive button  and see if the code works.
+        // private final XboxController tesController = new XboxController(2);
 
         /**
          * The container for the robot. Contains subsystems, OI devices, and commands.
