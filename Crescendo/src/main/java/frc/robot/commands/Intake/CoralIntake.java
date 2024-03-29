@@ -1,123 +1,134 @@
-// package frc.robot.commands.autoShooting;
+package frc.robot.commands.Intake;
 
-// import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
-// import edu.wpi.first.math.controller.BangBangController;
-// import edu.wpi.first.math.controller.PIDController;
-// import edu.wpi.first.wpilibj2.command.Command;
-// import edu.wpi.first.wpilibj2.command.Commands;
-// import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-// import frc.robot.Constants;
-// import frc.robot.enums.IndexState;
-// import frc.robot.subsystems.AprilLimelight;
-// import frc.robot.subsystems.CoralLimelight;
-// import frc.robot.subsystems.Drivetrain;
-// import frc.robot.subsystems.Index;
-// import frc.robot.subsystems.ShooterAngle;
-// import frc.robot.subsystems.ShooterSpeed;
+import edu.wpi.first.math.controller.BangBangController;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants;
+import frc.robot.enums.IndexState;
+import frc.robot.subsystems.AprilLimelight;
+import frc.robot.subsystems.CoralLimelight;
+import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Index;
+import frc.robot.subsystems.ShooterAngle;
+import frc.robot.subsystems.ShooterSpeed;
 
-// public class CoralIntake extends Command {
-//     private final Drivetrain drivetrain = Drivetrain.get();
-//     private final CoralLimelight coralLimelight = CoralLimelight.get();
+public class CoralIntake extends Command {
+    private final Drivetrain drivetrain = Drivetrain.get();
+    private final CoralLimelight coralLimelight = CoralLimelight.get();
+    private final ShooterAngle shooterAngle = ShooterAngle.get();
+    private final Index index = Index.get();
 
-//     private final IntakeUntilDetection intake = new IntakeUntilDetection();
+    private final IntakeUntilDetection intake = new IntakeUntilDetection();
+    private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric();
 
+    Command driveCommandForward = drivetrain.applyRequest(() -> drive
+            .withVelocityX(getDrivetrainVelocityX())
+            .withVelocityY(getDrivetrainVelocityY())
+            .withRotationalRate(getDrivetrainAngleRate()));
 
-//     final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric();
+    private double drivetrainAngleRate = 0;
+    private double drivetrainVelocityX = 0;
+    private double drivetrainVelocityY = 0;
 
-//     Command driveCommandForward = drivetrain.applyRequest(() -> drive
-//             .withVelocityX(getDrivetrainVelocityX())
-//             .withVelocityY(getDrivetrainVelocityX())
-//             .withRotationalRate(getDrivetrainAngleRate()));
+    private double speed = (16.5 / 3.281) * 0.1;
 
-//     private double drivetrainAngleRate = 0;
-//     private double drivetrainVelocityX = 0;
-//     private double drivetrainVelocityY = 0;
+    private double rotationSpeed = 0.4 * Constants.Drivetrain.MaxRadiansPerSecond;
 
-//     private double rotationSpeed = 0.4 * Constants.Drivetrain.MaxRadiansPerSecond;
+    // TODO Test
+    private final double tXRange = 5;
+    private final double tYRange = 5;
 
-//     private final double targetXRange = 5;
-//     private final double maxYMeterRange = 4;
-//     private final double minYMeterRange = 0.2;
+    public CoralIntake() {
+        Commands.runOnce(() -> Commands.parallel(
+                drivetrain.applyFieldCentricFacingAngle(() -> 0, () -> 0, () -> 0)));
+    }
 
-//     public CoralIntake() {
+    @Override
+    public void initialize() {
+    }
 
-//         // TODO Continue
-//         Commands.runOnce(() -> Commands.parallel(
-//                 drivetrain.applyFieldCentricFacingAngle(() -> 0, () -> 0, () -> 0)));
-//     }
+    @Override
+    public void execute() {
+        double targetX = coralLimelight.getTargetX();
+        double targetY = coralLimelight.getTargetY();
+        double targetV = coralLimelight.getTargetVisible();
 
-//     @Override
-//     public void initialize() {
-//     }
+        double currentDegrees = drivetrain.getCurrentHeading();
 
-//     @Override
-//     public void execute() {
-//         double targetX = coralLimelight.getTargetX();
-//         double targetY = coralLimelight.getTargetY();
+        // Return if april tag is not visible
+        if (targetV == 0) {
+            System.out.println("Note is not visible");
+            return;
+        }
 
-//         // Return if april tag is not visible
-//         if (Double.isNaN(targetX) || Double.isNaN(targetY)) {
-//             drivetrainAngleRate = 0;
-//             drivetrainVelocityX = 0;
-//             drivetrainVelocityY = 0.5;
-//             return;
-//         }
+        if (targetY <= tYRange) {
+            // if within range
+            if (Math.abs(targetX) < tXRange) {
+                intake.schedule();
+                drivetrainAngleRate = 0;
+                drivetrainVelocityX = getXVelocityCalculation(currentDegrees);
+                drivetrainVelocityY = getYVelocityCalculation(currentDegrees);
+                driveCommandForward.schedule();
+                System.out.println("EQUAL");
 
-//         double angle = getShooterAngle(targetY);
-//         shooterAngle.updateCommand(angle);
+            } else if (targetX < 0) { // if less than target
+                drivetrainAngleRate = -rotationSpeed;
+                driveCommandForward.schedule();
+                System.out.println("target < 0"); //only printed this
+            } else if (targetX > 0) { // if greater than target
+                drivetrainAngleRate = rotationSpeed;
+                driveCommandForward.schedule();
+                System.out.println("target > 0");
 
-//         // if the distance from april tag > Max values in table
-//         if (estimateFloorDistance(targetY) > maxYMeterRange) {
-//             drivetrainVelocityY = 0.2 * Constants.Drivetrain.MaxMetersPerSecond;      //drive forward
+            }
+        }
+    }
 
-//           //if robot is against Speaker
-//         } else if (estimateFloorDistance(targetY) < minYMeterRange) {
-//             //If x-value inside of range
-//             if (Math.abs(targetX) <= targetXRange) {
-//                 // shoot note
-//                 index.indexCommand(IndexState.Intake);
-//             }
-//             // if we are in the negative, move right
-//             else if (targetX < 0) {
-//                  drivetrainVelocityX = 0.2 * Constants.Drivetrain.MaxMetersPerSecond;
-//             } 
-//             // if we are in the positive, move left
-//             else if (targetX > 0) {
-//                  drivetrainVelocityX = -0.2 * Constants.Drivetrain.MaxMetersPerSecond;
-//             }
-//         }
+    private double getDrivetrainAngleRate() {
+        return drivetrainAngleRate;
+    }
 
-//         // Note is visible
-//         if (Math.abs(targetX) < targetXRange) {
-//             index.indexCommand(IndexState.Intake);
-//         } else if (targetX < 0) {
-//             drivetrainAngleRate = rotationSpeed;
-//         } else if (targetX > 0) {
-//             drivetrainAngleRate = rotationSpeed;
-//         }
+    private double getDrivetrainVelocityX() {
+        return drivetrainVelocityX;
+    }
 
-//     }
+    private double getDrivetrainVelocityY() {
+        return drivetrainVelocityY;
+    }
 
-//     private double getDrivetrainAngleRate() {
-//         return drivetrainAngleRate;
-//     }
+    private double estimateFloorDistance(double targetY) {
+        // TODO Fill in Daniel's fancy math
+        return 0;
+    }
 
-//     private double getDrivetrainVelocityX() {
-//         return drivetrainVelocityX;
-//     }
+    private double getShooterAngle(double ty) {
+        // TODO fill in with shooter look up table
+        return 35.8;
+    }
 
-//     private double getDrivetrainVelocityY() {
-//         return drivetrainVelocityY;
-//     }
+    private double getXVelocityCalculation(double angle) {
+        return Math.sin(angle) * speed;
+    }
 
-//     private double estimateFloorDistance(double targetY) {
-//         // TODO Fill in Daniel's fancy math
-//         return 0;
-//     }
+    private double getYVelocityCalculation(double angle) {
+        return Math.cos(angle) * speed;
+    }
+}
 
-//     private double getShooterAngle(double ty) {
-//         // TODO fill in with shooter look up table
-//         return 35.8;
-//     }
-// }
+// press button
+// check if note is visible
+// if with in ty degree range
+// rotate depending on tx value until tx == 0
+// start intake
+// drive forward
+// wait for laser value then shooter = home
+// if outside
+// print error
+// return
+
+// is the current heading output correct?
+//

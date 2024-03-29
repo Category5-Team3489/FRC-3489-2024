@@ -42,7 +42,7 @@ public class RightShootIntakeAuto extends Command{
     // Domain is [-1, 1]
 
     // Rotate/drive side
-    double percentY = 0;
+    double percentY = 0.3;
     double percentX = 0;
     double percentOmega = 0.2;
 

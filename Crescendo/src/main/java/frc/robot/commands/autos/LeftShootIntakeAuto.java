@@ -41,9 +41,9 @@ public class LeftShootIntakeAuto extends Command {
     // Domain is [-1, 1]
 
     // Rotate/drive side
-    double percentY = 0;
+    double percentY = -0.3;
     double percentX = 0;
-    double percentOmega = -0.2;
+    double percentOmega = -0.3;
 
     // intake drive
     double percentY2 = 0;
@@ -53,9 +53,9 @@ public class LeftShootIntakeAuto extends Command {
     // drive back
     double percentY3 = 0;
     double percentX3 = -0.3;
-    double percentOmega3 = 0;
+    double percentOmega3 = 0.15;
 
-    double driveTimeSeconds = 0.2; // 3 was to far for limelight-- 2 was not enough for intake
+    double driveTimeSeconds = 0.6; // 3 was to far for limelight-- 2 was not enough for intake
     double driveTimeSeconds2 = 2.5;
     double driveTimeSeconds3 = 1;
 
@@ -110,7 +110,7 @@ public class LeftShootIntakeAuto extends Command {
 
                 .andThen(driveCommandBack.withTimeout(driveTimeSeconds3))
 
-                .andThen(autoShoot2)
+                .andThen(() -> autoShoot2.schedule())
 
                 .withName("LeftSideShootIntakeAuto");
     }
