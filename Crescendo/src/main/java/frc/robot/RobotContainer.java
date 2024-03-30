@@ -69,6 +69,7 @@ public class RobotContainer {
         private static final double MaxRadiansPerSecond = Constants.Drivetrain.MaxRadiansPerSecond;
 
         private final Command autoShoot = new AutoShoot().onlyWhile(() -> isNotDriving());
+        private final Command coralIntake = new CoralIntake().onlyWhile(() -> isNotDriving());
 
         private final Cat5Autos autos = new Cat5Autos();
 
@@ -78,8 +79,8 @@ public class RobotContainer {
         private final CommandXboxController driverXbox = new CommandXboxController(
                         OperatorConstants.DriverControllerPort);
 
-        //TODO Test with port 0 -> add to drive button  and see if the code works.
-        // private final XboxController tesController = new XboxController(2);
+        // TODO Test with port 0 -> add to drive button and see if the code works.
+        private final XboxController testController = new XboxController(2);
 
         /**
          * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -93,35 +94,9 @@ public class RobotContainer {
 
         private void configureBindings() {
                 bindDriveTrain();
-                // bindClimber();
                 bindIntakeIndex();
                 bindShooter();
         }
-
-        // private void bindClimber() {
-        // final Climber climber = Climber.get();
-        // manipulatorXbox.povUp().whileTrue(climber.climberCommand(ClimberState.PovUp));
-        // manipulatorXbox.povDown().whileTrue(climber.climberCommand(ClimberState.PovDown));
-        // manipulatorXbox.povLeft().whileTrue(climber.climberCommand(ClimberState.PovLeft));
-        // manipulatorXbox.povRight().whileTrue(climber.climberCommand(ClimberState.PovRight));
-        // manipulatorXbox.povDownLeft().whileTrue(climber.climberCommand(ClimberState.PovDownLeft));
-        // manipulatorXbox.povDownRight().whileTrue(climber.climberCommand(ClimberState.PovDownRight));
-        // manipulatorXbox.povUpLeft().whileTrue(climber.climberCommand(ClimberState.PovUpLeft));
-        // manipulatorXbox.povUpRight().whileTrue(climber.climberCommand(ClimberState.PovUpRight));
-
-        // manipulatorXbox.back().onTrue(Commands.runOnce(() -> {
-        // if (climber.isClimberLocked) {
-        // climber.setServos(120, 0).schedule();
-        // } else {
-        // climber.setServos(0, 120).schedule();
-        // }
-        // }));
-
-        // Trigger servoLockTimTrigger = new Trigger(() -> DriverStation.getMatchTime()
-        // >= 135);
-
-        // servoLockTimTrigger.onTrue(climber.setServos(0, 120));
-        // }
 
         private void bindDriveTrain() {
 
@@ -163,8 +138,6 @@ public class RobotContainer {
                                 // with negative X (left)
                                 ));
 
-                CoralIntake coralIntake = new CoralIntake();
-
                 driverXbox.rightTrigger().onTrue(Commands.runOnce(() -> coralIntake.schedule()));
 
                 driverXbox.y().whileTrue(
@@ -198,6 +171,8 @@ public class RobotContainer {
                                                 .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond *
                                                                 drivetrain.getSpeedLimit())
                                                 .withTargetDirection(Rotation2d.fromDegrees(90))));
+
+                // driverXbox.a().onTrue(Commands.runOnce(() -> testController.setRumble(RumbleType.kBothRumble, 1)));
 
                 // POV slow driving
                 // driverXbox.pov(360).whileTrue(
@@ -290,6 +265,7 @@ public class RobotContainer {
                                                                                                    // index.getMotorSpeed()
                                                                                                    // < 0) {
                                                 // intake.hasIntakeBeenSet = false;
+                                                testController.setRumble(RumbleType.kBothRumble, 1);
                                                 intake.stop();
                                                 index.stop();
                                                 System.out.print("Laser Stop");

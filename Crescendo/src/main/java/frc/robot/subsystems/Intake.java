@@ -25,16 +25,16 @@ public class Intake extends SubsystemBase {
 
     // Devices
     private final CANSparkFlex centerMotor;
-    private final TalonFX rightMotor;
-    private final TalonFX leftMotor;
+    //TODO Uncomment
+    // private final TalonFX rightMotor;
+    // private final TalonFX leftMotor;
 
     public boolean hasIntakeBeenSet = false;
 
     private Intake() {
         centerMotor = new CANSparkFlex(11, MotorType.kBrushless);
-        //TODO set can ids
-        rightMotor = new TalonFX(16);
-        leftMotor = new TalonFX(15);
+        // rightMotor = new TalonFX(16);
+        // leftMotor = new TalonFX(15);
 
         Shuffleboard.getTab("Main")
                 .addString("intake state", () -> intakeState.toString())
@@ -52,12 +52,11 @@ public class Intake extends SubsystemBase {
         return Commands.runOnce(() -> {
             System.out.println("=====TESTING" + centerState.getSpeed());
             intakeState = centerState;
-            // TODO TEST
             hasIntakeBeenSet = true;
             centerMotor.set(centerState.getSpeed());
             //TODO Inverted?
-            rightMotor.set(falconState.getSpeed());
-            leftMotor.set(-falconState.getSpeed());
+            // rightMotor.set(falconState.getSpeed());
+            // leftMotor.set(-falconState.getSpeed());
         }, this);
     }
 
@@ -67,8 +66,8 @@ public class Intake extends SubsystemBase {
     public void stop() {
         System.out.println("Stop Intake");
         centerMotor.stopMotor();
-        rightMotor.stopMotor();
-        leftMotor.stopMotor();
+        // rightMotor.stopMotor();
+        // leftMotor.stopMotor();
         // TODO TEST
         hasIntakeBeenSet = false;
     }
