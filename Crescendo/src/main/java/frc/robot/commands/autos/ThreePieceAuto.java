@@ -112,16 +112,20 @@ public class ThreePieceAuto {
             .withRotationalRate(-percentOmega3 * MaxRadiansPerSecond * speedMultiplier));
 
     public Command threePieceAuto() {
-
+                                        //Auto Shoot
         return Commands.runOnce(() -> autoShoot.schedule())
+                        //rotate to straight
                 .andThen(driveCommandSideRotate.withTimeout(driveTimeSeconds))
 
+                //start intake
                 .andThen(() -> shooterAngle.updateCommand(ShooterAngleState.Max.getAngle()).schedule())
                 .andThen(intake.intakeCommand(IntakeState.centerIn, IntakeState.falconIn))
                 .andThen(index.indexCommand(IndexState.Intake))
 
+                //drive forward
                 .andThen(driveCommandIntake.withTimeout(driveTimeSeconds2))
 
+                //stop intake when piece detected
                 .andThen(() -> laserTrigger.debounce(0.29, DebounceType.kRising).onTrue(Commands.runOnce(() -> {
                     if (intake.hasIntakeBeenSet) {
                         intake.stop();
@@ -129,18 +133,24 @@ public class ThreePieceAuto {
                     }
                 })))
 
+                //drive back to see april tag
                 .andThen(driveCommandBack.withTimeout(driveTimeSeconds3))
 
+                //auto shoot
                 .andThen(autoShoot2)
 
+                //Rotate to straight
                 .andThen(driveCommandRotate2.withTimeout(driveTimeSeconds4))
 
+                //Start intake
                 .andThen(() -> shooterAngle.updateCommand(ShooterAngleState.Max.getAngle()).schedule())
                 .andThen(intake.intakeCommand(IntakeState.centerIn, IntakeState.falconIn))
                 .andThen(index.indexCommand(IndexState.Intake))
 
+                //drive forward to centerline piece
                 .andThen(driveCommandIntake2.withTimeout(driveTimeSeconds5))
 
+                //stop intake when piece detected
                 .andThen(() -> laserTrigger.debounce(0.29, DebounceType.kRising).onTrue(Commands.runOnce(() -> {
                     if (intake.hasIntakeBeenSet) {
                         intake.stop();
@@ -148,8 +158,10 @@ public class ThreePieceAuto {
                     }
                 })))
 
+                //drive back to see apriltag
                 .andThen(driveCommandBack2.withTimeout(driveTimeSeconds6))
 
+                //auto shoot
                 .andThen(autoShoot3)
 
                 .withName("ThreePiece");

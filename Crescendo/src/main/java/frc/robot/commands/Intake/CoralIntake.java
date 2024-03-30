@@ -1,5 +1,7 @@
 package frc.robot.commands.Intake;
 
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -30,9 +32,9 @@ public class CoralIntake extends Command {
             .withRotationalRate(getDrivetrainAngleRate()));
 
     //TODO Test
-    // Command intakeCommandm = intake.intakeCommand(IntakeState.centerIn, IntakeState.falconIn);
-    // Command shooterAngleCommand = shooterAngle.updateCommand(ShooterAngleState.Max.getAngle());
-    // Command indexCommand = index.indexCommand(IndexState.Intake);
+    Command intakeCommandm = intake.intakeCommand(IntakeState.centerIn, IntakeState.falconIn);
+    Command shooterAngleCommand = shooterAngle.updateCommand(ShooterAngleState.Max.getAngle());
+    Command indexCommand = index.indexCommand(IndexState.Intake);
 
 
     private double drivetrainAngleRate = 0;
@@ -43,10 +45,10 @@ public class CoralIntake extends Command {
 
     private boolean isFinished = false;
 
-    private double rotationSpeed = 0.1 * Constants.Drivetrain.MaxRadiansPerSecond;
+    private double rotationSpeed = 0.2 * Constants.Drivetrain.MaxRadiansPerSecond;
 
-    // TODO Test
-    private final double tXRange = 5;
+    // TODO Test Ranges
+    private final double tXRange = 5;//3
     private final double tYRange = 5;
 
     private double currentDegrees;
@@ -59,9 +61,9 @@ public class CoralIntake extends Command {
     @Override
     public void initialize() {
         //TODO Test
-        // intakeCommandm.schedule();
-        // indexCommand.schedule();
-        // shooterAngleCommand.schedule();
+        intakeCommandm.schedule();
+        indexCommand.schedule();
+        shooterAngleCommand.schedule();
     }
 
     @Override
@@ -81,7 +83,7 @@ public class CoralIntake extends Command {
         }
 
         // If within ty range
-        // if (targetY <= tYRange) {
+        if (targetY <= tYRange) {
             // if within tx range
             if (Math.abs(targetX) < tXRange) {
                 System.out.println("----EQUAL------");
@@ -106,14 +108,17 @@ public class CoralIntake extends Command {
                 isFinished = false;
 
             }
-        // }
+        }
     }
 
+    //This works but does not allow the robot to corect if it overshoots
     @Override
     public boolean isFinished() {
-        return isFinished;
+         return isFinished;
+        // return false;
     }
 
+    //This works but does not allow the robot to corect if it overshoots
     @Override
     public void end(boolean interrupted) {
         intakeCommand.schedule();

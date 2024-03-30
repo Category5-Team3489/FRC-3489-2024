@@ -14,6 +14,8 @@ import frc.robot.commands.autos.Cat5Autos;
 import frc.robot.commands.autos.LeftShootIntakeAuto;
 // import frc.robot.commands.autos.CenterShootIntakeShoot;
 import frc.robot.commands.autos.Nothing;
+import frc.robot.commands.autos.RightCenterLine2Piece;
+import frc.robot.commands.autos.RightCenterLine3Piece;
 import frc.robot.commands.autos.RightShootIntakeAuto;
 import frc.robot.commands.autos.Shoot;
 import frc.robot.commands.autos.ShootIntakeAutoShoot;
@@ -89,7 +91,6 @@ public class RobotContainer {
                 // Configure the trigger bindings
                 configureBindings();
                 addAutos();
-
         }
 
         private void configureBindings() {
@@ -172,7 +173,9 @@ public class RobotContainer {
                                                                 drivetrain.getSpeedLimit())
                                                 .withTargetDirection(Rotation2d.fromDegrees(90))));
 
-                // driverXbox.a().onTrue(Commands.runOnce(() -> testController.setRumble(RumbleType.kBothRumble, 1)));
+                // driverXbox.a().onTrue(Commands.runOnce(() ->
+                // testController.setRumble(RumbleType.kBothRumble, 1)));
+
 
                 // POV slow driving
                 // driverXbox.pov(360).whileTrue(
@@ -248,6 +251,7 @@ public class RobotContainer {
         private void bindIntakeIndex() {
                 final Intake intake = Intake.get();
                 final Index index = Index.get();
+                final ShooterAngle shooterAngle = ShooterAngle.get();
 
                 final IntakeUntilDetectionAngle intakeUntilDetection = new IntakeUntilDetectionAngle();
                 final Outtake outtake = new Outtake();
@@ -265,9 +269,13 @@ public class RobotContainer {
                                                                                                    // index.getMotorSpeed()
                                                                                                    // < 0) {
                                                 // intake.hasIntakeBeenSet = false;
-                                                testController.setRumble(RumbleType.kBothRumble, 1);
+                                                Commands.runOnce(() -> driverXbox.getHID().setRumble(RumbleType.kBothRumble, 2));
+                                                Commands.runOnce(() -> manipulatorXbox.getHID().setRumble(RumbleType.kBothRumble, 2));
+
+
                                                 intake.stop();
                                                 index.stop();
+                                                shooterAngle.updateCommand(ShooterAngleState.Start.getAngle());
                                                 System.out.print("Laser Stop");
                                         }
                                 }));
@@ -343,7 +351,8 @@ public class RobotContainer {
                 // );
 
                 final SetShooterSpeedAngleDifferent setShooterAmp = new SetShooterSpeedAngleDifferent(
-                                Constants.ShooterAngle.AmpShooterAngle, 0.4, 0.30); // 40, 30 = amp //60-60 = trap
+                                Constants.ShooterAngle.AmpShooterAngle, Constants.ShooterSpeed.AmpBottomShooterSpeed,
+                                Constants.ShooterSpeed.AmpTopShooterSpeed); // 40, 30 = amp //60-60 = trap
 
                 // b = stop Shooter
                 manipulatorXbox.b().onTrue(shooterSpeed.stopCommand());
@@ -454,6 +463,18 @@ public class RobotContainer {
                 autos.addAuto(() -> {
                         SideShootIntakeShoot sideShootIntakeShootCommand = new SideShootIntakeShoot();
                         return sideShootIntakeShootCommand.sideShootIntakeShoot();
+                });
+
+                // right center line 3 piece
+                autos.addAuto(() -> {
+                        RightCenterLine3Piece rightCenterLine3PieceCommand = new RightCenterLine3Piece();
+                        return rightCenterLine3PieceCommand.rightCenterLine3Piece();
+                });
+
+                // right center line 3 piece
+                autos.addAuto(() -> {
+                        RightCenterLine2Piece rightCenterLine2PieceCommand = new RightCenterLine2Piece();
+                        return rightCenterLine2PieceCommand.rightCenterLine2Piece();
                 });
 
                 autos.addSelectorWidget();
