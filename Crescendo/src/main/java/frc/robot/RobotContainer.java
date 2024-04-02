@@ -81,9 +81,6 @@ public class RobotContainer {
         private final CommandXboxController driverXbox = new CommandXboxController(
                         OperatorConstants.DriverControllerPort);
 
-        // TODO Test with port 0 -> add to drive button and see if the code works.
-        private final XboxController testController = new XboxController(2);
-
         /**
          * The container for the robot. Contains subsystems, OI devices, and commands.
          */
@@ -175,7 +172,6 @@ public class RobotContainer {
 
                 // driverXbox.a().onTrue(Commands.runOnce(() ->
                 // testController.setRumble(RumbleType.kBothRumble, 1)));
-
 
                 // POV slow driving
                 // driverXbox.pov(360).whileTrue(
@@ -269,9 +265,10 @@ public class RobotContainer {
                                                                                                    // index.getMotorSpeed()
                                                                                                    // < 0) {
                                                 // intake.hasIntakeBeenSet = false;
-                                                Commands.runOnce(() -> driverXbox.getHID().setRumble(RumbleType.kBothRumble, 2));
-                                                Commands.runOnce(() -> manipulatorXbox.getHID().setRumble(RumbleType.kBothRumble, 2));
-
+                                                // Commands.runOnce(() ->
+                                                // driverXbox.getHID().setRumble(RumbleType.kBothRumble, 2));
+                                                // Commands.runOnce(() ->
+                                                // manipulatorXbox.getHID().setRumble(RumbleType.kBothRumble, 2));
 
                                                 intake.stop();
                                                 index.stop();
@@ -279,6 +276,16 @@ public class RobotContainer {
                                                 System.out.print("Laser Stop");
                                         }
                                 }));
+
+                laserTrigger.onTrue(Commands
+                                .parallel(Commands.runOnce(
+                                                () -> manipulatorXbox.getHID().setRumble(RumbleType.kBothRumble, 0.6)),
+                                                Commands.waitSeconds(0.2))
+                                .andThen(() -> manipulatorXbox.getHID().setRumble(RumbleType.kBothRumble, 0)));
+                laserTrigger.onTrue(Commands.parallel(Commands.runOnce(
+                                () -> driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0.6)),
+                                Commands.waitSeconds(0.2))
+                                .andThen(() -> driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0)));
 
                 // TODO Remove after testing
                 // manipulatorXbox.leftTrigger().onTrue(

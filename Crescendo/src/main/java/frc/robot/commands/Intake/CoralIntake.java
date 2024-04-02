@@ -45,10 +45,10 @@ public class CoralIntake extends Command {
 
     private boolean isFinished = false;
 
-    private double rotationSpeed = 0.2 * Constants.Drivetrain.MaxRadiansPerSecond;
+    private double rotationSpeed = 0.12 * Constants.Drivetrain.MaxRadiansPerSecond;
 
     // TODO Test Ranges
-    private final double tXRange = 5;//3
+    private final double tXRange = 16;       //3 -- 5
     private final double tYRange = 5;
 
     private double currentDegrees;
@@ -73,8 +73,9 @@ public class CoralIntake extends Command {
         double targetV = coralLimelight.getTargetVisible();
 
         // TODO Test Acuracy
-        currentDegrees = drivetrain.getCurrentHeading();
+        // currentDegrees = drivetrain.getCurrentHeading();
         // System.out.println("Current degree: " + currentDegrees);
+        
 
         // Return if april tag is not visible
         if (targetV == 0) {
@@ -83,39 +84,39 @@ public class CoralIntake extends Command {
         }
 
         // If within ty range
-        if (targetY <= tYRange) {
+        // if (targetY <= tYRange) {
             // if within tx range
             if (Math.abs(targetX) < tXRange) {
                 System.out.println("----EQUAL------");
-                isFinished = true;
+                // isFinished = true;
                 // intake.schedule();
-                // driveCommandForward.cancel();
+                driveCommandForward.cancel();
                 // drivetrainAngleRate = 0;
                 // drivetrainVelocityX = getXVelocityCalculation(currentDegrees);
                 // drivetrainVelocityY = getYVelocityCalculation(currentDegrees);
                 // driveCommandForward.schedule();
-                // return;
+                return;
 
             } else if (targetX < 0) { // if less than target
                 drivetrainAngleRate = -rotationSpeed;
                 driveCommandForward.schedule();
                 System.out.println("target < 0");
-                isFinished = false;
+                // isFinished = false;
             } else if (targetX > 0) { // if greater than target
                 drivetrainAngleRate = rotationSpeed;
                 driveCommandForward.schedule();
                 System.out.println("target > 0");
-                isFinished = false;
+                // isFinished = false;
 
             }
-        }
+        // }
     }
 
     //This works but does not allow the robot to corect if it overshoots
     @Override
     public boolean isFinished() {
-         return isFinished;
-        // return false;
+        //  return isFinished;
+        return false;
     }
 
     //This works but does not allow the robot to corect if it overshoots

@@ -27,7 +27,6 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
     // Singleton
     private static final Drivetrain instance = DrivetrainConstants.DriveTrain;
 
-    private Pigeon2 pigeon;
     public SpeedLimitState speedLimit = SpeedLimitState.Half;
 
     private final double AroundTargetHeadingThresholdDegrees = 5;
@@ -51,8 +50,6 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
         if (Utils.isSimulation()) {
             startSimThread();
         }
-
-        this.pigeon = new Pigeon2(driveTrainConstants.Pigeon2Id);
     }
 
     private Drivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
@@ -60,7 +57,6 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
         if (Utils.isSimulation()) {
             startSimThread();
         }
-        this.pigeon = new Pigeon2(driveTrainConstants.Pigeon2Id);
     }
 
     public Command applyRequest(Supplier<SwerveRequest> requestSupplier) {
@@ -84,11 +80,11 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
     public boolean isAroundTargetHeading() {
         Rotation2d target = Rotation2d.fromDegrees(90);
 
-        return Math.abs(pigeon.getRotation2d().minus(target).getDegrees()) < AroundTargetHeadingThresholdDegrees;
+        return Math.abs(this.m_pigeon2.getRotation2d().minus(target).getDegrees()) < AroundTargetHeadingThresholdDegrees;
     }
 
     public double getCurrentHeading() {
-        return pigeon.getAngle();
+        return this.m_pigeon2.getAngle();
     }
 
     public double getSpeedLimit() {
