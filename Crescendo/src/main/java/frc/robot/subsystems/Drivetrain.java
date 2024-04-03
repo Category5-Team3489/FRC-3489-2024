@@ -8,12 +8,14 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentric;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+import frc.robot.Constants;
 import frc.robot.DrivetrainConstants;
 import frc.robot.RobotContainer;
 import frc.robot.enums.SpeedLimitState;
@@ -24,6 +26,25 @@ import frc.robot.enums.SpeedLimitState;
  * so it can be used in command-based projects easily.
  */
 public class Drivetrain extends SwerveDrivetrain implements Subsystem {
+
+    int i = 0;
+
+    @Override
+    public void setControl(SwerveRequest request) {
+        if (request.getClass() == FieldCentric.class) {
+            var fieldCentric = (FieldCentric) request;
+            if (fieldCentric.RotationalRate != 0 && i % 50 == 0) {
+                System.out.println("Omega is not zero, value: "
+                        + fieldCentric.RotationalRate / Constants.Drivetrain.MaxRadiansPerSecond);
+                Thread.dumpStack();
+            }
+        }
+
+        i++;
+
+        super.setControl(request);
+    }
+
     // Singleton
     private static final Drivetrain instance = DrivetrainConstants.DriveTrain;
 
@@ -80,7 +101,8 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
     public boolean isAroundTargetHeading() {
         Rotation2d target = Rotation2d.fromDegrees(90);
 
-        return Math.abs(this.m_pigeon2.getRotation2d().minus(target).getDegrees()) < AroundTargetHeadingThresholdDegrees;
+        return Math
+                .abs(this.m_pigeon2.getRotation2d().minus(target).getDegrees()) < AroundTargetHeadingThresholdDegrees;
     }
 
     public double getCurrentHeading() {

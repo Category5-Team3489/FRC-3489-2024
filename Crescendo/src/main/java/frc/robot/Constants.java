@@ -49,8 +49,8 @@ public final class Constants {
         // too fast
         // public static final double FarShooterSpeed = 60.0 / 100; // 2000 was too fast
         // public static final double AutoShooterSpeed = 60.0 / 100;
-        public static final double AmpTopShooterSpeed = 0.3; // TODO update
-        public static final double AmpBottomShooterSpeed = 0.45; // TODO update //0.4
+        public static final double AmpTopShooterSpeed = 0.25; // TODO update //0.3       //25
+        public static final double AmpBottomShooterSpeed = 0.45; // TODO update //0.45   //.5
 
     }
 
@@ -58,7 +58,7 @@ public final class Constants {
         public static final double CloseShooterAngle = 31.599;
         public static final double FarShooterAngle = 9.9;
         public static final double AutoShooterAngle = 29; // TODO update
-        public static final double AmpShooterAngle = 21.799999999999955; // TODO update
+        public static final double AmpShooterAngle = 23.299999999999955; // TODO update //21.799999999999955
 
         public static final double TrapShooterAngle = 31.99999999999992;
 

@@ -11,12 +11,12 @@ import frc.robot.commands.Intake.Outtake;
 import frc.robot.commands.autoShooting.AutoShoot;
 import frc.robot.commands.autoShooting.AutoShootTest;
 import frc.robot.commands.autos.Cat5Autos;
-import frc.robot.commands.autos.LeftShootIntakeAuto;
+import frc.robot.commands.autos.SourceSideShootIntakeAuto;
 // import frc.robot.commands.autos.CenterShootIntakeShoot;
 import frc.robot.commands.autos.Nothing;
 import frc.robot.commands.autos.RightCenterLine2Piece;
 import frc.robot.commands.autos.RightCenterLine3Piece;
-import frc.robot.commands.autos.RightShootIntakeAuto;
+import frc.robot.commands.autos.AmpSideShootIntakeAuto;
 import frc.robot.commands.autos.Shoot;
 import frc.robot.commands.autos.ShootIntakeAutoShoot;
 import frc.robot.commands.autos.ShootTaxi;
@@ -78,7 +78,7 @@ public class RobotContainer {
         // ---------------- INPUT DEVICES ----------------
         private final CommandXboxController manipulatorXbox = new CommandXboxController(
                         OperatorConstants.ManipulatorControllerPort);
-        private final CommandXboxController driverXbox = new CommandXboxController(
+        public final CommandXboxController driverXbox = new CommandXboxController(
                         OperatorConstants.DriverControllerPort);
 
         /**
@@ -101,7 +101,7 @@ public class RobotContainer {
                 final Drivetrain drivetrain = Drivetrain.get();
                 final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
                                 .withDeadband(MaxMetersPerSecond * 0.1)
-                                .withRotationalDeadband(MaxRadiansPerSecond * 0.1) // Add a
+                                .withRotationalDeadband(Math.abs(MaxRadiansPerSecond) * 0.1) // Add a
                                                                                    // 10%
                                                                                    // deadband
                                 .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
@@ -109,7 +109,13 @@ public class RobotContainer {
 
                 final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
                 final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-                final SwerveRequest.FieldCentricFacingAngle driveFacingAngle = new SwerveRequest.FieldCentricFacingAngle();
+                final SwerveRequest.FieldCentricFacingAngle driveFacingAngle = new SwerveRequest.FieldCentricFacingAngle()
+                                .withDeadband(MaxMetersPerSecond * 0.1)
+                                .withRotationalDeadband(MaxRadiansPerSecond * 0.1) // Add a
+                                                                                   // 10%
+                                                                                   // deadband
+                                .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
+                                                                                         // driving in open loop
 
                 driveFacingAngle.HeadingController.setP(8);
                 // driveFacingAngle.HeadingController.setD(0.2);
@@ -455,15 +461,15 @@ public class RobotContainer {
                 // Right two piece
                 // TODO Get this working
                 autos.addAuto(() -> {
-                        RightShootIntakeAuto rightShootIntakeAutoCommand = new RightShootIntakeAuto();
-                        return rightShootIntakeAutoCommand.rightShootIntakeAuto();
+                        AmpSideShootIntakeAuto ampSideShootIntakeAutoCommand = new AmpSideShootIntakeAuto();
+                        return ampSideShootIntakeAutoCommand.ampSideShootIntakeAuto();
                 });
 
                 // Left Two Piece
                 // TODO Get this working
                 autos.addAuto(() -> {
-                        LeftShootIntakeAuto leftShootIntakeAutoCommand = new LeftShootIntakeAuto();
-                        return leftShootIntakeAutoCommand.leftShootIntakeAuto();
+                        SourceSideShootIntakeAuto sourceSideShootIntakeAuto = new SourceSideShootIntakeAuto();
+                        return sourceSideShootIntakeAuto.sourceSideShootIntakeAuto();
                 });
 
                 // Side Shoot Intake Shoot

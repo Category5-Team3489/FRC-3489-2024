@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Cat5Utils;
 import frc.robot.Constants;
-import frc.robot.commands.Intake.CoralIntake;
 import frc.robot.commands.autoShooting.AutoShoot;
 import frc.robot.commands.shooter.SetShooterSpeedAndAngle;
 import frc.robot.enums.IndexState;
@@ -20,7 +19,8 @@ import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.ShooterAngle;
 
-public class RightCenterLine2Piece {
+public class AmpSideShootIntakeAuto extends Command {
+
         private Index index = Index.get();
         private ShooterAngle shooterAngle = ShooterAngle.get();
         private Intake intake = Intake.get();
@@ -36,36 +36,30 @@ public class RightCenterLine2Piece {
                         .withRotationalDeadband(MaxRadiansPerSecond * 0.1)
                         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-        Command autoShoot = new AutoShoot();
-
-        Command autoIntakeCommand = new CoralIntake();
+        Command autoShoot = new AutoShoot().withTimeout(2);
+        Command autoShoot2 = new AutoShoot();
 
         // Ensure percentages are greater than the 0.1 percent deadband above
         // Domain is [-1, 1]
 
         // Rotate/drive side
-        double percentY = Cat5Utils.Red(-0.3);
+        double percentY = Cat5Utils.Red(0.3);
         double percentX = 0;
-        double percentOmega = Cat5Utils.Red(-0.2);
-        double driveTimeSeconds = 0.6;
+        double percentOmega = 0.2;
 
         // intake drive
-        double percentY2 = Cat5Utils.Red(-0.3);
-        double percentX2 = 0.6;
+        double percentY2 = 0;
+        double percentX2 = 0.3;
         double percentOmega2 = 0;
-        double driveTimeSeconds2 = 4;
 
         // drive back
         double percentY3 = 0;
         double percentX3 = -0.3;
-        double percentOmega3 = 0;
-        double driveTimeSeconds3 = 5;
+        double percentOmega3 = -0.1;
 
-        // drive forward intake
-        double percentY4 = 0;
-        double percentX4 = -0.3;
-        double percentOmega4 = 0;
-        double driveTimeSeconds4 = 1;
+        double driveTimeSeconds = 0.6;
+        double driveTimeSeconds2 = 4;
+        double driveTimeSeconds3 = 1;
 
         double speedMultiplier = 0.5; // [0, 1]
 
@@ -78,52 +72,41 @@ public class RightCenterLine2Piece {
                         .withVelocityY(-percentY * MaxMetersPerSecond * speedMultiplier)
                         .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
 
-        Command driveCommandDriveCenter = drivetrain.applyRequest(() -> drive
+        Command driveCommandIntake = drivetrain.applyRequest(() -> drive
                         .withVelocityX(percentX2 * MaxMetersPerSecond * speedMultiplier)
                         .withVelocityY(-percentY2 * MaxMetersPerSecond * speedMultiplier)
                         .withRotationalRate(-percentOmega2 * MaxRadiansPerSecond * speedMultiplier));
-
-        Command driveCommandIntake = drivetrain.applyRequest(() -> drive
-                        .withVelocityX(percentX4 * MaxMetersPerSecond * speedMultiplier)
-                        .withVelocityY(-percentY4 * MaxMetersPerSecond * speedMultiplier)
-                        .withRotationalRate(-percentOmega4 * MaxRadiansPerSecond * speedMultiplier));
 
         Command driveCommandBack = drivetrain.applyRequest(() -> drive
                         .withVelocityX(percentX3 * MaxMetersPerSecond * speedMultiplier)
                         .withVelocityY(-percentY3 * MaxMetersPerSecond * speedMultiplier)
                         .withRotationalRate(-percentOmega3 * MaxRadiansPerSecond * speedMultiplier));
 
-        // Command driveCommandForward = drivetrain.applyRequest(() -> drive
-        // .withVelocityX(percentX4 * MaxMetersPerSecond * speedMultiplier)
-        // .withVelocityY(-percentY4 * MaxMetersPerSecond * speedMultiplier)
-        // .withRotationalRate(-percentOmega4 * MaxRadiansPerSecond * speedMultiplier));
+        // start facing april tag
+        // auto stoot
+        // rotate to straight
+        // drive forward and intake
+        // drive back to see april tag
+        // auto shoot
 
-        public Command rightCenterLine2Piece() {
-                // manual shoot
+        // TODO if that does not work
+        // return autoShoot
+
+        public Command ampSideShootIntakeAuto() {
+
+                // return autoShoot
                 return Commands.parallel(closeShootCommand, Commands.waitSeconds(3))
+                                .andThen(Commands.parallel(index.indexCommand(IndexState.Intake)),
+                                                Commands.waitSeconds(0.5))
 
-                                // rotate to forward and drive to the side away from the speaker
                                 .andThen(driveCommandSideRotate.withTimeout(driveTimeSeconds))
 
-                                // Start intake
                                 .andThen(() -> shooterAngle.updateCommand(ShooterAngleState.Max.getAngle()).schedule())
                                 .andThen(intake.intakeCommand(IntakeState.centerIn, IntakeState.falconIn))
                                 .andThen(index.indexCommand(IndexState.Intake))
 
-                                // Drive forward
-                                .andThen(driveCommandDriveCenter.withTimeout(driveTimeSeconds2))
+                                .andThen(driveCommandIntake.withTimeout(driveTimeSeconds2))
 
-                                .andThen(() -> driveCommandDriveCenter.cancel())
-
-                                .andThen(Commands.print("Drive Done"))
-
-                                // Auto rotate to note
-                                .andThen(autoIntakeCommand.until(laserTrigger).withTimeout(1))
-
-                                // Drive forward to intake
-                                .andThen(driveCommandIntake.withTimeout(driveTimeSeconds4))
-
-                                // Stop intake when piece detected
                                 .andThen(() -> laserTrigger.debounce(0.29, DebounceType.kRising)
                                                 .onTrue(Commands.runOnce(() -> {
                                                         if (intake.hasIntakeBeenSet) {
@@ -132,12 +115,11 @@ public class RightCenterLine2Piece {
                                                         }
                                                 })))
 
-                                // drive back to see apriltag
                                 .andThen(driveCommandBack.withTimeout(driveTimeSeconds3))
 
-                                // Auto shoot
-                                .andThen(() -> autoShoot.schedule())
+                                .andThen(() -> autoShoot2.schedule())
 
-                                .withName("RightCenterline2");
+                                .withName("AmpSideShootIntakeAuto");
         }
+
 }

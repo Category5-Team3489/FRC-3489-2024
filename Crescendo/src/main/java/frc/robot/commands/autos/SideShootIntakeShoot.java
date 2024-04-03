@@ -84,7 +84,7 @@ public class SideShootIntakeShoot extends Command {
         // drive back to see april tag
         // auto shoot
 
-        return Commands.runOnce(() -> autoShoot.schedule())
+        return autoShoot
                 .andThen(driveCommandForward.withTimeout(driveTimeSeconds))
 
                 .andThen(() -> shooterAngle.updateCommand(ShooterAngleState.Max.getAngle()).schedule())

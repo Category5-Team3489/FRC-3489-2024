@@ -7,6 +7,7 @@ import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Cat5Utils;
 import frc.robot.Constants;
 import frc.robot.commands.autoShooting.AutoShoot;
 import frc.robot.commands.shooter.SetShooterSpeedAndAngle;
@@ -18,7 +19,7 @@ import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.ShooterAngle;
 
-public class LeftShootIntakeAuto extends Command {
+public class SourceSideShootIntakeAuto extends Command {
         Index index = Index.get();
         ShooterAngle shooterAngle = ShooterAngle.get();
         Intake intake = Intake.get();
@@ -41,22 +42,22 @@ public class LeftShootIntakeAuto extends Command {
         // Domain is [-1, 1]
 
         // Rotate/drive side
-        double percentY = -0.3;
+        double percentY = Cat5Utils.Red(-0.3);
         double percentX = 0;
-        double percentOmega = -0.3;
+        double percentOmega = Cat5Utils.Red(-0.25);
 
         // intake drive
         double percentY2 = 0;
-        double percentX2 = 0.3;
+        double percentX2 = 0.5; //0.3
         double percentOmega2 = 0;
 
         // drive back
         double percentY3 = 0;
         double percentX3 = -0.3;
-        double percentOmega3 = 0.15;
+        double percentOmega3 = Cat5Utils.Red(0.15);
 
-        double driveTimeSeconds = 0.6; // 3 was to far for limelight-- 2 was not enough for intake
-        double driveTimeSeconds2 = 4;
+        double driveTimeSeconds = 0.6; 
+        double driveTimeSeconds2 = 1.8;
         double driveTimeSeconds3 = 1;
 
         double speedMultiplier = 0.5; // [0, 1]
@@ -90,10 +91,11 @@ public class LeftShootIntakeAuto extends Command {
         // TODO if that does not work
         // return autoShoot
 
-        public Command leftShootIntakeAuto() {
+        public Command sourceSideShootIntakeAuto() {
                 // return Commands.runOnce(() -> autoShoot.schedule())
                 return Commands.parallel(closeShootCommand, Commands.waitSeconds(3))
-                                .andThen(Commands.parallel(index.indexCommand(IndexState.Intake)), Commands.waitSeconds(0.5))
+                                .andThen(Commands.parallel(index.indexCommand(IndexState.Intake)),
+                                                Commands.waitSeconds(0.5))
                                 .andThen(driveCommandSideRotate.withTimeout(driveTimeSeconds))
 
                                 .andThen(() -> shooterAngle.updateCommand(ShooterAngleState.Max.getAngle()).schedule())
@@ -114,7 +116,7 @@ public class LeftShootIntakeAuto extends Command {
 
                                 .andThen(() -> autoShoot2.schedule())
 
-                                .withName("LeftSideShootIntakeAuto");
+                                .withName("SourceSideShootIntakeAuto");
         }
 
 }

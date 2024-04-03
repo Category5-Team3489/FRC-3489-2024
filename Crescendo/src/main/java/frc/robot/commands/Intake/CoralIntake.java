@@ -122,7 +122,7 @@ public class CoralIntake extends Command {
     //This works but does not allow the robot to corect if it overshoots
     @Override
     public void end(boolean interrupted) {
-        intakeCommand.schedule();
+        // intakeCommand.schedule();
         driveCommandForward.cancel();
         // drivetrainAngleRate = 0;
         // drivetrainVelocityX = getXVelocityCalculation(currentDegrees);
