@@ -52,6 +52,7 @@ public final class Constants {
         public static final double AmpTopShooterSpeed = 0.25; // TODO update //0.3       //25
         public static final double AmpBottomShooterSpeed = 0.45; // TODO update //0.45   //.5
 
+        public static final double TrapShooterSpeed = 0.6;
     }
 
     public static class ShooterAngle {

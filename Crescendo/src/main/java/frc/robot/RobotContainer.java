@@ -10,6 +10,7 @@ import frc.robot.commands.Intake.IntakeUntilDetectionAngle;
 import frc.robot.commands.Intake.Outtake;
 import frc.robot.commands.autoShooting.AutoShoot;
 import frc.robot.commands.autoShooting.AutoShootTest;
+import frc.robot.commands.autoShooting.Trap;
 import frc.robot.commands.autos.Cat5Autos;
 import frc.robot.commands.autos.SourceSideShootIntakeAuto;
 // import frc.robot.commands.autos.CenterShootIntakeShoot;
@@ -74,6 +75,7 @@ public class RobotContainer {
 
     private final Command autoShoot = new AutoShoot().onlyWhile(() -> isNotDriving());
     private final Command coralIntake = new CoralIntake().onlyWhile(() -> isNotDriving());
+    private final Command trap = new Trap().onlyWhile(() -> isNotDriving());
 
     private final Cat5Autos autos = new Cat5Autos();
 
@@ -432,6 +434,8 @@ public class RobotContainer {
 
         // TODO Test
         manipulatorXbox.y().onTrue(Commands.runOnce(() -> autoShoot.schedule()));
+
+        driverXbox.leftTrigger().onTrue(Commands.runOnce(() -> trap.schedule()));
 
     }
 

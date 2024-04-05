@@ -27,9 +27,11 @@ public class AprilLimelight extends SubsystemBase {
     private final NetworkTableEntry targetYEntry = limelight.getEntry("ty");
     private final NetworkTableEntry targetAreaEntry = limelight.getEntry("ta");
     private final NetworkTableEntry targetVisibleEntry = limelight.getEntry("tv");
+    private final NetworkTableEntry targetAngleEntry = limelight.getEntry("ts");
 
     private double lastTargetX;
     private double lastTargetY;
+    private double lastTargetS;
 
     private AprilLimelight() {
         // setupAprilLimelightFeed();
@@ -82,6 +84,13 @@ public class AprilLimelight extends SubsystemBase {
             lastTargetY = targetYEntry.getDouble(Double.NaN);
         }
         return lastTargetY;
+    }
+
+    public double getTargetS() {
+        if(isTagVisible()) {
+            lastTargetS = targetAngleEntry.getDouble(Double.NaN);
+        }
+        return lastTargetS;
     }
 
     public double getTargetArea() {
