@@ -143,24 +143,34 @@ public class RightCenterLine3Piece {
                 .andThen(driveCommandIntake.withTimeout(driveTimeSeconds2))
 
                 // Stop intake when piece detected
-                .andThen(() -> laserTrigger.debounce(0.29, DebounceType.kRising).onTrue(Commands.runOnce(() -> {
-                    if (intake.hasIntakeBeenSet) {
-                        intake.stop();
-                        index.stop();
-                    }
-                })))
+                .andThen(() -> laserTrigger.debounce(0.29, DebounceType.kRising)
+                        .onTrue(Commands.runOnce(() -> {
+                            if (intake.hasIntakeBeenSet) {
+                                intake.stop();
+                                index.stop();
+                            }
+                        })))
                 // drive back to see apriltag
                 .andThen(driveCommandBack.withTimeout(driveTimeSeconds3))
 
                 // Auto shoot
                 // .andThen(Commands.race(autoShoot2, Commands.waitSeconds(2)))
                 // .andThen(Commands.parallel( autoShootSchedule,
-                //         Commands.runOnce(() -> Commands.waitSeconds(2))
-                //                 .andThen(Commands.runOnce(() -> canAutoShoot = false))))
+                // Commands.runOnce(() -> Commands.waitSeconds(2))
+                // .andThen(Commands.runOnce(() -> canAutoShoot = false))))
 
-                // .andThen(autoShoot2.withTimeout(2).andThen(Commands.runOnce(() -> canAutoShoot = false)))
+                // .andThen(autoShoot2.withTimeout(2).andThen(Commands.runOnce(() ->
+                // canAutoShoot = false)))
 
-                .andThen(Commands.race(autoShoot2, Commands.waitSeconds(2)))
+                // TODO Previous code
+                // .andThen(Commands.race(autoShoot2, Commands.waitSeconds(2)))
+
+                // TODO runEnd(parallel(schedule and wait), cancle)
+                .andThen(Commands.runEnd(
+                        () -> Commands.parallel(Commands.runOnce(() -> autoShoot2.schedule()), Commands.waitSeconds(2)),
+                        () -> Commands.runOnce(() -> autoShoot2.cancel())))
+
+                //TODO 
 
                 .andThen(() -> System.out.println("End Auto========++++++++++"))
                 // -------- End of two piece
@@ -180,12 +190,13 @@ public class RightCenterLine3Piece {
                 .andThen(driveCommandForward.withTimeout(driveTimeSeconds5))
 
                 // Stop intake when piece detected
-                .andThen(() -> laserTrigger.debounce(0.29, DebounceType.kRising).onTrue(Commands.runOnce(() -> {
-                    if (intake.hasIntakeBeenSet) {
-                        intake.stop();
-                        index.stop();
-                    }
-                })))
+                .andThen(() -> laserTrigger.debounce(0.29, DebounceType.kRising)
+                        .onTrue(Commands.runOnce(() -> {
+                            if (intake.hasIntakeBeenSet) {
+                                intake.stop();
+                                index.stop();
+                            }
+                        })))
 
                 // Drive back to see apriltag
                 .andThen(driveCommandBack2.withTimeout(driveTimeSeconds6))

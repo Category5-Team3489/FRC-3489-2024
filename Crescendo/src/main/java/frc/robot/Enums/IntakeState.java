@@ -5,8 +5,8 @@ public enum IntakeState {
     centerOut(1),
     centerIn(-1),
     Off(0),
-    falconIn(-0.4),
-    falconOut(0.4);
+    falconIn(-0.6),
+    falconOut(0.6);
 
     private final double intakeSpeed;
 

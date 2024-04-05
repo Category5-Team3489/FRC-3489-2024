@@ -113,7 +113,14 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
         return speedLimit.getSpeedLimit();
     }
 
+    // public void setSpeedLimit(SpeedLimitState speedLimitState) {
+    //     speedLimit = speedLimitState;
+    // }
+
     public void setSpeedLimit(SpeedLimitState speedLimitState) {
+        if (speedLimitState != speedLimit) {
+            System.out.println("Drivetrain speed limit delta: " + speedLimit.toString() + " -> " + speedLimitState.toString());
+        }
         speedLimit = speedLimitState;
     }
 

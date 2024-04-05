@@ -156,7 +156,7 @@ public class AutoShoot extends Command {
         // Apriltag is visible
         if (Math.abs(targetX) < targetXRange) {
 
-            indexAfterShooterSpeed(1.7);    //Could adjust this value to decrease cycle time
+            indexAfterShooterSpeed(0.8);    //Could adjust this value to decrease cycle time
             driveCommandForward.cancel();
 
 
@@ -173,7 +173,7 @@ public class AutoShoot extends Command {
     private void indexAfterShooterSpeed(double time) {
         if (shooterTimer.hasElapsed(time)) {
             indexTimer.start();
-            if (!indexTimer.hasElapsed(2)) {
+            if (!indexTimer.hasElapsed(2)) {    //2
                 indexCommand.schedule();
             }
         }
@@ -219,69 +219,6 @@ public class AutoShoot extends Command {
     public boolean isFinished() {
         return indexTimer.hasElapsed(2);
     }
-
-    // private void calculateThetaButton_Click() {
-    // // declare values to be calculated
-    // double thetaPivotReferenceMethodRegularDegrees = 0;
-    // double thetaPivotReferenceMethod = 0; // will end up with robot degrees here
-
-    // final double targetHeight = 81.5;
-    // final double distanceBetweenLimelightAndPivotTextBox = 18;
-    // String distanceBetweenTargetAndLimelightTextBox = "66";
-
-    // // pull in values that will be used during calculation from form
-    // double targetHeightAboveGround = targetHeight; //set to 81.5" for our
-    // practice field. may need to change for comp field / comp practive field
-    // double distanceBetweenLimelightAndPivot =
-    // distanceBetweenLimelightAndPivotTextBox; // horizontal distance between value
-    // returned by limelight and actual position of the pivot point on robot
-    // double additionalPivotHorizontalOffset = -12.08; // this number is used to
-    // account for offset associated with shooter wheels
-    // double distanceBetweenLimelightAndTarget =
-    // Double.parseDouble(distanceBetweenTargetAndLimelightTextBox); // get actual
-    // distance from limelight for this variable
-    // double pivotHeight = 16.375; // constant distance in inches from ground to
-    // pivot point on our robot
-
-    // // calculate theta
-    // double oppositeSideOfTriangle = targetHeightAboveGround - pivotHeight;
-    // double adjacentSideOfTrinagle = distanceBetweenLimelightAndTarget +
-    // distanceBetweenLimelightAndPivot + additionalPivotHorizontalOffset;
-    // double thetaPivotReferenceMethodRadians = Math.atan(oppositeSideOfTriangle /
-    // adjacentSideOfTrinagle);
-    // thetaPivotReferenceMethodRegularDegrees =
-    // ConvertRadiansToDegrees(thetaPivotReferenceMethodRadians);
-    // thetaPivotReferenceMethod =
-    // ConvertRealDegreesToRobotDegrees(thetaPivotReferenceMethodRegularDegrees);
-
-    // // because limits are a good idea
-    // double maxRobotDegreeLimit = 90;
-    // double minRobotDegreeLimit = 5;
-    // if (thetaPivotReferenceMethod > maxRobotDegreeLimit) {
-    // thetaPivotReferenceMethod = maxRobotDegreeLimit; }
-    // else if (thetaPivotReferenceMethod < minRobotDegreeLimit) {
-    // thetaPivotReferenceMethod = minRobotDegreeLimit; }
-
-    // // update form
-    // // thetaPivotReferenceMethodTextBox.Text =
-    // thetaPivotReferenceMethodRegularDegrees.ToString("n2");
-    // // thetaPivotReferenceMethodRobotDegreesTextBox.Text =
-    // thetaPivotReferenceMethod.ToString("n2");
-    // }
-
-    // public double ConvertRadiansToDegrees(double radians) {
-    // double degrees = (180 / Math.PI) * radians;
-    // return (degrees);
-    // }
-
-    // public double ConvertRealDegreesToRobotDegrees(double realDegrees) {
-    // double offset = 11;
-    // double ratio = 1.238;
-    // double realDegreesMinusOffset = realDegrees - offset;
-
-    // double robotDegrees = realDegreesMinusOffset/ratio;
-    // return (robotDegrees);
-    // }
 
     // method that returns angle shooter needs to be at to shoot at target height,
     // pass in 81.5 as target height for our practice field

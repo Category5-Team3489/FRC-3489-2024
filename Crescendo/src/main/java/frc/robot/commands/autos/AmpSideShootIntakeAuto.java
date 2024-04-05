@@ -43,9 +43,10 @@ public class AmpSideShootIntakeAuto extends Command {
         // Domain is [-1, 1]
 
         // Rotate/drive side
+        //TODO Test rotation
         double percentY = Cat5Utils.Red(0.3);
         double percentX = 0;
-        double percentOmega = 0.2;
+        double percentOmega = Cat5Utils.Red(0.3);
 
         // intake drive
         double percentY2 = 0;
@@ -55,7 +56,7 @@ public class AmpSideShootIntakeAuto extends Command {
         // drive back
         double percentY3 = 0;
         double percentX3 = -0.3;
-        double percentOmega3 = -0.1;
+        double percentOmega3 = Cat5Utils.Red(-0.1);
 
         double driveTimeSeconds = 0.6;
         double driveTimeSeconds2 = 4;
@@ -107,6 +108,7 @@ public class AmpSideShootIntakeAuto extends Command {
 
                                 .andThen(driveCommandIntake.withTimeout(driveTimeSeconds2))
 
+                                //TODO Remove debounce?
                                 .andThen(() -> laserTrigger.debounce(0.29, DebounceType.kRising)
                                                 .onTrue(Commands.runOnce(() -> {
                                                         if (intake.hasIntakeBeenSet) {

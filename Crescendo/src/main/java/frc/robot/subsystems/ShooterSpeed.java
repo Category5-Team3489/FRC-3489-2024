@@ -30,7 +30,6 @@ public class ShooterSpeed extends SubsystemBase {
     private ShooterSpeed() {
         bottomMotor.setInverted(true);
 
-        
         Shuffleboard.getTab("Main")
                 .addDouble("Shooter speed", () -> speedPercent)
                 .withSize(1, 1)
@@ -40,14 +39,17 @@ public class ShooterSpeed extends SubsystemBase {
     private void setTopSpeedPercent(double speedPercent) {
         if (speedPercent == 0) {
             topMotor.stopMotor();
-            // bottomMotor.stopMotor();
             speedPercent = 0;
+
+            //New code for setting idle instead of stoping the motor
+            // double voltage = 0.20 * 12;
+            // voltageOut.Output = voltage;
+            // topMotor.setControl(voltageOut);
         } else {
             double voltage = speedPercent * 12;
             voltageOut.Output = voltage;
             topMotor.setControl(voltageOut);
             // bottomMotor.setControl(voltageOut);
-
 
             // topMotor.set(speedPercent);
             // bottomMotor.set(speedPercent);
@@ -62,15 +64,19 @@ public class ShooterSpeed extends SubsystemBase {
 
     private void setBottomSpeedPercent(double speedPercent) {
         if (speedPercent == 0) {
-            // topMotor.stopMotor();
+            // This is what we had when it set it to 0 instead on idle 20
             bottomMotor.stopMotor();
             speedPercent = 0;
+
+
+            // double voltage = 0.20 * 12;
+            // voltageOut.Output = voltage;
+            // bottomMotor.setControl(voltageOut);
         } else {
             double voltage = speedPercent * 12;
             voltageOut.Output = voltage;
             // topMotor.setControl(voltageOut);
             bottomMotor.setControl(voltageOut);
-
 
             // topMotor.set(speedPercent);
             // bottomMotor.set(speedPercent);
@@ -89,19 +95,19 @@ public class ShooterSpeed extends SubsystemBase {
     }
 
     public Command updateCommand(DoubleSupplier speedPercentSupplier) {
-        return Commands.runEnd(() -> { 
+        return Commands.runEnd(() -> {
             setBottomSpeedPercent(speedPercentSupplier.getAsDouble());
             setTopSpeedPercent(speedPercentSupplier.getAsDouble());
 
         }, () -> {
-            setBottomSpeedPercent(0);
-            setTopSpeedPercent(0);
+            setBottomSpeedPercent(0.20);
+            setTopSpeedPercent(0.20);
 
         }, this);
     }
 
     public Command updateCommand(double topSpeed, double bottomSpeed) {
-        return Commands.runEnd(() -> { 
+        return Commands.runEnd(() -> {
             setTopSpeedPercent(topSpeed);
             setBottomSpeedPercent(bottomSpeed);
         }, () -> {
@@ -112,7 +118,15 @@ public class ShooterSpeed extends SubsystemBase {
 
     public Command stopCommand() {
         return Commands.runOnce(() -> {
-            setTopSpeedPercent(0);
+            setTopSpeedPercent(0.2);
+            setBottomSpeedPercent(0.2);
+        }, this);
+    }
+
+    public Command stopButton() {
+        return Commands.runOnce(() -> {
+            bottomMotor.stopMotor();
+            topMotor.stopMotor();
         }, this);
     }
 }
