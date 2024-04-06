@@ -28,8 +28,8 @@ public class Trap extends Command {
     private final Index index = Index.get();
 
     Command setShooterTrap = new SetShooterSpeedAngleDifferent(
-            Constants.ShooterAngle.TrapShooterAngle, Constants.ShooterSpeed.TrapShooterSpeed,
-            Constants.ShooterSpeed.TrapShooterSpeed);
+            Constants.ShooterAngle.TrapShooterAngle, Constants.ShooterSpeed.TrapTopShooterSpeed,
+            Constants.ShooterSpeed.TrapTopShooterSpeed);
 
     final SwerveRequest.RobotCentric robotCentricDrive = new SwerveRequest.RobotCentric();
 
@@ -131,8 +131,6 @@ public class Trap extends Command {
             robotDriveCommand.schedule();
         }
 
-        
-
         // if left of target
         // If to far
         //
@@ -150,11 +148,11 @@ public class Trap extends Command {
     private void indexAfterShooterSpeed(double time) {
         if (shooterTimer.hasElapsed(time)) {
             indexTimer.start();
-            if (!indexTimer.hasElapsed(2)) {    //2
+            if (!indexTimer.hasElapsed(2)) { // 2
                 indexCommand.schedule();
             }
         }
-        
+
     }
 
     private double getDrivetrainAngleRate() {

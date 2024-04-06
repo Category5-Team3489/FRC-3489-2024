@@ -16,6 +16,7 @@ import frc.robot.commands.shooter.SetShooterSpeedAndAngle;
 import frc.robot.enums.IndexState;
 import frc.robot.enums.IntakeState;
 import frc.robot.enums.ShooterAngleState;
+import frc.robot.subsystems.CoralLimelight;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
@@ -26,6 +27,7 @@ public class SourceCenterLineManual {
     private ShooterAngle shooterAngle = ShooterAngle.get();
     private Intake intake = Intake.get();
     private Drivetrain drivetrain = Drivetrain.get();
+    private CoralLimelight coralLimelight = CoralLimelight.get();
 
     private static final double MaxMetersPerSecond = Constants.Drivetrain.MaxMetersPerSecond;
     private static final double MaxRadiansPerSecond = Constants.Drivetrain.MaxRadiansPerSecond;
@@ -38,6 +40,8 @@ public class SourceCenterLineManual {
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
     Command autoShoot = new AutoShoot();
+
+    public boolean hasRunBefore = false;
 
     // Command autoIntakeCommand = new CoralIntake();
 
@@ -108,7 +112,6 @@ public class SourceCenterLineManual {
     // .withRotationalRate(-percentOmega4 * MaxRadiansPerSecond * speedMultiplier));
 
     public Command sourceCenterLineManual() {
-        // manual shoot
         return Commands.parallel(closeShootCommand, Commands.waitSeconds(3))
 
                 .andThen(Commands.parallel(shooterIndex), Commands.waitSeconds(2))
@@ -126,20 +129,11 @@ public class SourceCenterLineManual {
                 // Cancle the drive command
                 .andThen(() -> driveCommandDriveCenter.cancel())
 
-                .andThen(Commands.print("Drive Done"))
+                .andThen(Commands.print("Drive to Center Done"))
 
                 // Drive forward to intake
-                // .andThen(driveCommandIntake.withTimeout(driveTimeSeconds4))
+                .andThen(driveCommandIntake.withTimeout(driveTimeSeconds4))
 
-                // .andThen(() -> autoCoralIntakeCommand.schedule())
-
-                // TODO Test if the other one does not work
-                .andThen(autoCoralIntakeCommand)
-
-                .andThen(Commands.print("Auto Intake Done"))
-
-                //TODO possibly update time to stop auto intake
-                // Stop intake when piece detected
                 .andThen(() -> laserTrigger
                         .onTrue(Commands.runOnce(() -> {
                             if (intake.hasIntakeBeenSet) {
@@ -148,12 +142,25 @@ public class SourceCenterLineManual {
                             }
                         })))
 
-                // drive back to see apriltag
                 .andThen(driveCommandBack.withTimeout(driveTimeSeconds3))
 
-                // Auto shoot
                 .andThen(() -> autoShoot.schedule())
 
+                // .andThen(() -> autoCoralIntakeCommand.schedule())
                 .withName("SourceCenterLineManual");
+
     }
+
+    // TODO Test if the other one does not work
+    // .andThen(autoCoralIntakeCommand.withTimeout(4))
+
+    // TODO possibly update time to stop auto intake
+    // Stop intake when piece detected
+
+    // // drive back to see apriltag
+    // .andThen(driveCommandBack.withTimeout(driveTimeSeconds3))
+
+    // // Auto shoot
+    // .andThen(() -> autoShoot.schedule())
+
 }

@@ -14,6 +14,7 @@ public class CoralLimelight extends SubsystemBase {
 
     private static final CoralLimelight instance = new CoralLimelight();
 
+    public boolean hasCenterLineAutoRunBefore = false;
     public static CoralLimelight get() {
         return instance;
     }

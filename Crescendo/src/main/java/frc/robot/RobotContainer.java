@@ -5,6 +5,7 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.Intake.AutoCoralIntake;
 import frc.robot.commands.Intake.CoralIntake;
 import frc.robot.commands.Intake.IntakeUntilDetectionAngle;
 import frc.robot.commands.Intake.Outtake;
@@ -300,7 +301,7 @@ public class RobotContainer {
                         // timer.start();
                         // index.indexCommand(IndexState.Outtake);
                         // if (timer.hasElapsed(0.5)) {
-                        //     index.stop();
+                        // index.stop();
                         // }
                         index.stop();
                         shooterAngle.updateCommand(ShooterAngleState.Start.getAngle());
@@ -392,6 +393,14 @@ public class RobotContainer {
                 Constants.ShooterAngle.AmpShooterAngle, Constants.ShooterSpeed.AmpBottomShooterSpeed,
                 Constants.ShooterSpeed.AmpTopShooterSpeed); // 40, 30 = amp //60-60 = trap
 
+        final SetShooterSpeedAngleDifferent setShooterTrap = new SetShooterSpeedAngleDifferent(
+                Constants.ShooterAngle.TrapShooterAngle, Constants.ShooterSpeed.TrapBottomShooterSpeed,
+                Constants.ShooterSpeed.TrapTopShooterSpeed);
+
+        final SetShooterSpeedAngleDifferent setShooterAcrossField = new SetShooterSpeedAngleDifferent(
+                Constants.ShooterAngle.AcrossFieldShooterAngle, Constants.ShooterSpeed.AcrossFieldShooterSpeed,
+                Constants.ShooterSpeed.AcrossFieldShooterSpeed);
+
         // b = stop Shooter
         manipulatorXbox.b().onTrue(shooterSpeed.stopButton());
         // x = Manual Shoot
@@ -434,6 +443,10 @@ public class RobotContainer {
 
         // TODO Test
         manipulatorXbox.y().onTrue(Commands.runOnce(() -> autoShoot.schedule()));
+
+        manipulatorXbox.povUp().onTrue(Commands.runOnce(() -> setShooterTrap.schedule()));
+
+        manipulatorXbox.povDown().onTrue(Commands.runOnce(() -> setShooterAcrossField.schedule()));
 
         driverXbox.leftTrigger().onTrue(Commands.runOnce(() -> trap.schedule()));
 

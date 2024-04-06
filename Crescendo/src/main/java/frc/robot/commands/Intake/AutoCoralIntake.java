@@ -8,7 +8,10 @@ import edu.wpi.first.units.Time;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Cat5Utils;
 import frc.robot.Constants;
+import frc.robot.commands.autoShooting.AutoShoot;
 import frc.robot.enums.IndexState;
 import frc.robot.enums.IntakeState;
 import frc.robot.enums.ShooterAngleState;
@@ -26,9 +29,16 @@ public class AutoCoralIntake extends Command {
     private final Index index = Index.get();
 
     private final IntakeUntilDetection intakeCommand = new IntakeUntilDetection();
-    private final SwerveRequest.RobotCentric drive = new SwerveRequest.RobotCentric();
+    private final SwerveRequest.RobotCentric robotDrive = new SwerveRequest.RobotCentric();
 
-    Command driveCommandForward = drivetrain.applyRequest(() -> drive
+    private final SwerveRequest.FieldCentric fieldDrive = new SwerveRequest.FieldCentric();
+
+    Command driveCommandForward = drivetrain.applyRequest(() -> fieldDrive
+            .withVelocityX(getDrivetrainVelocityX())
+            .withVelocityY(getDrivetrainVelocityY())
+            .withRotationalRate(getDrivetrainAngleRate()));
+
+    Command driveCommandForwardRobot = drivetrain.applyRequest(() -> robotDrive
             .withVelocityX(getDrivetrainVelocityX())
             .withVelocityY(getDrivetrainVelocityY())
             .withRotationalRate(getDrivetrainAngleRate()));
@@ -37,6 +47,8 @@ public class AutoCoralIntake extends Command {
     Command intakeCommandm = intake.intakeCommand(IntakeState.centerIn, IntakeState.falconIn);
     Command shooterAngleCommand = shooterAngle.updateCommand(ShooterAngleState.Max.getAngle());
     Command indexCommand = index.indexCommand(IndexState.Intake);
+
+    Command autoShoot = new AutoShoot();
 
     private double drivetrainAngleRate = 0;
     private double drivetrainVelocityX = 0;
@@ -49,7 +61,9 @@ public class AutoCoralIntake extends Command {
 
     private Timer intakeTimer = new Timer();
 
-    private double rotationSpeed = 0.12 * Constants.Drivetrain.MaxRadiansPerSecond;
+    private double rotationSpeed = 0.08 * Constants.Drivetrain.MaxRadiansPerSecond;
+
+    Trigger laserTrigger = new Trigger(index.laserSensor::get);
 
     // TODO Test Ranges
     private final double tXRange = 16; // 3 -- 5
@@ -60,11 +74,12 @@ public class AutoCoralIntake extends Command {
     public AutoCoralIntake() {
         Commands.runOnce(() -> Commands.parallel(
                 drivetrain.applyFieldCentricFacingAngle(() -> 0, () -> 0, () -> 0)));
+
+        addRequirements(drivetrain, coralLimelight);
     }
 
     @Override
     public void initialize() {
-        // TODO Test
         intakeCommandm.schedule();
         indexCommand.schedule();
         shooterAngleCommand.schedule();
@@ -86,11 +101,18 @@ public class AutoCoralIntake extends Command {
             return;
         }
 
+        laserTrigger.onTrue(Commands.runOnce(() -> {
+            index.stop();
+            intake.stop();
+            // isFinished = true;
+        }));
+
         // If within ty range
         // if (targetY <= tYRange) {
         // if within tx range
         if (Math.abs(targetX) < tXRange) {
             System.out.println("----EQUAL------");
+            driveCommandForward.cancel();
             isFinished = true;
             return;
 
@@ -106,24 +128,42 @@ public class AutoCoralIntake extends Command {
             // isFinished = false;
 
         }
-        // }
+
     }
 
     // This works but does not allow the robot to corect if it overshoots
     @Override
     public boolean isFinished() {
-        // return isFinished;
-        return true;
+        return isFinished;
+        // return true;
     }
 
     // This works but does not allow the robot to corect if it overshoots
     @Override
     public void end(boolean interrupted) {
-        drivetrainAngleRate = 0;
-        drivetrainVelocityX = 0.2;
-        driveCommandForward.schedule();
-        System.out.println("===========================End");
-        shouldAutoIntake = false;
+        intakeTimer.reset();
+        intakeTimer.start();
+        while (intakeTimer.get() <= 2) {
+            System.out.println("Intake Drive");
+            // drivetrainAngleRate = 0;
+            drivetrainVelocityX = 0.2;
+            driveCommandForwardRobot.schedule();
+        }
+        System.out.println("-----------------------Intake Drive Forward Done");
+
+        intakeTimer.reset();
+        intakeTimer.start();
+        while (intakeTimer.get() <= 5) {
+            System.out.println("Drive Back");
+            drivetrainVelocityX = 0.6;
+            drivetrainVelocityY = Cat5Utils.Red(0.3);
+            driveCommandForward.schedule();
+        }
+        System.out.println("------------------------------Drive Back Done");
+
+        autoShoot.schedule();
+        System.out.println("--------------------------Auto Done");
+
     }
 
     private double getDrivetrainAngleRate() {
