@@ -39,7 +39,6 @@ public class ShootIntakeAutoShoot extends Command {
     Command autoShoot = new AutoShoot().withTimeout(2);
 
     Command shooterIndex = index.indexCommand(IndexState.Intake);
-    Command shooterIndex2 = index.indexCommand(IndexState.Intake);
 
     // Ensure percentages are greater than the 0.1 percent deadband above
     // Domain is [-1, 1]
@@ -55,7 +54,7 @@ public class ShootIntakeAutoShoot extends Command {
             .withVelocityY(-percentY * MaxMetersPerSecond * speedMultiplier)
             .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
 
-    Command driveCommandForward2 = drivetrain.applyRequest(() -> drive
+    Command driveCommandBack = drivetrain.applyRequest(() -> drive
             .withVelocityX(-percentX * MaxMetersPerSecond * speedMultiplier)
             .withVelocityY(-percentY * MaxMetersPerSecond * speedMultiplier)
             .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
@@ -72,34 +71,26 @@ public class ShootIntakeAutoShoot extends Command {
     // .andThen(Commands.parallel(shooterIndex), Commands.waitSeconds(2));
 
     public Command shootIntakeAutoShoot() {
+        // shooter angle & speed 3 secs
         return Commands.parallel(closeShootCommand, Commands.waitSeconds(3))
+
+                // TODO find out why the parallel is being weird but working
+
+                // shoot
                 .andThen(Commands.parallel(shooterIndex), Commands.waitSeconds(2))
                 .andThen(() -> closeShootCommand.cancel())
 
-                .andThen(() -> System.out.println("===============shoot Cancle"))
+                // TODO Test with only starting intake once
 
-                // TODO parallel drive and intake for drive seconde--- DID NOT WORK
-                // .andThen(Commands.parallel(driveCommandForward.withTimeout(driveTimeSeconds),
-                // intakeUntilDetection))
-
-                // TODO parallel drive and intake for drive seconde--- DID NOT WORK
-                // .andThen(Commands.parallel(driveCommandForward.withTimeout(driveTimeSeconds),
-                // intakeUntilDetection.withTimeout(driveTimeSeconds)))
-
-                // TODO IntakeDetection for angle, manual intake/index
-
-                .andThen(intake.intakeCommand(IntakeState.centerIn, IntakeState.falconIn))
-                .andThen(index.indexCommand(IndexState.Intake))
-
-                // TODO Manual Shooter Angle, intake, index (try .schedule?)
+                // Set Intake
                 .andThen(() -> shooterAngle.updateCommand(ShooterAngleState.Max.getAngle())
                         .schedule())
                 .andThen(intake.intakeCommand(IntakeState.centerIn, IntakeState.falconIn))
                 .andThen(index.indexCommand(IndexState.Intake))
-
-                // .andThen(() -> System.out.println("++++Drive++++"))
+                // drives forward with timeout
                 .andThen(driveCommandForward.withTimeout(driveTimeSeconds))
 
+                // If laser sensor detects note for more than 0.29 seconds, stop intake/index
                 .andThen(() -> laserTrigger
                         .debounce(0.29, DebounceType.kRising)
                         .onTrue(Commands.runOnce(() -> {
@@ -108,9 +99,9 @@ public class ShootIntakeAutoShoot extends Command {
                                 index.stop();
                             }
                         })))
-
-                .andThen(driveCommandForward2.withTimeout(1))
-
+                // drives back with timeout
+                .andThen(driveCommandBack.withTimeout(1))
+                // auto shoots
                 .andThen(() -> autoShoot.schedule())
 
                 .withName("ShootIntakeAutoShoot");

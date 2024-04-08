@@ -18,7 +18,6 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.ShooterAngle;
-import frc.robot.subsystems.ShooterSpeed;
 
 public class SideShootIntakeShoot extends Command {
     private final Drivetrain drivetrain = Drivetrain.get();

@@ -3,20 +3,17 @@ package frc.robot.commands.autos;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
-import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Cat5Utils;
 import frc.robot.Constants;
 import frc.robot.commands.Intake.AutoCoralIntake;
-import frc.robot.commands.Intake.CoralIntake;
 import frc.robot.commands.autoShooting.AutoShoot;
 import frc.robot.commands.shooter.SetShooterSpeedAndAngle;
 import frc.robot.enums.IndexState;
 import frc.robot.enums.IntakeState;
 import frc.robot.enums.ShooterAngleState;
-import frc.robot.subsystems.CoralLimelight;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
@@ -27,7 +24,6 @@ public class SourceCenterLineManual {
     private ShooterAngle shooterAngle = ShooterAngle.get();
     private Intake intake = Intake.get();
     private Drivetrain drivetrain = Drivetrain.get();
-    private CoralLimelight coralLimelight = CoralLimelight.get();
 
     private static final double MaxMetersPerSecond = Constants.Drivetrain.MaxMetersPerSecond;
     private static final double MaxRadiansPerSecond = Constants.Drivetrain.MaxRadiansPerSecond;

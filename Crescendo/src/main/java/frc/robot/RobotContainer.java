@@ -5,12 +5,10 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Intake.AutoCoralIntake;
 import frc.robot.commands.Intake.CoralIntake;
 import frc.robot.commands.Intake.IntakeUntilDetectionAngle;
 import frc.robot.commands.Intake.Outtake;
 import frc.robot.commands.autoShooting.AutoShoot;
-import frc.robot.commands.autoShooting.AutoShootTest;
 import frc.robot.commands.autoShooting.Trap;
 import frc.robot.commands.autos.Cat5Autos;
 import frc.robot.commands.autos.SourceSideShootIntakeAuto;
@@ -29,14 +27,9 @@ import frc.robot.commands.autos.Taxi;
 import frc.robot.commands.shooter.SetShooterSpeedAndAngle;
 import frc.robot.commands.shooter.SetShooterSpeedAngleDifferent;
 import frc.robot.commands.shooter.ShooterIntake2;
-import frc.robot.enums.ClimberState;
 import frc.robot.enums.IndexState;
-import frc.robot.enums.IntakeState;
 import frc.robot.enums.ShooterAngleState;
 import frc.robot.enums.SpeedLimitState;
-import frc.robot.subsystems.AprilLimelight;
-// import frc.robot.subsystems.Climber;
-import frc.robot.subsystems.CoralLimelight;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
@@ -47,13 +40,9 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
-import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -123,7 +112,7 @@ public class RobotContainer {
                                                                          // driving in open loop
 
         final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-        final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+        // final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
         final SwerveRequest.FieldCentricFacingAngle driveFacingAngle = new SwerveRequest.FieldCentricFacingAngle()
                 .withDeadband(MaxMetersPerSecond * 0.1)
                 .withRotationalDeadband(MaxRadiansPerSecond * 0.1) // Add a
@@ -281,8 +270,6 @@ public class RobotContainer {
         // tesController.getAButton().onTrue(Commands.runOnce(() ->
         // tesController.setRumble(RumbleType.kLeftRumble, 1), this));
 
-        Timer timer = new Timer();
-
         // TODO Test This with robot
         laserTrigger
                 // .debounce(0.29, DebounceType.kRising) // 0.29
@@ -378,9 +365,6 @@ public class RobotContainer {
 
         final Intake intake = Intake.get();
 
-        final SetShooterSpeedAndAngle setShooterFar = new SetShooterSpeedAndAngle(
-                Constants.ShooterAngle.FarShooterAngle,
-                Constants.ShooterSpeed.DefaultSpeedPercent);
         final SetShooterSpeedAndAngle setShooterClose = new SetShooterSpeedAndAngle(
                 Constants.ShooterAngle.CloseShooterAngle,
                 Constants.ShooterSpeed.CloseShooterSpeed);

@@ -1,12 +1,8 @@
 package frc.robot.commands.shooter;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.enums.IndexState;
-import frc.robot.subsystems.Index;
 import frc.robot.subsystems.ShooterAngle;
 import frc.robot.subsystems.ShooterSpeed;
 

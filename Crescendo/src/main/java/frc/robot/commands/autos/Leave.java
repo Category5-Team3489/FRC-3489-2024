@@ -1,14 +1,7 @@
 package frc.robot.commands.autos;
 
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.DrivetrainConstants;
 import frc.robot.commands.DriveSeconds;
-import frc.robot.commands.shooter.SetShooterSpeedAndAngle;
 import frc.robot.subsystems.Drivetrain;
 
 public class Leave extends Command {

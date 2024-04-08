@@ -1,30 +1,19 @@
 package frc.robot.commands.autoShooting;
 
-import java.util.function.DoubleSupplier;
-
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.BangBangController;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.commands.shooter.SetShooterSpeedAngleDifferent;
 import frc.robot.enums.IndexState;
 import frc.robot.subsystems.AprilLimelight;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Index;
-import frc.robot.subsystems.ShooterAngle;
-import frc.robot.subsystems.ShooterSpeed;
 
 public class Trap extends Command {
     private final AprilLimelight aprilLimelight = AprilLimelight.get();
     private final Drivetrain drivetrain = Drivetrain.get();
-    private final ShooterAngle shooterAngle = ShooterAngle.get();
-    private final ShooterSpeed shooterSpeed = ShooterSpeed.get();
     private final Index index = Index.get();
 
     Command setShooterTrap = new SetShooterSpeedAngleDifferent(

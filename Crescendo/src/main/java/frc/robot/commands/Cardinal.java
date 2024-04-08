@@ -2,7 +2,6 @@ package frc.robot.commands;
 
 import frc.robot.DrivetrainConstants;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.ExampleSubsystem;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 

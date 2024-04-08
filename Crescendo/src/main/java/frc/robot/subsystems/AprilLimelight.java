@@ -19,6 +19,7 @@ public class AprilLimelight extends SubsystemBase {
     // Devices
     private final NetworkTable limelight = NetworkTableInstance.getDefault().getTable("limelight-shooter");
 
+    //Used to determine how long 
     private Timer timer = new Timer();
 
     // Variables
@@ -51,18 +52,6 @@ public class AprilLimelight extends SubsystemBase {
                 .withSize(1, 1)
                 .withPosition(2, 2);
     }
-
-    // private void setupAprilLimelightFeed() {
-    // try {
-    // HttpCamera limelightFeed = new HttpCamera("limelight-shooter",
-    // "http://10.34.89.103:5800/stream.mjg");
-    // Shuffleboard.getTab("Main")
-    // .add(limelightFeed)
-    // .withWidget(BuiltInWidgets.kCameraStream);
-    // } catch (Exception e) {
-    // System.out.println("Limelight camera had trouble initializing");
-    // }
-    // }
 
     private boolean isTagVisible() {
         return targetVisibleEntry.getInteger(0) == 1;

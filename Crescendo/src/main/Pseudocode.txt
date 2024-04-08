@@ -1,0 +1,11 @@
+Index:
+    // encoder position change (constant) PID
+
+    // start intake/belt
+    // wait to get sensor value (could have this start shooter motor)
+    // stop
+
+    // set shooter speed
+    // press shoot button
+    // run belt/shooter
+    // stop
