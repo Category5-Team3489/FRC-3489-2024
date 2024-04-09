@@ -70,7 +70,7 @@ public class ShooterAngle extends SubsystemBase {
         setTargetAngle(angleDegrees);
         double targetRotations = angleDegrees * MotorRotationsPerDegree;
         pidControllerLeft.setReference(targetRotations, ControlType.kPosition, 0);
-        pidControllerRight.setReference(-targetRotations, ControlType.kPosition, 0);
+        pidControllerRight.setReference(targetRotations, ControlType.kPosition, 0);
     }
 
     public boolean isAtTargetAngle() {
@@ -93,7 +93,7 @@ public class ShooterAngle extends SubsystemBase {
     private void setTargetAngle(double angleDegrees) {
         targetAngleDegrees = MathUtil.clamp(angleDegrees,
                 ShooterAngleState.Start.getAngle(), ShooterAngleState.Max.getAngle());
-        // System.out.println("Target ANGLE ==============" + targetAngleDegrees);
+        System.out.println("Target ANGLE ==============" + targetAngleDegrees);
     }
 
     public Command updateCommand(double angleDegrees) {
