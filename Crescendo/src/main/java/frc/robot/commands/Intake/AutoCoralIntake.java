@@ -75,7 +75,7 @@ public class AutoCoralIntake extends Command {
         Commands.runOnce(() -> Commands.parallel(
                 drivetrain.applyFieldCentricFacingAngle(() -> 0, () -> 0, () -> 0)));
 
-        addRequirements(drivetrain, coralLimelight);
+        addRequirements(drivetrain);
     }
 
     @Override

@@ -23,6 +23,8 @@ public class CoralIntake extends Command {
     private final ShooterAngle shooterAngle = ShooterAngle.get();
     private final Index index = Index.get();
 
+    
+
     private final IntakeUntilDetection intakeCommand = new IntakeUntilDetection();
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric();
 

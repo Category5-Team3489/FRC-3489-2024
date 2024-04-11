@@ -1,16 +1,10 @@
 package frc.robot.commands.autoShooting;
 
-import java.util.function.DoubleSupplier;
-
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.BangBangController;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants;
 import frc.robot.enums.IndexState;
 import frc.robot.subsystems.AprilLimelight;
@@ -46,8 +40,6 @@ public class AutoShoot extends Command {
 
     private Timer indexTimer = new Timer();
     private Timer shooterTimer = new Timer();
-
-
 
     private double drivetrainAngleRate = 0;
     private double drivetrainVelocityX = 0;
@@ -88,7 +80,6 @@ public class AutoShoot extends Command {
         shooterTimer.reset();
 
         shooterTimer.start();
-
 
         driveCommandForward.schedule();
 
@@ -154,15 +145,16 @@ public class AutoShoot extends Command {
         // set shooter angle based on ty calculation
 
         // Apriltag is visible
+        // if the robot is rotated within 5 degrees of what it should be.
         if (Math.abs(targetX) < targetXRange) {
 
-            indexAfterShooterSpeed(1.2);    //Could adjust this value to decrease cycle time
+            indexAfterShooterSpeed(1.2); // Could adjust this value to decrease cycle time
             driveCommandForward.cancel();
-
-
+            // if the ronot is too far left of april tag
         } else if (targetX < 0) {
             drivetrainAngleRate = -rotationSpeed;
             driveCommandForward.schedule();
+            // if the robot is too far right of april tag
         } else if (targetX > 0) {
             drivetrainAngleRate = rotationSpeed;
             driveCommandForward.schedule();
@@ -173,11 +165,11 @@ public class AutoShoot extends Command {
     private void indexAfterShooterSpeed(double time) {
         if (shooterTimer.hasElapsed(time)) {
             indexTimer.start();
-            if (!indexTimer.hasElapsed(2)) {    //2
+            if (!indexTimer.hasElapsed(2)) { // 2
                 indexCommand.schedule();
             }
         }
-        
+
     }
 
     private double getDrivetrainAngleRate() {
@@ -192,13 +184,13 @@ public class AutoShoot extends Command {
         return drivetrainVelocityY;
     }
 
-    private double estimateFloorDistance(double targetY) {
+    public static double estimateFloorDistance(double targetY) {
         double distance = 44.06 / Math.tan(Math.toRadians(49 + targetY));
         System.out.println("Distance === " + distance);
         return distance;
     }
 
-    private double getShooterAngle(double distance) {
+    public static double getShooterAngle(double distance) {
         // TODO fill in with shooter Math
         // return angle;
         return calculateTheta(83, distance);
@@ -222,7 +214,7 @@ public class AutoShoot extends Command {
 
     // method that returns angle shooter needs to be at to shoot at target height,
     // pass in 81.5 as target height for our practice field
-    private double calculateTheta(double targetHeightAboveGround, double distanceBetweenTargetAndLimelight) {
+    public static double calculateTheta(double targetHeightAboveGround, double distanceBetweenTargetAndLimelight) {
         // declare values to be calculated
         double thetaRegularDegrees = 0;
         double theta = 0; // will end up with robot degrees here
@@ -249,7 +241,7 @@ public class AutoShoot extends Command {
         return (MathUtil.clamp(theta, minRobotDegreeLimit, maxRobotDegreeLimit));
     }
 
-    public double ConvertRealDegreesToRobotDegrees(double realDegrees) {
+    public static double ConvertRealDegreesToRobotDegrees(double realDegrees) {
         double offset = 11;
         double ratio = 1.238;
         double realDegreesMinusOffset = realDegrees - offset;

@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Cat5Utils;
 import frc.robot.Constants;
+import frc.robot.commands.AutonomousDrive;
 import frc.robot.commands.Intake.AutoCoralIntake;
 import frc.robot.commands.autoShooting.AutoShoot;
 import frc.robot.commands.shooter.SetShooterSpeedAndAngle;
