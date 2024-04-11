@@ -85,8 +85,8 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
-        // bindDriveTrain();
-        // bindIntakeIndex();
+        bindDriveTrain();
+        bindIntakeIndex();
         bindShooter();
     }
 
