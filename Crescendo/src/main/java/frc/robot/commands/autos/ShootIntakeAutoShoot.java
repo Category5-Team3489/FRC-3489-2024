@@ -64,7 +64,7 @@ public class ShootIntakeAutoShoot extends Command {
     final Intake intake = Intake.get();
     final ShooterAngle shooterAngle = ShooterAngle.get();
 
-    final IntakeUntilDetectionAngle intakeUntilDetection = new IntakeUntilDetectionAngle();
+//     final IntakeUntilDetectionAngle intakeUntilDetection = new IntakeUntilDetectionAngle();
 
     // Command shootCommand = Commands.parallel(closeShootCommand,
     // Commands.waitSeconds(3))

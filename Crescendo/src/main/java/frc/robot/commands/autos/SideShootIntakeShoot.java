@@ -71,7 +71,7 @@ public class SideShootIntakeShoot extends Command {
             .withVelocityY(-percentY * MaxMetersPerSecond * speedMultiplier)
             .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
 
-    final IntakeUntilDetectionAngle intakeUntilDetection = new IntakeUntilDetectionAngle();
+//     final IntakeUntilDetectionAngle intakeUntilDetection = new IntakeUntilDetectionAngle();
 
     
     public Command sideShootIntakeShoot() {

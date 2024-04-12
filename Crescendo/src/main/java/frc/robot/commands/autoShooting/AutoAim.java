@@ -14,7 +14,6 @@ public class AutoAim extends Command {
     public AutoAim(AutoDrive autoDrive) {
         this.autoDrive = autoDrive;
 
-        addRequirements();
     }
 
     @Override
@@ -42,6 +41,7 @@ public class AutoAim extends Command {
 
     public boolean isAligned() {
         double targetX = aprilLimelight.getTargetX();
+        System.out.println("Target X = " + targetX);
         return Math.abs(targetX) < targetXRange;
     }
 }

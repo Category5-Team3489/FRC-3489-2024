@@ -23,6 +23,7 @@ public class AutoDrive extends Command {
                 .withVelocityX(velocityX)
                 .withVelocityY(velocityY)
                 .withRotationalRate(omega));
+        System.out.println("Execute");
     }
 
     public void setVelocityX(double velocityX) {
@@ -35,5 +36,10 @@ public class AutoDrive extends Command {
 
     public void setOmega(double omega) {
         this.omega = omega;
+    }
+
+    @Override
+    public boolean isFinished() {
+        return true;
     }
 }

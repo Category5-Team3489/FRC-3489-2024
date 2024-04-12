@@ -186,7 +186,7 @@ public class AutoShoot extends Command {
 
     public static double estimateFloorDistance(double targetY) {
         double distance = 44.06 / Math.tan(Math.toRadians(49 + targetY));
-        System.out.println("Distance === " + distance);
+        // System.out.println("Distance === " + distance);
         return distance;
     }
 
