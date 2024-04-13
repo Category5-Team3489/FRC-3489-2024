@@ -1,110 +1,72 @@
 package frc.robot.commands.autos;
 
-import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
-import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
-
-import edu.wpi.first.math.filter.Debouncer.DebounceType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
-import frc.robot.commands.Intake.IntakeUntilDetectionAngle;
-import frc.robot.commands.autoShooting.AutoShoot;
+import frc.robot.commands.AutonomousDrive;
+import frc.robot.commands.Intake.AutonomousCoralIntake;
+import frc.robot.commands.autoShooting.AutonomousShoot;
 import frc.robot.commands.shooter.SetShooterSpeedAndAngle;
 import frc.robot.enums.IndexState;
-import frc.robot.enums.IntakeState;
-import frc.robot.enums.ShooterAngleState;
-import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.ShooterAngle;
 
-public class ShootIntakeAutoShoot extends Command {
+public class ShootIntakeAutoShoot extends SequentialCommandGroup {
 
-    private final Drivetrain drivetrain = Drivetrain.get();
     private final Index index = Index.get();
-
-    private static final double MaxMetersPerSecond = Constants.Drivetrain.MaxMetersPerSecond;
-    private static final double MaxRadiansPerSecond = Constants.Drivetrain.MaxRadiansPerSecond;
-
-    final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxMetersPerSecond * 0.1)
-            .withRotationalDeadband(MaxRadiansPerSecond * 0.1)
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
     Command closeShootCommand = new SetShooterSpeedAndAngle(
             Constants.ShooterAngle.CloseShooterAngle,
-            Constants.ShooterSpeed.CloseShooterSpeed).withTimeout(2);
+            Constants.ShooterSpeed.CloseShooterSpeed);
 
-    Command autoShoot = new AutoShoot().withTimeout(2);
+    Command autoShoot = new AutonomousShoot().withTimeout(2);
 
     Command shooterIndex = index.indexCommand(IndexState.Intake);
 
-    // Ensure percentages are greater than the 0.1 percent deadband above
-    // Domain is [-1, 1]
-    double percentY = 0;
-    double percentX = 0.3;
-    double percentOmega = 0;
-    double driveTimeSeconds = 2.5; // 3 was to far for limelight-- 2 was not enough for intake
+    Command driveCommandForward = new AutonomousDrive(0.15, 0, 0).withTimeout(1);
+    Command driveCommandBack = new AutonomousDrive(-0.15, 0, 0).withTimeout(2.5);
 
-    double speedMultiplier = 0.5; // [0, 1]
-
-    Command driveCommandForward = drivetrain.applyRequest(() -> drive
-            .withVelocityX(percentX * MaxMetersPerSecond * speedMultiplier)
-            .withVelocityY(-percentY * MaxMetersPerSecond * speedMultiplier)
-            .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
-
-    Command driveCommandBack = drivetrain.applyRequest(() -> drive
-            .withVelocityX(-percentX * MaxMetersPerSecond * speedMultiplier)
-            .withVelocityY(-percentY * MaxMetersPerSecond * speedMultiplier)
-            .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
+    Command coralIntake = new AutonomousCoralIntake().withTimeout(5);
 
     Trigger laserTrigger = new Trigger(index.laserSensor::get);
 
     final Intake intake = Intake.get();
     final ShooterAngle shooterAngle = ShooterAngle.get();
 
-//     final IntakeUntilDetectionAngle intakeUntilDetection = new IntakeUntilDetectionAngle();
-
-    // Command shootCommand = Commands.parallel(closeShootCommand,
-    // Commands.waitSeconds(3))
-    // .andThen(Commands.parallel(shooterIndex), Commands.waitSeconds(2));
-
-    public Command shootIntakeAutoShoot() {
-        // shooter angle & speed 3 secs
-        return Commands.parallel(closeShootCommand, Commands.waitSeconds(3))
-
-                // TODO find out why the parallel is being weird but working
+    public ShootIntakeAutoShoot() {
+        addCommands(
+                Commands.parallel(
+                        closeShootCommand,
+                        Commands.print("Set shooter"),
+                        Commands.waitSeconds(3)),
 
                 // shoot
-                .andThen(Commands.parallel(shooterIndex), Commands.waitSeconds(2))
-                .andThen(() -> closeShootCommand.cancel())
+                Commands.print("--------END OF PARALLEL========="),
 
-                // TODO Test with only starting intake once
+                shooterIndex,
+                Commands.print("Index--"),
+                Commands.waitSeconds(2),
 
-                // Set Intake
-                .andThen(() -> shooterAngle.updateCommand(ShooterAngleState.Max.getAngle())
-                        .schedule())
-                .andThen(intake.intakeCommand(IntakeState.centerIn, IntakeState.falconIn))
-                .andThen(index.indexCommand(IndexState.Intake))
-                // drives forward with timeout
-                .andThen(driveCommandForward.withTimeout(driveTimeSeconds))
+                // Drives back off the wall
+                Commands.print("Drive Forward"),
+                driveCommandForward,
 
-                // If laser sensor detects note for more than 0.29 seconds, stop intake/index
-                .andThen(() -> laserTrigger
-                        .debounce(0.29, DebounceType.kRising)
-                        .onTrue(Commands.runOnce(() -> {
-                            if (intake.hasIntakeBeenSet) {
-                                intake.stop();
-                                index.stop();
-                            }
-                        })))
-                // drives back with timeout
-                .andThen(driveCommandBack.withTimeout(1))
+                // Coral Intake: Rotate to game piece, start intake, stop when laser sensor or
+                // after 5 seconds
+                Commands.print("Coral Intake"),
+                coralIntake,
+
+                // drives back with timeout to see april tag
+                Commands.print("Drive Back"),
+                driveCommandBack,
+                Commands.waitSeconds(1),
+
                 // auto shoots
-                .andThen(() -> autoShoot.schedule())
-
-                .withName("ShootIntakeAutoShoot");
+                Commands.print("Auto Shoot"),
+                autoShoot);
     }
 
 }

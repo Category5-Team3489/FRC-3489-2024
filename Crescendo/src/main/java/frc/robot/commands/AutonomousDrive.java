@@ -3,6 +3,7 @@ package frc.robot.commands;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.Drivetrain;
 
 public class AutonomousDrive extends Command {
@@ -13,6 +14,9 @@ public class AutonomousDrive extends Command {
     private double velocityX = 0;
     private double velocityY = 0;
     private double omega = 0;
+
+    private double MaxMetersPerSecond = Constants.Drivetrain.MaxMetersPerSecond;
+    private double MaxRadiansPerSecond = Constants.Drivetrain.MaxRadiansPerSecond;
 
     /**
      * Sets the X, Y, and Angular rate of a drive command.
@@ -44,9 +48,9 @@ public class AutonomousDrive extends Command {
     @Override
     public void execute() {
         drivetrain.setControl(fieldCentric
-                .withVelocityX(velocityX)
-                .withVelocityY(velocityY)
-                .withRotationalRate(omega));
+                .withVelocityX(velocityX * MaxMetersPerSecond)
+                .withVelocityY(velocityY * MaxMetersPerSecond)
+                .withRotationalRate(omega * MaxRadiansPerSecond));
     }
 
     // @Override

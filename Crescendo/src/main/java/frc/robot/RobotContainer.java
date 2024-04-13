@@ -465,7 +465,7 @@ public class RobotContainer {
                 // ShootTaxi
                 autos.addAuto(() -> {
                         ShootTaxi shootTaxiCommand = new ShootTaxi();
-                        return shootTaxiCommand.shootTaxi();
+                        return shootTaxiCommand;
                 });
 
                 // Three Piece (center line)
@@ -478,7 +478,7 @@ public class RobotContainer {
                 // Shoot Intake Auto Shoot
                 autos.addAuto(() -> {
                         ShootIntakeAutoShoot shootIntakeAutoShootCommand = new ShootIntakeAutoShoot();
-                        return shootIntakeAutoShootCommand.shootIntakeAutoShoot();
+                        return shootIntakeAutoShootCommand;
                 });
 
                 // Shoot
