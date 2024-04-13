@@ -5,6 +5,7 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Cat5Utils;
 import frc.robot.Constants;
@@ -20,7 +21,7 @@ import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.ShooterAngle;
 
-public class SourceCenterLineManual {
+public class SourceCenterLineManual extends SequentialCommandGroup {
     private Index index = Index.get();
     private ShooterAngle shooterAngle = ShooterAngle.get();
     private Intake intake = Intake.get();
@@ -29,29 +30,11 @@ public class SourceCenterLineManual {
     private static final double MaxMetersPerSecond = Constants.Drivetrain.MaxMetersPerSecond;
     private static final double MaxRadiansPerSecond = Constants.Drivetrain.MaxRadiansPerSecond;
 
-    Trigger laserTrigger = new Trigger(index.laserSensor::get);
-
-    final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxMetersPerSecond * 0.1)
-            .withRotationalDeadband(MaxRadiansPerSecond * 0.1)
-            .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-
-    Command autoShoot = new AutoShoot();
-
     public boolean hasRunBefore = false;
-
-    // Command autoIntakeCommand = new CoralIntake();
 
     // Ensure percentages are greater than the 0.1 percent deadband above
     // Domain is [-1, 1]
 
-    // Rotate/drive side
-    double percentY = Cat5Utils.Red(-0.6);
-    double percentX = 0;
-    double percentOmega = Cat5Utils.Red(-0.2);
-    double driveTimeSeconds = 0.8;
-
-    // wall to note center 30.5 in amp side
     // intake drive
     double percentY2 = Cat5Utils.Red(-0.3); // Blue alliance hit stage (make this larger?) //22 was good for stage
                                             // but too left of ring
@@ -76,6 +59,7 @@ public class SourceCenterLineManual {
     Command shooterIndex = index.indexCommand(IndexState.Intake);
 
     AutoCoralIntake autoCoralIntake = new AutoCoralIntake();
+    Trigger laserTrigger = new Trigger(index.laserSensor::get);
 
     Command autoCoralIntakeCommand = autoCoralIntake.onlyWhile(() -> autoCoralIntake.shouldAutoIntake);
 
@@ -83,25 +67,16 @@ public class SourceCenterLineManual {
             Constants.ShooterAngle.CloseShooterAngle,
             Constants.ShooterSpeed.CloseShooterSpeed).withTimeout(2);
 
-    Command driveCommandSideRotate = drivetrain.applyRequest(() -> drive
-            .withVelocityX(percentX * MaxMetersPerSecond * speedMultiplier)
-            .withVelocityY(-percentY * MaxMetersPerSecond * speedMultiplier)
-            .withRotationalRate(-percentOmega * MaxRadiansPerSecond * speedMultiplier));
+    // Rotate/drive side
+    double driveTimeSeconds = 0.8;
+    AutonomousDrive driveCommandSideRotate = new AutonomousDrive(0 * MaxMetersPerSecond,
+            Cat5Utils.Red(0.6) * MaxMetersPerSecond, Cat5Utils.Red(0.2) * MaxRadiansPerSecond);
 
-    Command driveCommandDriveCenter = drivetrain.applyRequest(() -> drive
-            .withVelocityX(percentX2 * MaxMetersPerSecond * speedMultiplier)
-            .withVelocityY(-percentY2 * MaxMetersPerSecond * speedMultiplier)
-            .withRotationalRate(-percentOmega2 * MaxRadiansPerSecond * speedMultiplier));
+    AutonomousDrive driveCommandDriveCenter = new AutonomousDrive(0.6 * MaxMetersPerSecond,
+            Cat5Utils.Red(0.3) * MaxMetersPerSecond, 0 * MaxRadiansPerSecond);
 
-    Command driveCommandIntake = drivetrain.applyRequest(() -> drive
-            .withVelocityX(percentX4 * MaxMetersPerSecond * speedMultiplier)
-            .withVelocityY(-percentY4 * MaxMetersPerSecond * speedMultiplier)
-            .withRotationalRate(-percentOmega4 * MaxRadiansPerSecond * speedMultiplier));
-
-    Command driveCommandBack = drivetrain.applyRequest(() -> drive
-            .withVelocityX(percentX3 * MaxMetersPerSecond * speedMultiplier)
-            .withVelocityY(-percentY3 * MaxMetersPerSecond * speedMultiplier)
-            .withRotationalRate(-percentOmega3 * MaxRadiansPerSecond * speedMultiplier));
+    AutonomousDrive driveCommandIntake = new AutonomousDrive(percentX3 * MaxMetersPerSecond,
+            -percentY3 * MaxMetersPerSecond, -percentOmega3 * MaxRadiansPerSecond);
 
     // Command driveCommandForward = drivetrain.applyRequest(() -> drive
     // .withVelocityX(percentX4 * MaxMetersPerSecond * speedMultiplier)
@@ -139,9 +114,9 @@ public class SourceCenterLineManual {
                             }
                         })))
 
-                .andThen(driveCommandBack.withTimeout(driveTimeSeconds3))
+                // .andThen(driveCommandBack.withTimeout(driveTimeSeconds3))
 
-                .andThen(() -> autoShoot.schedule())
+                // .andThen(() -> autoShoot.schedule())
 
                 // .andThen(() -> autoCoralIntakeCommand.schedule())
                 .withName("SourceCenterLineManual");

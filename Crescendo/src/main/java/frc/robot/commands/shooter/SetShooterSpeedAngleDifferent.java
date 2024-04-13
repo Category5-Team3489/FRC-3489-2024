@@ -16,9 +16,9 @@ public class SetShooterSpeedAngleDifferent extends SequentialCommandGroup {
     private final ShooterAngle shooterAngle = ShooterAngle.get();
     private final ShooterSpeed shooterSpeed = ShooterSpeed.get();
 
-    public SetShooterSpeedAngleDifferent(double angleDegrees, double speedPercent, double topSpeedPercent) {
+    public SetShooterSpeedAngleDifferent(double angleDegrees, double bottomSpeedPercent, double topSpeedPercent) {
         Command angleCommand = shooterAngle.updateCommand(angleDegrees);
-        Command speedCommand = shooterSpeed.updateCommand(topSpeedPercent, speedPercent);
+        Command speedCommand = shooterSpeed.updateCommand(topSpeedPercent, bottomSpeedPercent);
 
         addCommands(
             Commands.runOnce(() -> {

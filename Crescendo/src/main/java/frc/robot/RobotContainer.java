@@ -46,6 +46,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -105,6 +106,7 @@ public class RobotContainer {
         private void bindDriveTrain() {
 
                 final Drivetrain drivetrain = Drivetrain.get();
+
                 final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
                                 .withDeadband(MaxMetersPerSecond * 0.1)
                                 .withRotationalDeadband(Math.abs(MaxRadiansPerSecond) * 0.1) // Add a
@@ -526,7 +528,7 @@ public class RobotContainer {
                 // TESTING
                 autos.addAuto(() -> {
                         Testing test = new Testing();
-                        return test.testing();
+                        return test;
                 });
 
                 autos.addSelectorWidget();

@@ -34,7 +34,7 @@ public class CoralIntake extends Command {
             .withRotationalRate(getDrivetrainAngleRate()));
 
     //TODO Test
-    Command intakeCommandm = intake.intakeCommand(IntakeState.centerIn, IntakeState.falconIn);
+    Command intakeCommand1 = intake.intakeCommand(IntakeState.centerIn, IntakeState.falconIn);
     Command shooterAngleCommand = shooterAngle.updateCommand(ShooterAngleState.Max.getAngle());
     Command indexCommand = index.indexCommand(IndexState.Intake);
 
@@ -63,7 +63,7 @@ public class CoralIntake extends Command {
     @Override
     public void initialize() {
         //TODO Test
-        intakeCommandm.schedule();
+        intakeCommand1.schedule();
         indexCommand.schedule();
         shooterAngleCommand.schedule();
     }

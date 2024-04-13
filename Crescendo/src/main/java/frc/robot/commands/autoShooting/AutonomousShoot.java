@@ -21,33 +21,25 @@ public class AutonomousShoot extends SequentialCommandGroup {
 
     public AutonomousShoot() {
         addCommands(
-                        Commands.runOnce(() -> {
-                            try {
-                            autoDrive.schedule();
-                            autoAim.schedule();
-                            System.out.println("Drive/Aim Schedule");
-                            spinUpShooter.schedule();
-                            angleCommand.schedule();
-                            System.out.println("Shoot speed/angle Schedule");
+                autoDrive.withTimeout(2),
+                autoAim.withTimeout(1),
+                Commands.print("Drive/Aim Schedule"),
+                spinUpShooter.withTimeout(1),
+                Commands.print("Shoot speed/angle Schedule"),
+                angleCommand.withTimeout(1),
+                Commands.print("Run Once Done"),
+                Commands.waitSeconds(1.2),
+                Commands.waitUntil(() -> autoAim.isAligned()),
+                Commands.runOnce(() -> indexCommand.schedule()),
+                Commands.waitSeconds(2),
+                Commands.runOnce(() -> {
+                    autoDrive.cancel();
+                    autoAim.cancel();
 
-                            } catch (Exception ex) {
-                                System.out.println("Scheduling Error: " + ex.getMessage());
-                            }
+                    spinUpShooter.cancel();
+                    angleCommand.cancel();
 
-                        }),
-                        Commands.print("Run Once Done"),
-                        Commands.waitSeconds(1.2),
-                        Commands.waitUntil(() -> autoAim.isAligned()),
-                        Commands.runOnce(() -> indexCommand.schedule()),
-                        Commands.waitSeconds(2),
-                        Commands.runOnce(() -> {
-                            autoDrive.cancel();
-                            autoAim.cancel();
-
-                            spinUpShooter.cancel();
-                            angleCommand.cancel();
-
-                            indexCommand.cancel();
-                        }));
+                    indexCommand.cancel();
+                }));
     }
 }

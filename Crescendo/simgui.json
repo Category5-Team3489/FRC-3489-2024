@@ -31,7 +31,8 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
-      "/Shuffleboard/Auto/Auto Selector": "String Chooser"
+      "/Shuffleboard/Auto/Auto Selector": "String Chooser",
+      "/SmartDashboard/Scheduler": "Scheduler"
     },
     "windows": {
       "/Shuffleboard/Auto/Auto Selector": {

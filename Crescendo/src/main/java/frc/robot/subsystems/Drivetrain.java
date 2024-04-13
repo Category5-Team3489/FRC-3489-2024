@@ -32,9 +32,9 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
         if (request.getClass() == FieldCentric.class) {
             var fieldCentric = (FieldCentric) request;
             if (fieldCentric.RotationalRate != 0 && i % 50 == 0) {
-                System.out.println("Omega is not zero, value: "
-                        + fieldCentric.RotationalRate / Constants.Drivetrain.MaxRadiansPerSecond);
-                Thread.dumpStack();
+                // System.out.println("Omega is not zero, value: "
+                //         + fieldCentric.RotationalRate / Constants.Drivetrain.MaxRadiansPerSecond);
+                // Thread.dumpStack();
             }
         }
 
