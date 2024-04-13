@@ -69,8 +69,10 @@ public class SourceCenterLineManual extends SequentialCommandGroup {
 
     // Rotate/drive side
     double driveTimeSeconds = 0.8;
-    AutonomousDrive driveCommandSideRotate = new AutonomousDrive(0 * MaxMetersPerSecond,
-            Cat5Utils.Red(0.6) * MaxMetersPerSecond, Cat5Utils.Red(0.2) * MaxRadiansPerSecond);
+    AutonomousDrive driveCommandSideRotate = new AutonomousDrive(
+            0 * MaxMetersPerSecond,
+            Cat5Utils.Red(0.6) * MaxMetersPerSecond,
+            Cat5Utils.Red(0.2) * MaxRadiansPerSecond);
 
     AutonomousDrive driveCommandDriveCenter = new AutonomousDrive(0.6 * MaxMetersPerSecond,
             Cat5Utils.Red(0.3) * MaxMetersPerSecond, 0 * MaxRadiansPerSecond);

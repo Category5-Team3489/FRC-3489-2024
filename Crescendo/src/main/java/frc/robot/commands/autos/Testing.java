@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.WrapperCommand;
 import frc.robot.commands.AutonomousDrive;
 import frc.robot.commands.Intake.AutonomousCoralIntake;
 import frc.robot.commands.autoShooting.AutonomousShoot;
+import frc.robot.subsystems.Drivetrain;
 
 public class Testing extends SequentialCommandGroup {
 
@@ -35,15 +36,36 @@ public class Testing extends SequentialCommandGroup {
         // .withName("TESTING");
 
         addCommands(
-                // autoDrive1.withTimeout(2),
-                // autoDrive2.withTimeout(2),
-                // Commands.print("END OF DRIVE"),
+                // autoDrive1.finallyDo(interrupted -> {
+                // if (interrupted) {
+                // System.out.println("Auto drive 1 was interrupted!");
+                // } else {
+                // System.out.println("Auto drive 1 finished!");
+                // }
+                // }).withTimeout(2),
+                // autoDrive2.finallyDo(interrupted -> {
+                // if (interrupted) {
+                // System.out.println("Auto drive 2 was interrupted!");
+                // } else {
+                // System.out.println("Auto drive 2 finished!");
+                // }
+                // }).withTimeout(2),
+                autoDrive1.withTimeout(2),
+                // Commands.runOnce(() -> {
+                // autoDrive1.cancel();
+                // }),
+                Commands.print("END OF DRIVE"),
                 // Commands.print("isAutoDriveScheduled: " + autoDrive1.isScheduled()),
                 // Commands.print("isAutoDriveFinished: " + autoDrive1.isFinished()),
                 // Commands.print("isAutoDriveRequirements: " + autoDrive1.getRequirements()),
                 // Commands.print("isAutoShootRequirements: " + autoShoot1.getRequirements()),
+                Commands.print("isAutoIntakeRequirements: " + autoIntake.getRequirements()),
+
+                Commands.runOnce(() -> {
+                    System.out.println("TESTING REQUIREMENTS: " + getRequirements());
+                }),
                 // autoShoot1,
-                autoIntake,
+                autoIntake.withTimeout(3),
                 Commands.print("AUTO INTAKE DONE"));
 
         // return autoDrive1.withTimeout(2)

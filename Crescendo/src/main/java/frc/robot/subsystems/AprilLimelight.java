@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-
-
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -19,7 +17,7 @@ public class AprilLimelight extends SubsystemBase {
     // Devices
     private final NetworkTable limelight = NetworkTableInstance.getDefault().getTable("limelight-shooter");
 
-    //Used to determine how long 
+    // Used to determine how long
     private Timer timer = new Timer();
 
     // Variables
@@ -38,9 +36,9 @@ public class AprilLimelight extends SubsystemBase {
         // setupAprilLimelightFeed();
 
         Shuffleboard.getTab("Main")
-            .addDouble("Tag", () -> getTagId())
-            .withSize(1, 1)
-            .withPosition(7, 2);
+                .addDouble("Tag", () -> getTagId())
+                .withSize(1, 1)
+                .withPosition(7, 2);
 
         Shuffleboard.getTab("Testing")
                 .addDouble("Limelight X", () -> getTargetX())
@@ -62,21 +60,21 @@ public class AprilLimelight extends SubsystemBase {
     }
 
     public double getTargetX() {
-        if(isTagVisible()) {
+        if (isTagVisible()) {
             lastTargetX = targetXEntry.getDouble(Double.NaN);
         }
         return lastTargetX;
     }
 
     public double getTargetY() {
-        if(isTagVisible()) {
+        if (isTagVisible()) {
             lastTargetY = targetYEntry.getDouble(Double.NaN);
         }
         return lastTargetY;
     }
 
     public double getTargetS() {
-        if(isTagVisible()) {
+        if (isTagVisible()) {
             lastTargetS = targetAngleEntry.getDouble(Double.NaN);
         }
         return lastTargetS;
@@ -86,14 +84,17 @@ public class AprilLimelight extends SubsystemBase {
         return targetAreaEntry.getDouble(Double.NaN);
     }
 
+    private boolean targetWasVisibleOnce = false;
+
     public long getTargetVisible() {
-        if(isTagVisible()) {
+        if (isTagVisible()) {
             timer.stop();
             timer.reset();
+            targetWasVisibleOnce = true;
             return 1;
         }
         timer.start();
-        if (timer.hasElapsed(0.5)) {
+        if (timer.hasElapsed(0.5) || !targetWasVisibleOnce) {
             return 0;
         }
         return 1;

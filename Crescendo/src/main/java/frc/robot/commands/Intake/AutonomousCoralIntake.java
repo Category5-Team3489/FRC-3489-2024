@@ -8,6 +8,7 @@ import frc.robot.subsystems.ShooterSpeed;
 import frc.robot.subsystems.ShooterAngle;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.enums.IndexState;
 import frc.robot.enums.IntakeState;
 import frc.robot.enums.ShooterAngleState;
@@ -15,7 +16,7 @@ import frc.robot.subsystems.AprilLimelight;
 import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
 
-public class AutonomousCoralIntake extends SequentialCommandGroup {
+public class AutonomousCoralIntake extends ParallelCommandGroup {
     private final CoralDrive coralDrive = new CoralDrive();
     private final CoralAim coralAim = new CoralAim(coralDrive);
     private final IntakeUntilDetectionAngle intake = new IntakeUntilDetectionAngle();
@@ -28,20 +29,16 @@ public class AutonomousCoralIntake extends SequentialCommandGroup {
     public AutonomousCoralIntake() {
         addCommands(
                 // schedule drive
-                coralDrive.withTimeout(8),
+                coralDrive,
                 Commands.print("Coral Drive started"),
 
                 // start intake
-                intake.withTimeout(4),
-                Commands.print("Intake started"),
-
-                // indexCommand,
-                // intakeAngle,
-                // intakeCommand,
+                intake,
+                // Commands.print("Intake started"),
 
                 // aim to game piece and drive to it // drive forward robot centric
-                coralAim.withTimeout(4),
-                Commands.print("Coral Aim Done")
+                coralAim
+        // Commands.print("Coral Aim Done")
 
         );
     }

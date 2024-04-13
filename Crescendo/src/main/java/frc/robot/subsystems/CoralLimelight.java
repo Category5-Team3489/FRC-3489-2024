@@ -103,14 +103,18 @@ public class CoralLimelight extends SubsystemBase {
         return ta.getDouble(Double.NaN);
     }
 
+    private boolean targetWasVisibleOnce = false;
+
+
     public long getTargetVisible() {
         if (isTagVisible()) {
             timer.stop();
             timer.reset();
+            targetWasVisibleOnce = true;
             return 1;
         }
         timer.start();
-        if (timer.hasElapsed(0.5)) {
+        if (timer.hasElapsed(0.5) || !targetWasVisibleOnce) {
             return 0;
         }
         return 1;
