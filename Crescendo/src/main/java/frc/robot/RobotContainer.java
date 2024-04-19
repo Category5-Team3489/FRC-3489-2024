@@ -16,6 +16,7 @@ import frc.robot.commands.autos.Cat5Autos;
 import frc.robot.commands.autos.SourceSideShootIntakeAuto;
 // import frc.robot.commands.autos.CenterShootIntakeShoot;
 import frc.robot.commands.autos.Nothing;
+import frc.robot.commands.autos.Part2OfCenterLine;
 import frc.robot.commands.autos.RightCenterLine2Piece;
 import frc.robot.commands.autos.RightCenterLine3Piece;
 import frc.robot.commands.autos.AmpSideShootIntakeAuto;
@@ -23,7 +24,9 @@ import frc.robot.commands.autos.Shoot;
 import frc.robot.commands.autos.ShootIntakeAutoShoot;
 import frc.robot.commands.autos.ShootTaxi;
 import frc.robot.commands.autos.ThreePieceAuto;
+import frc.robot.commands.autos.TwoPieceCenterLineTEST;
 import frc.robot.commands.autos.SideShootIntakeShoot;
+import frc.robot.commands.autos.SourceCenterLine3Piece;
 import frc.robot.commands.autos.SourceCenterLineManual;
 import frc.robot.commands.autos.Taxi;
 import frc.robot.commands.autos.Testing;
@@ -69,7 +72,7 @@ public class RobotContainer {
         private static final double MaxRadiansPerSecond = Constants.Drivetrain.MaxRadiansPerSecond;
 
         private final Command autoShoot = new AutoShoot().onlyWhile(() -> isNotDriving());
-        //TODO TEST
+        // TODO TEST
         private final Command coralIntake = new CoralIntake().onlyWhile(() -> isNotDriving());
         private final Command trap = new Trap().onlyWhile(() -> isNotDriving());
 
@@ -545,10 +548,34 @@ public class RobotContainer {
                         return test;
                 });
 
+                autos.addAuto(() -> {
+                        SourceCenterLine3Piece sourceCenterLine3Piece = new SourceCenterLine3Piece();
+                        return sourceCenterLine3Piece;
+                });
+
                 // right center line 3 piece
                 autos.addAuto(() -> {
                         TestingSource rightCenterLine3PieceCommand = new TestingSource();
-                        return rightCenterLine3PieceCommand.ampSideShootIntakeAuto();
+                        Part2OfCenterLine part2OfCenterLine = new Part2OfCenterLine();
+                        return rightCenterLine3PieceCommand.ampSideShootIntakeAuto().withTimeout(10).andThen(part2OfCenterLine.SourceCenterLine3Piece()).withName("TESTING 3");
+                });
+
+                  // right center line 3 piece PART ONE
+                autos.addAuto(() -> {
+                        TestingSource rightCenterLine3PieceCommand = new TestingSource();
+                        return rightCenterLine3PieceCommand.ampSideShootIntakeAuto().withName("TESTING 3 NOTE PART ONE");
+                });
+
+                  // right center line 3 piece PART TWO
+                autos.addAuto(() -> {
+                        Part2OfCenterLine part2OfCenterLine = new Part2OfCenterLine();
+                        return part2OfCenterLine.SourceCenterLine3Piece().withName("TESTING 3 NOTE PART TWO");
+                });
+
+                // Pre-load -> center line -> auto shoot
+                autos.addAuto(() -> {
+                        TwoPieceCenterLineTEST twoPieceCenterLineTEST = new TwoPieceCenterLineTEST();
+                        return twoPieceCenterLineTEST.SourceCenterLine3Piece().withName("Two piece center line");
                 });
 
                 autos.addSelectorWidget();

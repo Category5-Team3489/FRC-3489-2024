@@ -60,7 +60,7 @@ public class TestingSource extends Command {
         double percentOmega3 = Cat5Utils.Blue(-0.1);
 
         double driveTimeSeconds = 0.36;
-        double driveTimeSeconds2 = 1.52;
+        double driveTimeSeconds2 = 1.53;
         double driveTimeSeconds3 = 1;
 
         double speedMultiplier = 0.5; // [0, 1]
@@ -123,7 +123,7 @@ public class TestingSource extends Command {
 
                                 .andThen(() -> autoShoot2.schedule())
 
-                                .withName("TEST");
+                                .withName("Source 2 piece");
         }
 
 }
