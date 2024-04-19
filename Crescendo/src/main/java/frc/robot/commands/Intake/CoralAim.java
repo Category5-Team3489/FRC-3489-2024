@@ -16,7 +16,7 @@ public class CoralAim extends Command {
     private final double targetXRange = 5;
     private final double rotationSpeed = 0.05 * Constants.Drivetrain.MaxRadiansPerSecond;
 
-    private final double tXRange = 16;
+    private final double tXRange = 10;//16
 
     private Trigger laserTrigger = new Trigger(Index.get().laserSensor::get);
 

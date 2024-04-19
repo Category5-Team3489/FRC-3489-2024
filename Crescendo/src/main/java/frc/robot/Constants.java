@@ -55,7 +55,7 @@ public final class Constants {
         public static final double TrapTopShooterSpeed = 0.5;
         public static final double TrapBottomShooterSpeed = 0.6;
 
-        public static final double AcrossFieldShooterSpeed = 30;
+        public static final double AcrossFieldShooterSpeed = 50;
 
     }
 

@@ -66,7 +66,8 @@ public class ShootIntakeAutoShoot extends SequentialCommandGroup {
 
                 // auto shoots
                 Commands.print("Auto Shoot"),
-                autoShoot);
+                autoShoot,
+                Commands.print("________________DONE!!!"));
     }
 
 }

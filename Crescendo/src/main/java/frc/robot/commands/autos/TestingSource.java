@@ -19,7 +19,7 @@ import frc.robot.subsystems.Index;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.ShooterAngle;
 
-public class AmpSideShootIntakeAuto extends Command {
+public class TestingSource extends Command {
 
         private Index index = Index.get();
         private ShooterAngle shooterAngle = ShooterAngle.get();
@@ -44,9 +44,9 @@ public class AmpSideShootIntakeAuto extends Command {
 
         // Rotate/drive side
         // TODO Test rotation
-        double percentY = Cat5Utils.Red(0.5);
+        double percentY = Cat5Utils.Blue(0.5);
         double percentX = 0;
-        double percentOmega = Cat5Utils.Red(0.5);
+        double percentOmega = Cat5Utils.Blue(0.5);
 
         // intake drive
         //TODO adjust y
@@ -57,10 +57,10 @@ public class AmpSideShootIntakeAuto extends Command {
         // drive back
         double percentY3 = 0;
         double percentX3 = -0.3;
-        double percentOmega3 = Cat5Utils.Red(-0.1);
+        double percentOmega3 = Cat5Utils.Blue(-0.1);
 
         double driveTimeSeconds = 0.36;
-        double driveTimeSeconds2 = 2;
+        double driveTimeSeconds2 = 1.52;
         double driveTimeSeconds3 = 1;
 
         double speedMultiplier = 0.5; // [0, 1]
@@ -123,7 +123,7 @@ public class AmpSideShootIntakeAuto extends Command {
 
                                 .andThen(() -> autoShoot2.schedule())
 
-                                .withName("AmpSideShootIntakeAuto");
+                                .withName("TEST");
         }
 
 }

@@ -42,22 +42,22 @@ public class SourceSideShootIntakeAuto extends Command {
     // Domain is [-1, 1]
 
     // Rotate/drive side
-    double percentY = Cat5Utils.Red(-0.3);
+    double percentY = Cat5Utils.Blue(0.5);
     double percentX = 0;
-    double percentOmega = Cat5Utils.Red(-0.25);
+    double percentOmega = Cat5Utils.Blue(0.5);
 
     // intake drive
-    double percentY2 = 0;
-    double percentX2 = 0.5; // 0.3
+    double percentY2 = Cat5Utils.Blue(-0.01);
+    double percentX2 = 0.6; // 0.3
     double percentOmega2 = 0;
 
     // drive back
     double percentY3 = 0;
     double percentX3 = -0.3;
-    double percentOmega3 = Cat5Utils.Red(0.15);
+    double percentOmega3 = Cat5Utils.Blue(-0.1);
 
-    double driveTimeSeconds = 0.6;
-    double driveTimeSeconds2 = 1.5;
+    double driveTimeSeconds = 0.36;
+    double driveTimeSeconds2 = 1;
     double driveTimeSeconds3 = 1;
 
     double speedMultiplier = 0.5; // [0, 1]
@@ -104,7 +104,8 @@ public class SourceSideShootIntakeAuto extends Command {
 
                 .andThen(driveCommandIntake.withTimeout(driveTimeSeconds2))
 
-                .andThen(() -> laserTrigger.debounce(0.29, DebounceType.kRising)
+                .andThen(() -> laserTrigger
+                //.debounce(0.29, DebounceType.kRising)
                         .onTrue(Commands.runOnce(() -> {
                             if (intake.hasIntakeBeenSet) {
                                 intake.stop();

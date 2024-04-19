@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AutonomousDrive;
+import frc.robot.commands.Intake.AutonomousCoralIntake;
 import frc.robot.commands.Intake.CoralIntake;
 import frc.robot.commands.Intake.IntakeUntilDetectionAngle;
 import frc.robot.commands.Intake.Outtake;
@@ -26,6 +27,7 @@ import frc.robot.commands.autos.SideShootIntakeShoot;
 import frc.robot.commands.autos.SourceCenterLineManual;
 import frc.robot.commands.autos.Taxi;
 import frc.robot.commands.autos.Testing;
+import frc.robot.commands.autos.TestingSource;
 import frc.robot.commands.shooter.SetShooterSpeedAndAngle;
 import frc.robot.commands.shooter.SetShooterSpeedAngleDifferent;
 import frc.robot.commands.shooter.ShooterIntake2;
@@ -67,6 +69,7 @@ public class RobotContainer {
         private static final double MaxRadiansPerSecond = Constants.Drivetrain.MaxRadiansPerSecond;
 
         private final Command autoShoot = new AutoShoot().onlyWhile(() -> isNotDriving());
+        //TODO TEST
         private final Command coralIntake = new CoralIntake().onlyWhile(() -> isNotDriving());
         private final Command trap = new Trap().onlyWhile(() -> isNotDriving());
 
@@ -398,7 +401,18 @@ public class RobotContainer {
                 // TODO Remove After Testing
                 // manipulatorXbox.leftTrigger().onTrue(shooterIntake);
 
-                manipulatorXbox.leftTrigger().onTrue(shooterIntake2);
+                // manipulatorXbox.leftTrigger().onTrue(shooterIntake2);
+
+                manipulatorXbox.leftTrigger().onTrue(Commands.runOnce(() -> {
+                        if (shooterIntake2.hasShooterIntakeBeenSet) {
+                                index.stop();
+                                shooterIntake2.hasShooterIntakeBeenSet = false;
+                                System.out.println("stopMotors--------");
+                        } else {
+                                shooterIntake2.schedule();
+                                System.out.println("Shooter Intake Scheduled");
+                        }
+                }));
 
                 // back = Shooter Home Angle
                 manipulatorXbox.start().onTrue(shooterAngle.updateCommand(() -> ShooterAngleState.Start.getAngle())
@@ -529,6 +543,12 @@ public class RobotContainer {
                 autos.addAuto(() -> {
                         Testing test = new Testing();
                         return test;
+                });
+
+                // right center line 3 piece
+                autos.addAuto(() -> {
+                        TestingSource rightCenterLine3PieceCommand = new TestingSource();
+                        return rightCenterLine3PieceCommand.ampSideShootIntakeAuto();
                 });
 
                 autos.addSelectorWidget();
