@@ -12,6 +12,8 @@ public class ShooterIntake2 extends Command {
     private final Index belt;
     private final ShooterAngle shooterAngle;
 
+    public boolean hasShooterIntakeBeenSet = false;
+
     public ShooterIntake2() {
         this.shooterSpeed = ShooterSpeed.get();
         this.belt = Index.get();
@@ -27,6 +29,8 @@ public class ShooterIntake2 extends Command {
         shooterSpeed.updateCommand(() -> -0.2).schedule();
         // TODO outtake
         belt.indexCommand(IndexState.Outtake).schedule();
+
+        hasShooterIntakeBeenSet = true;
 
         System.out.println("----Shooter2 Until detection Command");
     }

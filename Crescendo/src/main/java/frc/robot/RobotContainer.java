@@ -393,7 +393,19 @@ public class RobotContainer {
         // TODO Remove After Testing
         // manipulatorXbox.leftTrigger().onTrue(shooterIntake);
 
-        manipulatorXbox.leftTrigger().onTrue(shooterIntake2);
+        // manipulatorXbox.leftTrigger().onTrue(shooterIntake2);
+
+        //TODO Test
+        manipulatorXbox.leftTrigger().onTrue(Commands.runOnce(() -> {
+            if (shooterIntake2.hasShooterIntakeBeenSet) {
+                index.stop();
+                shooterIntake2.hasShooterIntakeBeenSet = false;
+                System.out.println("stopMotors--------");
+            } else {
+                shooterIntake2.schedule();
+                System.out.println("Outtake Scheduled");
+            }
+        }));
 
         // back = Shooter Home Angle
         manipulatorXbox.start().onTrue(shooterAngle.updateCommand(() -> ShooterAngleState.Start.getAngle())
