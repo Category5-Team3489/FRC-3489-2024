@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.6332428049471499,
+      "y": 4.420390379242297
+    },
+    "rotation": -60.06848815949221
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Source to stage piece"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Bring stage piece back"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "speaker to source centerline"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "source centerline to speaker"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

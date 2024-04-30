@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.6332428049471499,
+        "y": 4.410523436431489
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.6332428049471504,
+        "y": 4.410523436431489
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.7546355092710204,
+        "y": 4.124382094918037
+      },
+      "prevControl": {
+        "x": 1.7546355092710204,
+        "y": 4.124382094918037
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Stage Pick up"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": -58.17255342332696,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
