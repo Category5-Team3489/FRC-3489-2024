@@ -1,0 +1,31 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.7121783474336195,
+      "y": 4.371055665188254
+    },
+    "rotation": -58.695876504408965
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Sorce Side Start to Stage Pickup"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Stage to Shoot Point"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null,
+  "choreoAuto": false
+}

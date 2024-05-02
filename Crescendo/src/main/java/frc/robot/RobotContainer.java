@@ -82,6 +82,8 @@ public class RobotContainer {
         // Configure the trigger bindings
         configureBindings();
         addAutos();
+
+        NamedCommands.registerCommand("autoBalance", swerve.autoBalanceCommand());
     }
 
     private void configureBindings() {

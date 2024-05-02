@@ -1,0 +1,68 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 2.67569996678455,
+        "y": 4.084914323674802
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.6658330239737413,
+        "y": 4.084914323674802
+      },
+      "isLocked": false,
+      "linkedName": "Stage Pickup"
+    },
+    {
+      "anchor": {
+        "x": 2.44876028213595,
+        "y": 4.2921201227017844
+      },
+      "prevControl": {
+        "x": 2.4625430257073413,
+        "y": 4.274891693237546
+      },
+      "nextControl": {
+        "x": 2.3698247396494807,
+        "y": 4.390789550809871
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.22182059748735,
+        "y": 4.499325921728767
+      },
+      "prevControl": {
+        "x": 2.2119536546765417,
+        "y": 4.509192864539576
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Shoot from Source Side"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -34.62415507994889,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

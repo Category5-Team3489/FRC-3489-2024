@@ -1,0 +1,58 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.7121783474336195,
+        "y": 4.371055665188254
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.7121783474336212,
+        "y": 4.371055665188254
+      },
+      "isLocked": false,
+      "linkedName": "Source Side Speaker Start"
+    },
+    {
+      "anchor": {
+        "x": 2.67569996678455,
+        "y": 4.084914323674802
+      },
+      "prevControl": {
+        "x": 1.67569996678455,
+        "y": 4.084914323674802
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Stage Pickup"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": null,
+  "previewStartingState": {
+    "rotation": -59.53445508054016,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
