@@ -22,6 +22,12 @@
           "data": {
             "pathName": "Stage to Shoot Point"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "New Path"
+          }
         }
       ]
     }
