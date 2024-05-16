@@ -1,6 +1,12 @@
 {
   "version": 1.0,
-  "startingPose": null,
+  "startingPose": {
+    "position": {
+      "x": 2,
+      "y": 2
+    },
+    "rotation": 0
+  },
   "command": {
     "type": "sequential",
     "data": {
@@ -8,25 +14,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Path 2"
+            "pathName": "in front of speaker 1"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "...."
+            "pathName": "in front of speaker 2"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "New New New Path"
+            "pathName": "in front of speaker 3"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "New New New New Path"
+            "pathName": "in front of speaker 4"
           }
         }
       ]
