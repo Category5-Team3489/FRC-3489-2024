@@ -39,6 +39,8 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -80,6 +82,9 @@ public class RobotContainer {
      */
     public RobotContainer() {
         // Configure the trigger bindings
+
+        NamedCommands.registerCommand("exampleCommand", Commands.print("EXAMPLE Auto"));
+
         configureBindings();
         addAutos();
     }
@@ -395,7 +400,7 @@ public class RobotContainer {
 
         // manipulatorXbox.leftTrigger().onTrue(shooterIntake2);
 
-        //TODO Test
+        // TODO Test
         manipulatorXbox.leftTrigger().onTrue(Commands.runOnce(() -> {
             if (shooterIntake2.hasShooterIntakeBeenSet) {
                 index.stop();
@@ -455,7 +460,8 @@ public class RobotContainer {
      */
     public Command getAutonomousCommand() {
         // An example command will be run in autonomous
-        return autos.getAutonomousCommand();
+        return new PathPlannerAuto("New Auto");
+        // return autos.getAutonomousCommand();
     }
 
     private void addAutos() {

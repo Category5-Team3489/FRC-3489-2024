@@ -8,8 +8,15 @@ import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrainConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModuleConstants;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest.FieldCentric;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Notifier;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -26,6 +33,8 @@ import frc.robot.enums.SpeedLimitState;
 public class Drivetrain extends SwerveDrivetrain implements Subsystem {
 
     int i = 0;
+
+    private final SwerveRequest.ApplyChassisSpeeds AutoRequest = new SwerveRequest.ApplyChassisSpeeds();
 
     @Override
     public void setControl(SwerveRequest request) {
@@ -66,6 +75,8 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
     private Drivetrain(SwerveDrivetrainConstants driveTrainConstants, double OdometryUpdateFrequency,
             SwerveModuleConstants... modules) {
         super(driveTrainConstants, OdometryUpdateFrequency, modules);
+        configurePathPlanner();
+
         if (Utils.isSimulation()) {
             startSimThread();
         }
@@ -73,6 +84,7 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
 
     private Drivetrain(SwerveDrivetrainConstants driveTrainConstants, SwerveModuleConstants... modules) {
         super(driveTrainConstants, modules);
+        configurePathPlanner();
         if (Utils.isSimulation()) {
             startSimThread();
         }
@@ -107,17 +119,50 @@ public class Drivetrain extends SwerveDrivetrain implements Subsystem {
         return this.m_pigeon2.getAngle();
     }
 
+    private void configurePathPlanner() {
+        double driveBaseRadius = 0.3175;
+        for (var moduleLocation : m_moduleLocations) {
+            driveBaseRadius = Math.max(driveBaseRadius, moduleLocation.getNorm());
+        }
+
+        AutoBuilder.configureHolonomic(
+                () -> this.getState().Pose, // Supplier of current robot pose
+                this::seedFieldRelative, // Consumer for seeding pose against auto
+                this::getCurrentRobotChassisSpeeds,
+                (speeds) -> this.setControl(AutoRequest.withSpeeds(speeds)), // Consumer of ChassisSpeeds to drive the
+                                                                             // robot
+                new HolonomicPathFollowerConfig(new PIDConstants(13, 0, 0), // TODO Update?
+                        new PIDConstants(15, 0, 0),
+                        DrivetrainConstants.kSpeedAt12VoltsMps,
+                        driveBaseRadius,
+                        new ReplanningConfig()),
+                () -> {
+                    var alliance = DriverStation.getAlliance();
+                    if (alliance.isPresent()) {
+                        return alliance.get() == DriverStation.Alliance.Red & !DriverStation.isTeleop();
+                    } else {
+                        return false;
+                    }
+                },
+                this); // Subsystem for requirements
+    }
+
+    public ChassisSpeeds getCurrentRobotChassisSpeeds() {
+        return m_kinematics.toChassisSpeeds(getState().ModuleStates);
+    }
+
     public double getSpeedLimit() {
         return speedLimit.getSpeedLimit();
     }
 
     // public void setSpeedLimit(SpeedLimitState speedLimitState) {
-    //     speedLimit = speedLimitState;
+    // speedLimit = speedLimitState;
     // }
 
     public void setSpeedLimit(SpeedLimitState speedLimitState) {
         if (speedLimitState != speedLimit) {
-            System.out.println("Drivetrain speed limit delta: " + speedLimit.toString() + " -> " + speedLimitState.toString());
+            System.out.println(
+                    "Drivetrain speed limit delta: " + speedLimit.toString() + " -> " + speedLimitState.toString());
         }
         speedLimit = speedLimitState;
     }
