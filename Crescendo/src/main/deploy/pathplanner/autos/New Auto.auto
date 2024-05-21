@@ -26,12 +26,6 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Source Shoot to Source Centerline "
-          }
-        },
-        {
-          "type": "path",
-          "data": {
             "pathName": "New Path"
           }
         },
@@ -39,6 +33,12 @@
           "type": "named",
           "data": {
             "name": "exampleCommand"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Outtake"
           }
         }
       ]

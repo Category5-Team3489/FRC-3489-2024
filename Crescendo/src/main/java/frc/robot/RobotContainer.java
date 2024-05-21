@@ -82,8 +82,14 @@ public class RobotContainer {
      */
     public RobotContainer() {
         // Configure the trigger bindings
+        // final IntakeUntilDetectionAngle intakeUntilDetection = new
+        // IntakeUntilDetectionAngle();
+        // NamedCommands.registerCommand("Intake", intakeUntilDetection);
+
+        final Outtake outtake = new Outtake();
 
         NamedCommands.registerCommand("exampleCommand", Commands.print("EXAMPLE Auto"));
+        NamedCommands.registerCommand("Outtake", outtake);
 
         configureBindings();
         addAutos();
@@ -387,7 +393,8 @@ public class RobotContainer {
                 Constants.ShooterSpeed.TrapTopShooterSpeed);
 
         final SetShooterSpeedAngleDifferent setShooterAcrossField = new SetShooterSpeedAngleDifferent(
-                Constants.ShooterAngle.AcrossFieldShooterAngle, Constants.ShooterSpeed.AcrossFieldShooterSpeed,
+                Constants.ShooterAngle.AcrossFieldShooterAngle,
+                Constants.ShooterSpeed.AcrossFieldShooterSpeed,
                 Constants.ShooterSpeed.AcrossFieldShooterSpeed);
 
         // b = stop Shooter
