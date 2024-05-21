@@ -3,45 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.22182059748735,
-        "y": 4.499325921728767
+        "x": 8.176569848146826,
+        "y": 5.820285763253409
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.22182059748735,
-        "y": 4.499325921728767
-      },
-      "isLocked": false,
-      "linkedName": "Shoot from Source Side"
-    },
-    {
-      "anchor": {
-        "x": 3.978136417811299,
-        "y": 1.5984447353510094
-      },
-      "prevControl": {
-        "x": 1.7876751138117675,
-        "y": 1.3419042222699844
-      },
-      "nextControl": {
-        "x": 5.318227506852227,
-        "y": 1.75539234037382
+        "x": 7.134305395572274,
+        "y": 6.593200975274989
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 8.132119341161761,
-        "y": 0.779488482053888
+        "x": 2.3211515752560734,
+        "y": 4.461828723942754
       },
       "prevControl": {
-        "x": 7.132119341161761,
-        "y": 0.779488482053888
+        "x": 3.8904036723907955,
+        "y": 6.8391285427364
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Sorce Centerline Piece"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -55,13 +39,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 0,
+    "rotation": -31.930682103717825,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": 0,
+    "rotation": -30.113733150982352,
     "velocity": 0
   },
   "useDefaultConstraints": true

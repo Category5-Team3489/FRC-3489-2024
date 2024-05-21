@@ -26,7 +26,61 @@
         {
           "type": "path",
           "data": {
-            "pathName": "New Path"
+            "pathName": "shoot to center"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "center to shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of shoot to center"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of center to shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot to middle center"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "middle center to shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot to top center"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "top center to shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of shoot to top center"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of top center to shoot"
           }
         }
       ]
