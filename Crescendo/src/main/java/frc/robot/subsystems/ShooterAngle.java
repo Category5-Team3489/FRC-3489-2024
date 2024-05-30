@@ -27,10 +27,16 @@ public class ShooterAngle extends SubsystemBase {
     private static final int LeftMotorCanId = 10;
     private static final int RightMotorCanId = 9;
 
-    private static final double CorrectionDegreesPerSecond = 10;    //50
+    private static final double CorrectionDegreesPerSecond = 10; // 50
 
     // Gear ratio
-    private static final double MotorRotationsPerRevolution = (58.0/12.0) * (58.0/14.0) * (64.0/12.0);   //Correct = (58.0 / 10.58) * (58.0 / 18.0) * (64.0 / 12.0)
+    private static final double MotorRotationsPerRevolution = (58.0 / 12.0) * (58.0 / 14.0) * (64.0 / 12.0); // Correct
+                                                                                                             // = (58.0
+                                                                                                             // / 10.58)
+                                                                                                             // * (58.0
+                                                                                                             // / 18.0)
+                                                                                                             // * (64.0
+                                                                                                             // / 12.0)
     // private static final double MotorRotationsPerRevolutionOld = (58.0 / 12.0) *
     // (58.0 / 14.0) * (64.0 / 12.0);
     // new / old = 0.88216761184
@@ -93,7 +99,7 @@ public class ShooterAngle extends SubsystemBase {
     private void setTargetAngle(double angleDegrees) {
         targetAngleDegrees = MathUtil.clamp(angleDegrees,
                 ShooterAngleState.Start.getAngle(), ShooterAngleState.Max.getAngle());
-        System.out.println("Target ANGLE ==============" + targetAngleDegrees);
+        // System.out.println("Target ANGLE ==============" + targetAngleDegrees);
     }
 
     public Command updateCommand(double angleDegrees) {

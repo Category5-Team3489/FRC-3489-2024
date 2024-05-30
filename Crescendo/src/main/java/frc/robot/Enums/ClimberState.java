@@ -2,10 +2,10 @@
 package frc.robot.enums;
 
 public enum ClimberState {
-    //TODO Update values
+    // TODO Update values
     PovUp(-0.15, -0.15),
     PovDown(0.30, 0.30),
-    //TODO possibly invert the rest of these?
+    // TODO possibly invert the rest of these?
     PovLeft(0.15, -0.15),
     PovRight(-0.15, 0.15),
 

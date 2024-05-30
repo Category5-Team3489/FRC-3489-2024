@@ -37,8 +37,12 @@ import frc.robot.subsystems.ShooterAngle;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 
+import javax.sound.sampled.SourceDataLine;
+
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -60,519 +64,527 @@ import frc.robot.subsystems.ShooterSpeed;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-    private static final double MaxMetersPerSecond = Constants.Drivetrain.MaxMetersPerSecond;
-    private static final double MaxRadiansPerSecond = Constants.Drivetrain.MaxRadiansPerSecond;
+        private static final double MaxMetersPerSecond = Constants.Drivetrain.MaxMetersPerSecond;
+        private static final double MaxRadiansPerSecond = Constants.Drivetrain.MaxRadiansPerSecond;
 
-    private final Command autoShoot = new AutoShoot().onlyWhile(() -> isNotDriving());
-    private final Command coralIntake = new CoralIntake().onlyWhile(() -> isNotDriving());
-    private final Command trap = new Trap().onlyWhile(() -> isNotDriving());
+        private final Command autoShoot = new AutoShoot().onlyWhile(() -> isNotDriving());
+        private final Command coralIntake = new CoralIntake().onlyWhile(() -> isNotDriving());
+        private final Command trap = new Trap().onlyWhile(() -> isNotDriving());
 
-    private final Cat5Autos autos = new Cat5Autos();
+        private final Cat5Autos autos = new Cat5Autos();
 
-    // ---------------- INPUT DEVICES ----------------
-    private final CommandXboxController manipulatorXbox = new CommandXboxController(
-            OperatorConstants.ManipulatorControllerPort);
-    public final CommandXboxController driverXbox = new CommandXboxController(
-            OperatorConstants.DriverControllerPort);
+        // ---------------- INPUT DEVICES ----------------
+        private final CommandXboxController manipulatorXbox = new CommandXboxController(
+                        OperatorConstants.ManipulatorControllerPort);
+        public final CommandXboxController driverXbox = new CommandXboxController(
+                        OperatorConstants.DriverControllerPort);
 
-    /**
-     * The container for the robot. Contains subsystems, OI devices, and commands.
-     */
-    public RobotContainer() {
-        // Configure the trigger bindings
-        configureBindings();
-        addAutos();
-    }
+        /**
+         * The container for the robot. Contains subsystems, OI devices, and commands.
+         */
+        public RobotContainer() {
+                // Configure the trigger bindings
+                final IntakeUntilDetectionAngle intakeUntilDetection = new IntakeUntilDetectionAngle();
+                NamedCommands.registerCommand("exampleCommand", intakeUntilDetection);
+                final Outtake outtake = new Outtake();
+                NamedCommands.registerCommand("outtake", outtake);
+                NamedCommands.registerCommand("explan", Commands.print("Explan22"));
 
-    private void configureBindings() {
-        bindDriveTrain();
-        bindIntakeIndex();
-        bindShooter();
-    }
-
-    int i = 0;
-
-    private double testAxis(double value) {
-        if (i % 50 == 0) {
-            System.out.println("Text axis value: " + value);
+                configureBindings();
+                addAutos();
         }
-        i++;
-        return value;
-    }
 
-    private void bindDriveTrain() {
-
-        final Drivetrain drivetrain = Drivetrain.get();
-        final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-                .withDeadband(MaxMetersPerSecond * 0.1)
-                .withRotationalDeadband(Math.abs(MaxRadiansPerSecond) * 0.1) // Add a
-                // 10%
-                // deadband
-                .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
-                                                                         // driving in open loop
-
-        final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-        // final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-        final SwerveRequest.FieldCentricFacingAngle driveFacingAngle = new SwerveRequest.FieldCentricFacingAngle()
-                .withDeadband(MaxMetersPerSecond * 0.1)
-                .withRotationalDeadband(MaxRadiansPerSecond * 0.1) // Add a
-                                                                   // 10%
-                                                                   // deadband
-                .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
-                                                                         // driving in open loop
-
-        driveFacingAngle.HeadingController.setP(8);
-        // driveFacingAngle.HeadingController.setD(0.2);
-        driveFacingAngle.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
-
-        drivetrain.setDefaultCommand(// Drivetrain will execute this command periodically
-                drivetrain.applyRequest(() -> drive
-                        .withVelocityX(testAxis(-driverXbox.getLeftY() * MaxMetersPerSecond
-                                * drivetrain.getSpeedLimit())) // Drive
-                                                               // forward
-                                                               // with
-                                                               // negative
-                                                               // Y
-                        // (forward)
-                        .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond
-                                * drivetrain.getSpeedLimit()) // Drive
-                                                              // left
-                                                              // with
-                        // negative
-                        // X (left)
-                        .withRotationalRate(-driverXbox.getRightX() * MaxRadiansPerSecond
-                                * drivetrain.getSpeedLimit()) // Drive
-                                                              // counterclockwise
-                // with negative X (left)
-                ));
-
-        // driverXbox.rightTrigger().onFalse(Commands.printCommand(-driverXbox.getLeftY()
-        // * MaxMetersPerSecond
-        // * drivetrain.getSpeedLimit()));
-        driverXbox.rightTrigger().onTrue(Commands.runOnce(() -> coralIntake.schedule()));
-
-        driverXbox.y().whileTrue(
-                drivetrain.applyRequest(() -> driveFacingAngle
-                        .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond *
-                                drivetrain.getSpeedLimit())
-                        .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond *
-                                drivetrain.getSpeedLimit())
-                        .withTargetDirection(Rotation2d.fromDegrees(0))));
-        driverXbox.b().whileTrue(
-                drivetrain.applyRequest(() -> driveFacingAngle
-                        .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond *
-                                drivetrain.getSpeedLimit())
-
-                        .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond *
-                                drivetrain.getSpeedLimit())
-                        .withTargetDirection(Rotation2d.fromDegrees(270))));
-        driverXbox.a().whileTrue(
-                drivetrain.applyRequest(() -> driveFacingAngle
-                        .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond *
-                                drivetrain.getSpeedLimit())
-
-                        .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond *
-                                drivetrain.getSpeedLimit())
-                        .withTargetDirection(Rotation2d.fromDegrees(180))));
-        driverXbox.x().whileTrue(
-                drivetrain.applyRequest(() -> driveFacingAngle
-                        .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond *
-                                drivetrain.getSpeedLimit())
-
-                        .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond *
-                                drivetrain.getSpeedLimit())
-                        .withTargetDirection(Rotation2d.fromDegrees(90))));
-
-        // driverXbox.a().onTrue(Commands.runOnce(() ->
-        // testController.setRumble(RumbleType.kBothRumble, 1)));
-
-        // POV slow driving
-        // driverXbox.pov(360).whileTrue(
-        // // drivetrain.applyRequest(
-        // // () -> driveFacingAngle.withVelocityY(0.2 * MaxMetersPerSecond *
-        // drivetrain.getSpeedLimit())));
-        // Commands.parallel(
-        // drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(0,
-        // 1))),
-        // drivetrain.applyRequest(() -> drive.withVelocityY(0.4))));
-
-        driverXbox.pov(45).whileTrue(
-                drivetrain.applyRequest(
-                        () -> driveFacingAngle
-                                .withVelocityX(0.2 * MaxMetersPerSecond
-                                        * drivetrain.getSpeedLimit())
-                                .withVelocityY(0.2 * MaxMetersPerSecond
-                                        * drivetrain.getSpeedLimit())));
-        driverXbox.pov(90).whileTrue(
-                drivetrain.applyRequest(
-                        () -> driveFacingAngle.withVelocityX(0.2 * MaxMetersPerSecond
-                                * drivetrain.getSpeedLimit())));
-        driverXbox.pov(135).whileTrue(
-                drivetrain.applyRequest(
-                        () -> driveFacingAngle
-                                .withVelocityX(0.2 * MaxMetersPerSecond
-                                        * drivetrain.getSpeedLimit())
-                                .withVelocityY(0.2 * MaxMetersPerSecond
-                                        * drivetrain.getSpeedLimit())));
-        driverXbox.pov(180).whileTrue(
-                drivetrain.applyRequest(
-                        () -> driveFacingAngle.withVelocityY(-0.2 * MaxMetersPerSecond
-                                * drivetrain.getSpeedLimit())));
-        driverXbox.pov(225).whileTrue(
-                drivetrain.applyRequest(
-                        () -> driveFacingAngle
-                                .withVelocityY(-0.2 * MaxMetersPerSecond
-                                        * drivetrain.getSpeedLimit())
-                                .withVelocityX(-0.2 * MaxMetersPerSecond
-                                        * drivetrain.getSpeedLimit())));
-        driverXbox.pov(270).whileTrue(
-                drivetrain.applyRequest(
-                        () -> driveFacingAngle.withVelocityX(-0.2 * MaxMetersPerSecond
-                                * drivetrain.getSpeedLimit())));
-        driverXbox.pov(315).whileTrue(
-                drivetrain.applyRequest(
-                        () -> driveFacingAngle
-                                .withVelocityY(0.2 * MaxMetersPerSecond
-                                        * drivetrain.getSpeedLimit())
-                                .withVelocityX(-0.2 * MaxMetersPerSecond
-                                        * drivetrain.getSpeedLimit())));
-
-        // Brake
-        driverXbox.back().whileTrue(drivetrain.applyRequest(() -> brake));
-
-        // reset the field-centric heading on left bumper press
-        driverXbox.start().onTrue(Commands.runOnce(() -> drivetrain.seedFieldRelative()));
-
-        // Speed Buttons- Update the
-        driverXbox.leftBumper().onTrue(Commands.runOnce(() -> drivetrain.setSpeedLimit(SpeedLimitState.Full)));
-        driverXbox.rightBumper()
-                .onTrue(Commands.runOnce(() -> drivetrain.setSpeedLimit(SpeedLimitState.Forth)));
-        // Reset the speed when button is released
-        driverXbox.leftBumper().onFalse(Commands.runOnce(() -> drivetrain.setSpeedLimit(SpeedLimitState.Half)));
-        driverXbox.rightBumper()
-                .onFalse(Commands.runOnce(() -> drivetrain.setSpeedLimit(SpeedLimitState.Half)));
-
-        if (Utils.isSimulation()) {
-            drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
+        private void configureBindings() {
+                bindDriveTrain();
+                bindIntakeIndex();
+                bindShooter();
         }
-    }
 
-    private void bindIntakeIndex() {
-        final Intake intake = Intake.get();
-        final Index index = Index.get();
-        final ShooterAngle shooterAngle = ShooterAngle.get();
+        int i = 0;
 
-        final IntakeUntilDetectionAngle intakeUntilDetection = new IntakeUntilDetectionAngle();
-        final Outtake outtake = new Outtake();
+        private double testAxis(double value) {
+                if (i % 50 == 0) {
+                        System.out.println("Text axis value: " + value);
+                }
+                i++;
+                return value;
+        }
 
-        Trigger laserTrigger = new Trigger(index.laserSensor::get);
+        private void bindDriveTrain() {
 
-        // tesController.getAButton().onTrue(Commands.runOnce(() ->
-        // tesController.setRumble(RumbleType.kLeftRumble, 1), this));
+                final Drivetrain drivetrain = Drivetrain.get();
+                final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+                                .withDeadband(MaxMetersPerSecond * 0.1)
+                                .withRotationalDeadband(Math.abs(MaxRadiansPerSecond) * 0.1) // Add a
+                                // 10%
+                                // deadband
+                                .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
+                                                                                         // driving in open loop
 
-        // TODO Test This with robot
-        laserTrigger
-                // .debounce(0.29, DebounceType.kRising) // 0.29
-                .onTrue(Commands.runOnce(() -> {
-                    if (intake.hasIntakeBeenSet && !autoShoot.isScheduled()) { // &&
-                                                                               // index.getMotorSpeed()
-                                                                               // < 0) {
-                        // intake.hasIntakeBeenSet = false;
-                        // Commands.runOnce(() ->
-                        // driverXbox.getHID().setRumble(RumbleType.kBothRumble, 2));
-                        // Commands.runOnce(() ->
-                        // manipulatorXbox.getHID().setRumble(RumbleType.kBothRumble, 2));
-                        intake.stop();
+                final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
+                // final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+                final SwerveRequest.FieldCentricFacingAngle driveFacingAngle = new SwerveRequest.FieldCentricFacingAngle()
+                                .withDeadband(MaxMetersPerSecond * 0.1)
+                                .withRotationalDeadband(MaxRadiansPerSecond * 0.1) // Add a
+                                                                                   // 10%
+                                                                                   // deadband
+                                .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // I want field-centric
+                                                                                         // driving in open loop
 
-                        // timer.reset();
-                        // timer.start();
-                        // index.indexCommand(IndexState.Outtake);
-                        // if (timer.hasElapsed(0.5)) {
-                        // index.stop();
-                        // }
-                        index.stop();
-                        shooterAngle.updateCommand(ShooterAngleState.Start.getAngle());
-                        System.out.print("Laser Stop");
-                    }
+                driveFacingAngle.HeadingController.setP(8);
+                // driveFacingAngle.HeadingController.setD(0.2);
+                driveFacingAngle.HeadingController.enableContinuousInput(-Math.PI, Math.PI);
+
+                drivetrain.setDefaultCommand(// Drivetrain will execute this command periodically
+                                drivetrain.applyRequest(() -> drive
+                                                .withVelocityX(testAxis(-driverXbox.getLeftY() * MaxMetersPerSecond
+                                                                * drivetrain.getSpeedLimit())) // Drive
+                                                                                               // forward
+                                                                                               // with
+                                                                                               // negative
+                                                                                               // Y
+                                                // (forward)
+                                                .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond
+                                                                * drivetrain.getSpeedLimit()) // Drive
+                                                                                              // left
+                                                                                              // with
+                                                // negative
+                                                // X (left)
+                                                .withRotationalRate(-driverXbox.getRightX() * MaxRadiansPerSecond
+                                                                * drivetrain.getSpeedLimit()) // Drive
+                                                                                              // counterclockwise
+                                // with negative X (left)
+                                ));
+
+                // driverXbox.rightTrigger().onFalse(Commands.printCommand(-driverXbox.getLeftY()
+                // * MaxMetersPerSecond
+                // * drivetrain.getSpeedLimit()));
+                driverXbox.rightTrigger().onTrue(Commands.runOnce(() -> coralIntake.schedule()));
+
+                driverXbox.y().whileTrue(
+                                drivetrain.applyRequest(() -> driveFacingAngle
+                                                .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond *
+                                                                drivetrain.getSpeedLimit())
+                                                .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond *
+                                                                drivetrain.getSpeedLimit())
+                                                .withTargetDirection(Rotation2d.fromDegrees(0))));
+                driverXbox.b().whileTrue(
+                                drivetrain.applyRequest(() -> driveFacingAngle
+                                                .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond *
+                                                                drivetrain.getSpeedLimit())
+
+                                                .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond *
+                                                                drivetrain.getSpeedLimit())
+                                                .withTargetDirection(Rotation2d.fromDegrees(270))));
+                driverXbox.a().whileTrue(
+                                drivetrain.applyRequest(() -> driveFacingAngle
+                                                .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond *
+                                                                drivetrain.getSpeedLimit())
+
+                                                .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond *
+                                                                drivetrain.getSpeedLimit())
+                                                .withTargetDirection(Rotation2d.fromDegrees(180))));
+                driverXbox.x().whileTrue(
+                                drivetrain.applyRequest(() -> driveFacingAngle
+                                                .withVelocityX(-driverXbox.getLeftY() * MaxMetersPerSecond *
+                                                                drivetrain.getSpeedLimit())
+
+                                                .withVelocityY(-driverXbox.getLeftX() * MaxMetersPerSecond *
+                                                                drivetrain.getSpeedLimit())
+                                                .withTargetDirection(Rotation2d.fromDegrees(90))));
+
+                // driverXbox.a().onTrue(Commands.runOnce(() ->
+                // testController.setRumble(RumbleType.kBothRumble, 1)));
+
+                // POV slow driving
+                // driverXbox.pov(360).whileTrue(
+                // // drivetrain.applyRequest(
+                // // () -> driveFacingAngle.withVelocityY(0.2 * MaxMetersPerSecond *
+                // drivetrain.getSpeedLimit())));
+                // Commands.parallel(
+                // drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(0,
+                // 1))),
+                // drivetrain.applyRequest(() -> drive.withVelocityY(0.4))));
+
+                driverXbox.pov(45).whileTrue(
+                                drivetrain.applyRequest(
+                                                () -> driveFacingAngle
+                                                                .withVelocityX(0.2 * MaxMetersPerSecond
+                                                                                * drivetrain.getSpeedLimit())
+                                                                .withVelocityY(0.2 * MaxMetersPerSecond
+                                                                                * drivetrain.getSpeedLimit())));
+                driverXbox.pov(90).whileTrue(
+                                drivetrain.applyRequest(
+                                                () -> driveFacingAngle.withVelocityX(0.2 * MaxMetersPerSecond
+                                                                * drivetrain.getSpeedLimit())));
+                driverXbox.pov(135).whileTrue(
+                                drivetrain.applyRequest(
+                                                () -> driveFacingAngle
+                                                                .withVelocityX(0.2 * MaxMetersPerSecond
+                                                                                * drivetrain.getSpeedLimit())
+                                                                .withVelocityY(0.2 * MaxMetersPerSecond
+                                                                                * drivetrain.getSpeedLimit())));
+                driverXbox.pov(180).whileTrue(
+                                drivetrain.applyRequest(
+                                                () -> driveFacingAngle.withVelocityY(-0.2 * MaxMetersPerSecond
+                                                                * drivetrain.getSpeedLimit())));
+                driverXbox.pov(225).whileTrue(
+                                drivetrain.applyRequest(
+                                                () -> driveFacingAngle
+                                                                .withVelocityY(-0.2 * MaxMetersPerSecond
+                                                                                * drivetrain.getSpeedLimit())
+                                                                .withVelocityX(-0.2 * MaxMetersPerSecond
+                                                                                * drivetrain.getSpeedLimit())));
+                driverXbox.pov(270).whileTrue(
+                                drivetrain.applyRequest(
+                                                () -> driveFacingAngle.withVelocityX(-0.2 * MaxMetersPerSecond
+                                                                * drivetrain.getSpeedLimit())));
+                driverXbox.pov(315).whileTrue(
+                                drivetrain.applyRequest(
+                                                () -> driveFacingAngle
+                                                                .withVelocityY(0.2 * MaxMetersPerSecond
+                                                                                * drivetrain.getSpeedLimit())
+                                                                .withVelocityX(-0.2 * MaxMetersPerSecond
+                                                                                * drivetrain.getSpeedLimit())));
+
+                // Brake
+                driverXbox.back().whileTrue(drivetrain.applyRequest(() -> brake));
+
+                // reset the field-centric heading on left bumper press
+                driverXbox.start().onTrue(Commands.runOnce(() -> drivetrain.seedFieldRelative()));
+
+                // Speed Buttons- Update the
+                driverXbox.leftBumper().onTrue(Commands.runOnce(() -> drivetrain.setSpeedLimit(SpeedLimitState.Full)));
+                driverXbox.rightBumper()
+                                .onTrue(Commands.runOnce(() -> drivetrain.setSpeedLimit(SpeedLimitState.Forth)));
+                // Reset the speed when button is released
+                driverXbox.leftBumper().onFalse(Commands.runOnce(() -> drivetrain.setSpeedLimit(SpeedLimitState.Half)));
+                driverXbox.rightBumper()
+                                .onFalse(Commands.runOnce(() -> drivetrain.setSpeedLimit(SpeedLimitState.Half)));
+
+                if (Utils.isSimulation()) {
+                        drivetrain.seedFieldRelative(new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)));
+                }
+        }
+
+        private void bindIntakeIndex() {
+                final Intake intake = Intake.get();
+                final Index index = Index.get();
+                final ShooterAngle shooterAngle = ShooterAngle.get();
+
+                final IntakeUntilDetectionAngle intakeUntilDetection = new IntakeUntilDetectionAngle();
+                final Outtake outtake = new Outtake();
+
+                Trigger laserTrigger = new Trigger(index.laserSensor::get);
+
+                // tesController.getAButton().onTrue(Commands.runOnce(() ->
+                // tesController.setRumble(RumbleType.kLeftRumble, 1), this));
+
+                // TODO Test This with robot
+                laserTrigger
+                                // .debounce(0.29, DebounceType.kRising) // 0.29
+                                .onTrue(Commands.runOnce(() -> {
+                                        if (intake.hasIntakeBeenSet && !autoShoot.isScheduled()) { // &&
+                                                                                                   // index.getMotorSpeed()
+                                                                                                   // < 0) {
+                                                // intake.hasIntakeBeenSet = false;
+                                                // Commands.runOnce(() ->
+                                                // driverXbox.getHID().setRumble(RumbleType.kBothRumble, 2));
+                                                // Commands.runOnce(() ->
+                                                // manipulatorXbox.getHID().setRumble(RumbleType.kBothRumble, 2));
+                                                intake.stop();
+
+                                                // timer.reset();
+                                                // timer.start();
+                                                // index.indexCommand(IndexState.Outtake);
+                                                // if (timer.hasElapsed(0.5)) {
+                                                // index.stop();
+                                                // }
+                                                index.stop();
+                                                shooterAngle.updateCommand(ShooterAngleState.Start.getAngle());
+                                                System.out.print("Laser Stop");
+                                        }
+                                }));
+
+                laserTrigger.onTrue(Commands
+                                .parallel(Commands.runOnce(
+                                                () -> manipulatorXbox.getHID().setRumble(RumbleType.kBothRumble, 0.6)),
+                                                Commands.waitSeconds(0.2))
+                                .andThen(() -> manipulatorXbox.getHID().setRumble(RumbleType.kBothRumble, 0)));
+                laserTrigger.onTrue(Commands.parallel(Commands.runOnce(
+                                () -> driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0.6)),
+                                Commands.waitSeconds(0.2))
+                                .andThen(() -> driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0)));
+
+                // TODO Remove after testing
+                // manipulatorXbox.leftTrigger().onTrue(
+                // Commands.parallel(intake.intakeCommand(IntakeState.Out),
+                // index.indexCommand(IndexState.Intake)));
+
+                manipulatorXbox.rightTrigger().onTrue(Commands.runOnce(() -> {
+                        if (outtake.hasOuttakeBeenSet) {
+                                intake.stop();
+                                index.stop();
+                                outtake.hasOuttakeBeenSet = false;
+                                System.out.println("stopMotors--------");
+                        } else {
+                                outtake.schedule();
+                                System.out.println("Outtake Scheduled");
+                        }
                 }));
 
-        laserTrigger.onTrue(Commands
-                .parallel(Commands.runOnce(
-                        () -> manipulatorXbox.getHID().setRumble(RumbleType.kBothRumble, 0.6)),
-                        Commands.waitSeconds(0.2))
-                .andThen(() -> manipulatorXbox.getHID().setRumble(RumbleType.kBothRumble, 0)));
-        laserTrigger.onTrue(Commands.parallel(Commands.runOnce(
-                () -> driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0.6)),
-                Commands.waitSeconds(0.2))
-                .andThen(() -> driverXbox.getHID().setRumble(RumbleType.kBothRumble, 0)));
+                // Trigger test = new Trigger(index.isNoteDetected());
 
-        // TODO Remove after testing
-        // manipulatorXbox.leftTrigger().onTrue(
-        // Commands.parallel(intake.intakeCommand(IntakeState.Out),
-        // index.indexCommand(IndexState.Intake)));
+                // index.isNoteDetected().onTrue(index.stop());
 
-        manipulatorXbox.rightTrigger().onTrue(Commands.runOnce(() -> {
-            if (outtake.hasOuttakeBeenSet) {
-                intake.stop();
-                index.stop();
-                outtake.hasOuttakeBeenSet = false;
-                System.out.println("stopMotors--------");
-            } else {
-                outtake.schedule();
-                System.out.println("Outtake Scheduled");
-            }
-        }));
+                // a = intake/stop intake
+                // manipulatorXbox.a().onTrue(Commands.runOnce(() -> {
+                // if (intakeUntilDetection.isScheduled()) {
+                // intakeUntilDetection.cancel();
+                // } else {
+                // intakeUntilDetection.schedule();
+                // }
+                // }));
 
-        // Trigger test = new Trigger(index.isNoteDetected());
+                manipulatorXbox.a().onTrue(Commands.runOnce(() -> {
+                        if (intake.hasIntakeBeenSet) {
+                                intake.stop();
+                                index.stop();
+                                // intake.hasIntakeBeenSet = false;
+                                System.out.println("stopMotors--------");
+                        } else {
+                                // TODO TEST
+                                intakeUntilDetection.schedule();
 
-        // index.isNoteDetected().onTrue(index.stop());
+                                System.out.println("Scheduled");
+                        }
+                }));
 
-        // a = intake/stop intake
-        // manipulatorXbox.a().onTrue(Commands.runOnce(() -> {
-        // if (intakeUntilDetection.isScheduled()) {
-        // intakeUntilDetection.cancel();
-        // } else {
-        // intakeUntilDetection.schedule();
-        // }
-        // }));
+        }
 
-        manipulatorXbox.a().onTrue(Commands.runOnce(() -> {
-            if (intake.hasIntakeBeenSet) {
-                intake.stop();
-                index.stop();
-                // intake.hasIntakeBeenSet = false;
-                System.out.println("stopMotors--------");
-            } else {
-                // TODO TEST
-                intakeUntilDetection.schedule();
+        private boolean isNotDriving() {
+                return Math.abs(driverXbox.getLeftX()) < 0.1 && Math.abs(driverXbox.getLeftY()) < 0.1
+                                && Math.abs(driverXbox.getRightX()) < 0.1;
+        }
 
-                System.out.println("Scheduled");
-            }
-        }));
+        private void bindShooter() {
+                final ShooterSpeed shooterSpeed = ShooterSpeed.get();
+                final ShooterAngle shooterAngle = ShooterAngle.get();
+                final Index index = Index.get();
+                final ShooterIntake2 shooterIntake2 = new ShooterIntake2();
 
-    }
+                final Intake intake = Intake.get();
 
-    private boolean isNotDriving() {
-        return Math.abs(driverXbox.getLeftX()) < 0.1 && Math.abs(driverXbox.getLeftY()) < 0.1
-                && Math.abs(driverXbox.getRightX()) < 0.1;
-    }
+                final SetShooterSpeedAndAngle setShooterClose = new SetShooterSpeedAndAngle(
+                                Constants.ShooterAngle.CloseShooterAngle,
+                                Constants.ShooterSpeed.CloseShooterSpeed);
 
-    private void bindShooter() {
-        final ShooterSpeed shooterSpeed = ShooterSpeed.get();
-        final ShooterAngle shooterAngle = ShooterAngle.get();
-        final Index index = Index.get();
-        final ShooterIntake2 shooterIntake2 = new ShooterIntake2();
+                // final SetShooterSpeedAndAngle setShooterAmp = new SetShooterSpeedAndAngle(
+                // Constants.ShooterAngle.AmpShooterAngle,
+                // );
 
-        final Intake intake = Intake.get();
+                final SetShooterSpeedAngleDifferent setShooterAmp = new SetShooterSpeedAngleDifferent(
+                                Constants.ShooterAngle.AmpShooterAngle, Constants.ShooterSpeed.AmpBottomShooterSpeed,
+                                Constants.ShooterSpeed.AmpTopShooterSpeed); // 40, 30 = amp //60-60 = trap
 
-        final SetShooterSpeedAndAngle setShooterClose = new SetShooterSpeedAndAngle(
-                Constants.ShooterAngle.CloseShooterAngle,
-                Constants.ShooterSpeed.CloseShooterSpeed);
+                final SetShooterSpeedAngleDifferent setShooterTrap = new SetShooterSpeedAngleDifferent(
+                                Constants.ShooterAngle.TrapShooterAngle, Constants.ShooterSpeed.TrapBottomShooterSpeed,
+                                Constants.ShooterSpeed.TrapTopShooterSpeed);
 
-        // final SetShooterSpeedAndAngle setShooterAmp = new SetShooterSpeedAndAngle(
-        // Constants.ShooterAngle.AmpShooterAngle,
-        // );
+                final SetShooterSpeedAngleDifferent setShooterAcrossField = new SetShooterSpeedAngleDifferent(
+                                Constants.ShooterAngle.AcrossFieldShooterAngle,
+                                Constants.ShooterSpeed.AcrossFieldShooterSpeed,
+                                Constants.ShooterSpeed.AcrossFieldShooterSpeed);
 
-        final SetShooterSpeedAngleDifferent setShooterAmp = new SetShooterSpeedAngleDifferent(
-                Constants.ShooterAngle.AmpShooterAngle, Constants.ShooterSpeed.AmpBottomShooterSpeed,
-                Constants.ShooterSpeed.AmpTopShooterSpeed); // 40, 30 = amp //60-60 = trap
+                // b = stop Shooter
+                manipulatorXbox.b().onTrue(shooterSpeed.stopButton());
+                // x = Manual Shoot
+                manipulatorXbox.x().onTrue(index.indexCommand(IndexState.Intake));
 
-        final SetShooterSpeedAngleDifferent setShooterTrap = new SetShooterSpeedAngleDifferent(
-                Constants.ShooterAngle.TrapShooterAngle, Constants.ShooterSpeed.TrapBottomShooterSpeed,
-                Constants.ShooterSpeed.TrapTopShooterSpeed);
+                // TODO Remove After Testing
+                // manipulatorXbox.leftTrigger().onTrue(shooterIntake);
 
-        final SetShooterSpeedAngleDifferent setShooterAcrossField = new SetShooterSpeedAngleDifferent(
-                Constants.ShooterAngle.AcrossFieldShooterAngle, Constants.ShooterSpeed.AcrossFieldShooterSpeed,
-                Constants.ShooterSpeed.AcrossFieldShooterSpeed);
+                // manipulatorXbox.leftTrigger().onTrue(shooterIntake2);
 
-        // b = stop Shooter
-        manipulatorXbox.b().onTrue(shooterSpeed.stopButton());
-        // x = Manual Shoot
-        manipulatorXbox.x().onTrue(index.indexCommand(IndexState.Intake));
+                // TODO Test
+                manipulatorXbox.leftTrigger().onTrue(Commands.runOnce(() -> {
+                        if (shooterIntake2.hasShooterIntakeBeenSet) {
+                                index.stop();
+                                shooterIntake2.hasShooterIntakeBeenSet = false;
+                                System.out.println("stopMotors--------");
+                        } else {
+                                shooterIntake2.schedule();
+                                System.out.println("Outtake Scheduled");
+                        }
+                }));
 
-        // TODO Remove After Testing
-        // manipulatorXbox.leftTrigger().onTrue(shooterIntake);
+                // back = Shooter Home Angle
+                manipulatorXbox.start().onTrue(shooterAngle.updateCommand(() -> ShooterAngleState.Start.getAngle())
+                                .finallyDo(() -> intake.hasIntakeBeenSet = false));
 
-        // manipulatorXbox.leftTrigger().onTrue(shooterIntake2);
+                // TODO remove after testing
+                // manipulatorXbox.y().onTrue(shooterSpeed.updateCommand(0.6));
 
-        //TODO Test
-        manipulatorXbox.leftTrigger().onTrue(Commands.runOnce(() -> {
-            if (shooterIntake2.hasShooterIntakeBeenSet) {
-                index.stop();
-                shooterIntake2.hasShooterIntakeBeenSet = false;
-                System.out.println("stopMotors--------");
-            } else {
-                shooterIntake2.schedule();
-                System.out.println("Outtake Scheduled");
-            }
-        }));
+                // Manual Shooter Angle
+                manipulatorXbox.axisLessThan(5, -0.1).whileTrue(
+                                shooterAngle.adjustManualAngle(1).finallyDo(() -> intake.hasIntakeBeenSet = false));
+                manipulatorXbox.axisGreaterThan(5, 0.1).whileTrue(
+                                shooterAngle.adjustManualAngle(-1).finallyDo(() -> intake.hasIntakeBeenSet = false));
 
-        // back = Shooter Home Angle
-        manipulatorXbox.start().onTrue(shooterAngle.updateCommand(() -> ShooterAngleState.Start.getAngle())
-                .finallyDo(() -> intake.hasIntakeBeenSet = false));
+                // set manual speed/angle
+                manipulatorXbox.rightBumper().onTrue(setShooterClose.finallyDo(() -> intake.hasIntakeBeenSet = false));
+                // manipulatorXbox.leftBumper().onTrue(setShooterFar.finallyDo(() ->
+                // intake.hasIntakeBeenSet = false));
+                manipulatorXbox.leftBumper().onTrue(setShooterAmp.finallyDo(() -> intake.hasIntakeBeenSet = false));
 
-        // TODO remove after testing
-        // manipulatorXbox.y().onTrue(shooterSpeed.updateCommand(0.6));
+                // TODO y = Auto Shoot
+                // manipulatorXbox.y().onTrue(autoShoot);
 
-        // Manual Shooter Angle
-        manipulatorXbox.axisLessThan(5, -0.1).whileTrue(
-                shooterAngle.adjustManualAngle(1).finallyDo(() -> intake.hasIntakeBeenSet = false));
-        manipulatorXbox.axisGreaterThan(5, 0.1).whileTrue(
-                shooterAngle.adjustManualAngle(-1).finallyDo(() -> intake.hasIntakeBeenSet = false));
+                // manipulatorXbox.y().onTrue(Commands.runOnce(() -> {
+                // if (autoShoot.isScheduled()) {
+                // autoShoot.cancel();
+                // } else {
+                // autoShoot.schedule();
+                // }
+                // }));
 
-        // set manual speed/angle
-        manipulatorXbox.rightBumper().onTrue(setShooterClose.finallyDo(() -> intake.hasIntakeBeenSet = false));
-        // manipulatorXbox.leftBumper().onTrue(setShooterFar.finallyDo(() ->
-        // intake.hasIntakeBeenSet = false));
-        manipulatorXbox.leftBumper().onTrue(setShooterAmp.finallyDo(() -> intake.hasIntakeBeenSet = false));
+                // TODO Test
+                manipulatorXbox.y().onTrue(Commands.runOnce(() -> autoShoot.schedule()));
 
-        // TODO y = Auto Shoot
-        // manipulatorXbox.y().onTrue(autoShoot);
+                manipulatorXbox.povUp().onTrue(Commands.runOnce(() -> setShooterTrap.schedule()));
 
-        // manipulatorXbox.y().onTrue(Commands.runOnce(() -> {
-        // if (autoShoot.isScheduled()) {
-        // autoShoot.cancel();
-        // } else {
-        // autoShoot.schedule();
-        // }
-        // }));
+                manipulatorXbox.povDown().onTrue(Commands.runOnce(() -> setShooterAcrossField.schedule()));
 
-        // TODO Test
-        manipulatorXbox.y().onTrue(Commands.runOnce(() -> autoShoot.schedule()));
+                driverXbox.leftTrigger().onTrue(Commands.runOnce(() -> trap.schedule()));
 
-        manipulatorXbox.povUp().onTrue(Commands.runOnce(() -> setShooterTrap.schedule()));
+        }
 
-        manipulatorXbox.povDown().onTrue(Commands.runOnce(() -> setShooterAcrossField.schedule()));
+        /**
+         * Use this to pass the autonomous command to the main {@link Robot} class.
+         *
+         * @return the command to run in autonomous
+         */
+        public Command getAutonomousCommand() {
+                // An example command will be run in autonomous
+                return new PathPlannerAuto("New Auto");
+                // return autos.getAutonomousCommand();
+        }
 
-        driverXbox.leftTrigger().onTrue(Commands.runOnce(() -> trap.schedule()));
+        private void addAutos() {
+                // Taxi
+                autos.addAuto(() -> {
+                        Taxi taxiCommand = new Taxi();
+                        return taxiCommand.taxi();
+                });
 
-    }
+                // Nothing
+                autos.addAuto(() -> new Nothing()
+                                .withName("NothingAuto"));
 
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
-    public Command getAutonomousCommand() {
-        // An example command will be run in autonomous
-        return autos.getAutonomousCommand();
-    }
+                // ShootTaxi
+                autos.addAuto(() -> {
+                        ShootTaxi shootTaxiCommand = new ShootTaxi();
+                        return shootTaxiCommand.shootTaxi();
+                });
 
-    private void addAutos() {
-        // Taxi
-        autos.addAuto(() -> {
-            Taxi taxiCommand = new Taxi();
-            return taxiCommand.taxi();
-        });
+                // Three Piece (center line)
+                // TODO Get This Working
+                autos.addAuto(() -> {
+                        ThreePieceAuto threePiece = new ThreePieceAuto();
+                        return threePiece.threePieceAuto();
+                });
 
-        // Nothing
-        autos.addAuto(() -> new Nothing()
-                .withName("NothingAuto"));
+                // Shoot Intake Auto Shoot
+                autos.addAuto(() -> {
+                        ShootIntakeAutoShoot shootIntakeAutoShootCommand = new ShootIntakeAutoShoot();
+                        return shootIntakeAutoShootCommand.shootIntakeAutoShoot();
+                });
 
-        // ShootTaxi
-        autos.addAuto(() -> {
-            ShootTaxi shootTaxiCommand = new ShootTaxi();
-            return shootTaxiCommand.shootTaxi();
-        });
+                // Shoot
+                autos.addAuto(() -> {
+                        Shoot shootCommand = new Shoot();
+                        return shootCommand.shoot();
+                });
 
-        // Three Piece (center line)
-        // TODO Get This Working
-        autos.addAuto(() -> {
-            ThreePieceAuto threePiece = new ThreePieceAuto();
-            return threePiece.threePieceAuto();
-        });
+                // Right two piece
+                // TODO Get this working
+                autos.addAuto(() -> {
+                        AmpSideShootIntakeAuto ampSideShootIntakeAutoCommand = new AmpSideShootIntakeAuto();
+                        return ampSideShootIntakeAutoCommand.ampSideShootIntakeAuto();
+                });
 
-        // Shoot Intake Auto Shoot
-        autos.addAuto(() -> {
-            ShootIntakeAutoShoot shootIntakeAutoShootCommand = new ShootIntakeAutoShoot();
-            return shootIntakeAutoShootCommand.shootIntakeAutoShoot();
-        });
+                // Left Two Piece
+                // TODO Get this working
+                autos.addAuto(() -> {
+                        SourceSideShootIntakeAuto sourceSideShootIntakeAuto = new SourceSideShootIntakeAuto();
+                        return sourceSideShootIntakeAuto.sourceSideShootIntakeAuto();
+                });
 
-        // Shoot
-        autos.addAuto(() -> {
-            Shoot shootCommand = new Shoot();
-            return shootCommand.shoot();
-        });
+                // Side Shoot Intake Shoot
+                autos.addAuto(() -> {
+                        SideShootIntakeShoot sideShootIntakeShootCommand = new SideShootIntakeShoot();
+                        return sideShootIntakeShootCommand.sideShootIntakeShoot();
+                });
 
-        // Right two piece
-        // TODO Get this working
-        autos.addAuto(() -> {
-            AmpSideShootIntakeAuto ampSideShootIntakeAutoCommand = new AmpSideShootIntakeAuto();
-            return ampSideShootIntakeAutoCommand.ampSideShootIntakeAuto();
-        });
+                // right center line 3 piece
+                autos.addAuto(() -> {
+                        RightCenterLine3Piece rightCenterLine3PieceCommand = new RightCenterLine3Piece();
+                        return rightCenterLine3PieceCommand.rightCenterLine3Piece();
+                });
 
-        // Left Two Piece
-        // TODO Get this working
-        autos.addAuto(() -> {
-            SourceSideShootIntakeAuto sourceSideShootIntakeAuto = new SourceSideShootIntakeAuto();
-            return sourceSideShootIntakeAuto.sourceSideShootIntakeAuto();
-        });
+                // right center line 3 piece
+                autos.addAuto(() -> {
+                        RightCenterLine2Piece rightCenterLine2PieceCommand = new RightCenterLine2Piece();
+                        return rightCenterLine2PieceCommand.rightCenterLine2Piece();
+                });
 
-        // Side Shoot Intake Shoot
-        autos.addAuto(() -> {
-            SideShootIntakeShoot sideShootIntakeShootCommand = new SideShootIntakeShoot();
-            return sideShootIntakeShootCommand.sideShootIntakeShoot();
-        });
+                // right center line 3 piece
+                autos.addAuto(() -> {
+                        SourceCenterLineManual sourceCenterLineManualCommand = new SourceCenterLineManual();
+                        return sourceCenterLineManualCommand.sourceCenterLineManual();
+                });
 
-        // right center line 3 piece
-        autos.addAuto(() -> {
-            RightCenterLine3Piece rightCenterLine3PieceCommand = new RightCenterLine3Piece();
-            return rightCenterLine3PieceCommand.rightCenterLine3Piece();
-        });
+                autos.addSelectorWidget();
+        }
 
-        // right center line 3 piece
-        autos.addAuto(() -> {
-            RightCenterLine2Piece rightCenterLine2PieceCommand = new RightCenterLine2Piece();
-            return rightCenterLine2PieceCommand.rightCenterLine2Piece();
-        });
+        /*
+         * Intake intake game piece until dectection when detection occurs, stop the
+         * belt, the intake, and
+         * initiate the falcon motors manual intake/belt until stop button stop intake
+         * outtake Game piece
+         * move intake and belt
+         */
 
-        // right center line 3 piece
-        autos.addAuto(() -> {
-            SourceCenterLineManual sourceCenterLineManualCommand = new SourceCenterLineManual();
-            return sourceCenterLineManualCommand.sourceCenterLineManual();
-        });
+        // Belt
+        // *manual belt
+        // *manual belt stop
+        // *move belt for shooting (once shooter is at right speed)
+        // shooter intake
 
-        autos.addSelectorWidget();
-    }
+        // Shooter Angle
+        // adjust to set angles (for set distances)
+        // reset to home
+        // adjust to shortest angle to pass under stage?
+        // manually adjust angle
+        // auto adjust angle
 
-    /*
-     * Intake intake game piece until dectection when detection occurs, stop the
-     * belt, the intake, and
-     * initiate the falcon motors manual intake/belt until stop button stop intake
-     * outtake Game piece
-     * move intake and belt
-     */
+        // Shooter
+        // intake with shooter
+        // adjust to set speed
+        // auto adjust to speed?
+        // stop shooter
 
-    // Belt
-    // *manual belt
-    // *manual belt stop
-    // *move belt for shooting (once shooter is at right speed)
-    // shooter intake
+        // LEDs
+        // in "reved up" state
+        // Errors
+        // laser sensor out
+        // When note has been detected
+        // default colors
+        // after game piece has been shot
 
-    // Shooter Angle
-    // adjust to set angles (for set distances)
-    // reset to home
-    // adjust to shortest angle to pass under stage?
-    // manually adjust angle
-    // auto adjust angle
+        // Climber
+        // Move up and down
+        // lock?
 
-    // Shooter
-    // intake with shooter
-    // adjust to set speed
-    // auto adjust to speed?
-    // stop shooter
-
-    // LEDs
-    // in "reved up" state
-    // Errors
-    // laser sensor out
-    // When note has been detected
-    // default colors
-    // after game piece has been shot
-
-    // Climber
-    // Move up and down
-    // lock?
-
-    // Hello Brave Traveller
+        // Hello Brave Traveller
 }

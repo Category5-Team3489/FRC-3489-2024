@@ -38,12 +38,12 @@ public class Outtake extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        System.out.println("End");
+        System.out.println("End22");
         leds.setLeds(LedState.Outtake);
     }
 
     @Override
     public boolean isFinished() {
-        return false;
+        return true;
     }
 }

@@ -12,9 +12,21 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "outtake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Sorce Side Start to Stage Pickup"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "exampleCommand"
           }
         },
         {
@@ -24,9 +36,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "outtake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "shoot to center"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "exampleCommand"
           }
         },
         {
@@ -36,9 +60,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "outtake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Copy of shoot to center"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "exampleCommand"
           }
         },
         {
@@ -48,9 +84,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "outtake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "shoot to middle center"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "exampleCommand"
           }
         },
         {
@@ -60,9 +108,21 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "outtake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "shoot to top center"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "exampleCommand"
           }
         },
         {
@@ -72,15 +132,33 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "outtake"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Copy of shoot to top center"
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "exampleCommand"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "Copy of top center to shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "outtake"
           }
         }
       ]
