@@ -2,79 +2,91 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 3.5215123211986787,
-      "y": 4.403274541213847
+      "x": 0.7121783474336195,
+      "y": 4.371055665188254
     },
-    "rotation": -168.46537934635526
+    "rotation": -58.695876504408965
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
+          "type": "path",
+          "data": {
+            "pathName": "Sorce Side Start to Stage Pickup"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Stage to Shoot Point"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot to center"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "center to shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of shoot to center"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of center to shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot to middle center"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "middle center to shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "shoot to top center"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "top center to shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of shoot to top center"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Copy of top center to shoot"
+          }
+        },
+        {
           "type": "named",
           "data": {
-            "name": "outtake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "exampleCommand"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "explan"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "New Path"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "autooooooooooo"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "no"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "hi"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "bye"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "just"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "super"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "glorious"
+            "name": "set shooter"
           }
         }
       ]

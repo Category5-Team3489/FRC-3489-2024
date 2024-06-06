@@ -85,10 +85,13 @@ public class RobotContainer {
         public RobotContainer() {
                 // Configure the trigger bindings
                 final IntakeUntilDetectionAngle intakeUntilDetection = new IntakeUntilDetectionAngle();
+                final SetShooterSpeedAndAngle setShooterSpeedAndAngle = new SetShooterSpeedAndAngle(40, 0.5);
                 NamedCommands.registerCommand("exampleCommand", intakeUntilDetection);
                 final Outtake outtake = new Outtake();
                 NamedCommands.registerCommand("outtake", outtake);
                 NamedCommands.registerCommand("explan", Commands.print("Explan22"));
+                NamedCommands.registerCommand("set shooter", setShooterSpeedAndAngle);
+                
 
                 configureBindings();
                 addAutos();
@@ -466,7 +469,7 @@ public class RobotContainer {
          */
         public Command getAutonomousCommand() {
                 // An example command will be run in autonomous
-                return new PathPlannerAuto("New Auto");
+                return new PathPlannerAuto("Copy of Auto of Autos");
                 // return autos.getAutonomousCommand();
         }
 
