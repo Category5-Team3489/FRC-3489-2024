@@ -469,7 +469,7 @@ public class RobotContainer {
          */
         public Command getAutonomousCommand() {
                 // An example command will be run in autonomous
-                return new PathPlannerAuto("Copy of Auto of Autos");
+                return new PathPlannerAuto("number 4");
                 // return autos.getAutonomousCommand();
         }
 
