@@ -16,58 +16,69 @@ import frc.robot.subsystems.ShooterAngle;
 
 public class ShootIntakeAutoShoot extends SequentialCommandGroup {
 
-    private final Index index = Index.get();
+        private final Index index = Index.get();
 
-    Command closeShootCommand = new SetShooterSpeedAndAngle(
-            Constants.ShooterAngle.CloseShooterAngle,
-            Constants.ShooterSpeed.CloseShooterSpeed);
+        Command closeShootCommand = new SetShooterSpeedAndAngle(
+                        Constants.ShooterAngle.CloseShooterAngle,
+                        Constants.ShooterSpeed.CloseShooterSpeed);
 
-    Command autoShoot = new AutonomousShoot().withTimeout(2);
+        Command autoShoot = new AutonomousShoot().withTimeout(10);
+        Command autoShoot2 = new AutonomousShoot().withTimeout(2);
 
-    Command shooterIndex = index.indexCommand(IndexState.Intake);
+        Command shooterIndex = index.indexCommand(IndexState.Intake);
 
-    Command driveCommandForward = new AutonomousDrive(0.15, 0, 0).withTimeout(1);
-    Command driveCommandBack = new AutonomousDrive(-0.15, 0, 0).withTimeout(2.5);
+        Command driveCommandForward = new AutonomousDrive(0.15, 0, 0).withTimeout(1);
+        Command driveCommandBack = new AutonomousDrive(-0.15, 0, 0).withTimeout(1);
+        Command secondDrive = new AutonomousDrive(0.15, 0, 0).withTimeout(2.5);
 
-    Command coralIntake = new AutonomousCoralIntake().withTimeout(5);
+        Command coralIntake = new AutonomousCoralIntake().withTimeout(5);
 
-    Trigger laserTrigger = new Trigger(index.laserSensor::get);
+        Trigger laserTrigger = new Trigger(index.laserSensor::get);
 
-    final Intake intake = Intake.get();
-    final ShooterAngle shooterAngle = ShooterAngle.get();
+        final Intake intake = Intake.get();
+        final ShooterAngle shooterAngle = ShooterAngle.get();
 
-    public ShootIntakeAutoShoot() {
-        addCommands(
-                Commands.parallel(
-                        closeShootCommand,
-                        Commands.print("Set shooter"),
-                        Commands.waitSeconds(3)),
+        public ShootIntakeAutoShoot() {
+                addCommands(
+                                // Commands.parallel(
+                                // closeShootCommand,
+                                // Commands.print("Set shooter"),
+                                // Commands.waitSeconds(1)),
 
-                // shoot
-                Commands.print("--------END OF PARALLEL========="),
+                                // shoot
+                                Commands.print("--------END OF PARALLEL========="),
 
-                shooterIndex,
-                Commands.print("Index--"),
-                Commands.waitSeconds(2),
+                                // shooterIndex,
+                                // Commands.print("Index--"),
+                                // Commands.waitSeconds(2),
 
-                // Drives back off the wall
-                Commands.print("Drive Forward"),
-                driveCommandForward,
+                                // Drives back off the wall
+                                Commands.print("Drive Forward"),
+                                driveCommandForward,
 
-                // Coral Intake: Rotate to game piece, start intake, stop when laser sensor or
-                // after 5 seconds
-                Commands.print("Coral Intake"),
-                coralIntake,
+                                // Coral Intake: Rotate to game piece, start intake, stop when laser sensor or
+                                // after 5 seconds
+                                // Commands.print("Coral Intake"),
+                                // coralIntake,
 
-                // drives back with timeout to see april tag
-                Commands.print("Drive Back"),
-                driveCommandBack,
-                Commands.waitSeconds(1),
+                                // drives back with timeout to see april tag
+                                Commands.print("Drive Back"),
+                                driveCommandBack,
+                                Commands.waitSeconds(1),
 
-                // auto shoots
-                Commands.print("Auto Shoot"),
-                autoShoot,
-                Commands.print("________________DONE!!!"));
-    }
+                                // auto shoots
+                                Commands.print("Auto Shoot"),
+                                autoShoot,
+
+                                secondDrive,
+
+                                autoShoot2
+                                
+                                
+                                );
+                                // secondDrive,
+                                // autoShoot2,
+                                // Commands.print("________________DONE!!!"));
+        }
 
 }

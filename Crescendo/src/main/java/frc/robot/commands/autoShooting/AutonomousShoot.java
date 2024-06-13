@@ -32,7 +32,7 @@ public class AutonomousShoot extends SequentialCommandGroup {
                 autoAim,
                 spinUpShooter,
                 angleCommand,
-                Commands.print("Drive, Aim, Shooter"),
+                //Commands.print("Drive, Aim, Shooter"),
                 Commands.sequence(
                     Commands.print("Waiting for shooter to spin up"),
                     Commands.waitSeconds(1.2),

@@ -475,6 +475,10 @@ public class RobotContainer {
                         return taxiCommand.taxi();
                 });
 
+                // autos.addAuto(() -> {
+                // return new PathPlannerAuto("number 4");
+                // });
+
                 // Nothing
                 autos.addAuto(() -> new Nothing()
                                 .withName("NothingAuto"));
@@ -557,16 +561,18 @@ public class RobotContainer {
                 autos.addAuto(() -> {
                         TestingSource rightCenterLine3PieceCommand = new TestingSource();
                         Part2OfCenterLine part2OfCenterLine = new Part2OfCenterLine();
-                        return rightCenterLine3PieceCommand.ampSideShootIntakeAuto().withTimeout(10).andThen(part2OfCenterLine.SourceCenterLine3Piece()).withName("TESTING 3");
+                        return rightCenterLine3PieceCommand.ampSideShootIntakeAuto().withTimeout(10)
+                                        .andThen(part2OfCenterLine.SourceCenterLine3Piece()).withName("TESTING 3");
                 });
 
-                  // right center line 3 piece PART ONE
+                // right center line 3 piece PART ONE
                 autos.addAuto(() -> {
                         TestingSource rightCenterLine3PieceCommand = new TestingSource();
-                        return rightCenterLine3PieceCommand.ampSideShootIntakeAuto().withName("TESTING 3 NOTE PART ONE");
+                        return rightCenterLine3PieceCommand.ampSideShootIntakeAuto()
+                                        .withName("TESTING 3 NOTE PART ONE");
                 });
 
-                  // right center line 3 piece PART TWO
+                // right center line 3 piece PART TWO
                 autos.addAuto(() -> {
                         Part2OfCenterLine part2OfCenterLine = new Part2OfCenterLine();
                         return part2OfCenterLine.SourceCenterLine3Piece().withName("TESTING 3 NOTE PART TWO");

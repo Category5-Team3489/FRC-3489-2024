@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7023114046228107,
-        "y": 4.351321779566637
+        "x": 1.5599471997802752,
+        "y": 5.492382339971527
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7023114046228112,
-        "y": 4.351321779566637
+        "x": 2.5599471997802756,
+        "y": 5.492382339971527
       },
       "isLocked": false,
       "linkedName": "Source Speaker Set Up"
     },
     {
       "anchor": {
-        "x": 2.6362321955413157,
-        "y": 4.1046482092964185
+        "x": 4.0777770571233,
+        "y": 5.492382339971527
       },
       "prevControl": {
-        "x": 1.6362321955413157,
-        "y": 4.1046482092964185
+        "x": 3.0777770571233,
+        "y": 5.492382339971527
       },
       "nextControl": null,
       "isLocked": false,
@@ -45,7 +45,7 @@
   "reversed": false,
   "folder": null,
   "previewStartingState": {
-    "rotation": -59.03624346792652,
+    "rotation": 2.009553813021123,
     "velocity": 0
   },
   "useDefaultConstraints": true
