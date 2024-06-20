@@ -5,18 +5,16 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.AutonomousDrive;
-import frc.robot.commands.Intake.AutonomousCoralIntake;
 import frc.robot.commands.Intake.CoralIntake;
 import frc.robot.commands.Intake.IntakeUntilDetectionAngle;
 import frc.robot.commands.Intake.Outtake;
 import frc.robot.commands.autoShooting.AutoShoot;
+import frc.robot.commands.autoShooting.AutonomousShoot;
 import frc.robot.commands.autoShooting.Trap;
 import frc.robot.commands.autos.Cat5Autos;
 import frc.robot.commands.autos.SourceSideShootIntakeAuto;
 // import frc.robot.commands.autos.CenterShootIntakeShoot;
 import frc.robot.commands.autos.Nothing;
-import frc.robot.commands.autos.Part2OfCenterLine;
 import frc.robot.commands.autos.RightCenterLine2Piece;
 import frc.robot.commands.autos.RightCenterLine3Piece;
 import frc.robot.commands.autos.AmpSideShootIntakeAuto;
@@ -24,13 +22,9 @@ import frc.robot.commands.autos.Shoot;
 import frc.robot.commands.autos.ShootIntakeAutoShoot;
 import frc.robot.commands.autos.ShootTaxi;
 import frc.robot.commands.autos.ThreePieceAuto;
-import frc.robot.commands.autos.TwoPieceCenterLineTEST;
 import frc.robot.commands.autos.SideShootIntakeShoot;
-import frc.robot.commands.autos.SourceCenterLine3Piece;
 import frc.robot.commands.autos.SourceCenterLineManual;
 import frc.robot.commands.autos.Taxi;
-import frc.robot.commands.autos.Testing;
-import frc.robot.commands.autos.TestingSource;
 import frc.robot.commands.shooter.SetShooterSpeedAndAngle;
 import frc.robot.commands.shooter.SetShooterSpeedAngleDifferent;
 import frc.robot.commands.shooter.ShooterIntake2;
@@ -44,14 +38,17 @@ import frc.robot.subsystems.ShooterAngle;
 
 import com.ctre.phoenix6.mechanisms.swerve.SwerveModule.DriveRequestType;
 
+import javax.sound.sampled.SourceDataLine;
+
 import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.mechanisms.swerve.SwerveRequest;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -72,7 +69,6 @@ public class RobotContainer {
         private static final double MaxRadiansPerSecond = Constants.Drivetrain.MaxRadiansPerSecond;
 
         private final Command autoShoot = new AutoShoot().onlyWhile(() -> isNotDriving());
-        // TODO TEST
         private final Command coralIntake = new CoralIntake().onlyWhile(() -> isNotDriving());
         private final Command trap = new Trap().onlyWhile(() -> isNotDriving());
 
@@ -89,6 +85,17 @@ public class RobotContainer {
          */
         public RobotContainer() {
                 // Configure the trigger bindings
+                final IntakeUntilDetectionAngle intakeUntilDetection = new IntakeUntilDetectionAngle();
+                final SetShooterSpeedAndAngle setShooterSpeedAndAngle = new SetShooterSpeedAndAngle(40, 0.5);
+                final AutonomousShoot autonomousShoot = new AutonomousShoot();
+                NamedCommands.registerCommand("exampleCommand", intakeUntilDetection);
+                final Outtake outtake = new Outtake();
+                NamedCommands.registerCommand("outtake", outtake);
+                NamedCommands.registerCommand("explan", Commands.print("Explan22"));
+                NamedCommands.registerCommand("set shooter", setShooterSpeedAndAngle);
+                NamedCommands.registerCommand("Auto Shoot", autonomousShoot);
+                
+
                 configureBindings();
                 addAutos();
         }
@@ -112,7 +119,6 @@ public class RobotContainer {
         private void bindDriveTrain() {
 
                 final Drivetrain drivetrain = Drivetrain.get();
-
                 final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
                                 .withDeadband(MaxMetersPerSecond * 0.1)
                                 .withRotationalDeadband(Math.abs(MaxRadiansPerSecond) * 0.1) // Add a
@@ -406,6 +412,7 @@ public class RobotContainer {
 
                 // manipulatorXbox.leftTrigger().onTrue(shooterIntake2);
 
+                // TODO Test
                 manipulatorXbox.leftTrigger().onTrue(Commands.runOnce(() -> {
                         if (shooterIntake2.hasShooterIntakeBeenSet) {
                                 index.stop();
@@ -413,7 +420,7 @@ public class RobotContainer {
                                 System.out.println("stopMotors--------");
                         } else {
                                 shooterIntake2.schedule();
-                                System.out.println("Shooter Intake Scheduled");
+                                System.out.println("Outtake Scheduled");
                         }
                 }));
 
@@ -465,7 +472,8 @@ public class RobotContainer {
          */
         public Command getAutonomousCommand() {
                 // An example command will be run in autonomous
-                return autos.getAutonomousCommand();
+                return new PathPlannerAuto("New Auto");
+                // return autos.getAutonomousCommand();
         }
 
         private void addAutos() {
@@ -475,19 +483,15 @@ public class RobotContainer {
                         return taxiCommand.taxi();
                 });
 
-                // autos.addAuto(() -> {
-                // return new PathPlannerAuto("number 4");
-                // });
-
                 // Nothing
                 autos.addAuto(() -> new Nothing()
                                 .withName("NothingAuto"));
 
-                // ShootTaxi
-                autos.addAuto(() -> {
-                        ShootTaxi shootTaxiCommand = new ShootTaxi();
-                        return shootTaxiCommand;
-                });
+                // // ShootTaxi
+                // autos.addAuto(() -> {
+                //         ShootTaxi shootTaxiCommand = new ShootTaxi();
+                //         return shootTaxiCommand.shootTaxi();
+                // });
 
                 // Three Piece (center line)
                 // TODO Get This Working
@@ -496,11 +500,11 @@ public class RobotContainer {
                         return threePiece.threePieceAuto();
                 });
 
-                // Shoot Intake Auto Shoot
-                autos.addAuto(() -> {
-                        ShootIntakeAutoShoot shootIntakeAutoShootCommand = new ShootIntakeAutoShoot();
-                        return shootIntakeAutoShootCommand;
-                });
+                // // Shoot Intake Auto Shoot
+                // autos.addAuto(() -> {
+                //         ShootIntakeAutoShoot shootIntakeAutoShootCommand = new ShootIntakeAutoShoot();
+                //         return shootIntakeAutoShootCommand.shootIntakeAutoShoot();
+                // });
 
                 // Shoot
                 autos.addAuto(() -> {
@@ -544,44 +548,6 @@ public class RobotContainer {
                 autos.addAuto(() -> {
                         SourceCenterLineManual sourceCenterLineManualCommand = new SourceCenterLineManual();
                         return sourceCenterLineManualCommand.sourceCenterLineManual();
-                });
-
-                // TESTING
-                autos.addAuto(() -> {
-                        Testing test = new Testing();
-                        return test;
-                });
-
-                autos.addAuto(() -> {
-                        SourceCenterLine3Piece sourceCenterLine3Piece = new SourceCenterLine3Piece();
-                        return sourceCenterLine3Piece;
-                });
-
-                // right center line 3 piece
-                autos.addAuto(() -> {
-                        TestingSource rightCenterLine3PieceCommand = new TestingSource();
-                        Part2OfCenterLine part2OfCenterLine = new Part2OfCenterLine();
-                        return rightCenterLine3PieceCommand.ampSideShootIntakeAuto().withTimeout(10)
-                                        .andThen(part2OfCenterLine.SourceCenterLine3Piece()).withName("TESTING 3");
-                });
-
-                // right center line 3 piece PART ONE
-                autos.addAuto(() -> {
-                        TestingSource rightCenterLine3PieceCommand = new TestingSource();
-                        return rightCenterLine3PieceCommand.ampSideShootIntakeAuto()
-                                        .withName("TESTING 3 NOTE PART ONE");
-                });
-
-                // right center line 3 piece PART TWO
-                autos.addAuto(() -> {
-                        Part2OfCenterLine part2OfCenterLine = new Part2OfCenterLine();
-                        return part2OfCenterLine.SourceCenterLine3Piece().withName("TESTING 3 NOTE PART TWO");
-                });
-
-                // Pre-load -> center line -> auto shoot
-                autos.addAuto(() -> {
-                        TwoPieceCenterLineTEST twoPieceCenterLineTEST = new TwoPieceCenterLineTEST();
-                        return twoPieceCenterLineTEST.SourceCenterLine3Piece().withName("Two piece center line");
                 });
 
                 autos.addSelectorWidget();
