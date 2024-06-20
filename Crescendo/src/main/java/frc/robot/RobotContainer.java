@@ -94,7 +94,8 @@ public class RobotContainer {
                 NamedCommands.registerCommand("explan", Commands.print("Explan22"));
                 NamedCommands.registerCommand("set shooter", setShooterSpeedAndAngle);
                 NamedCommands.registerCommand("Auto Shoot", autonomousShoot);
-                
+
+                NamedCommands.registerCommand("intake", intakeUntilDetection);
 
                 configureBindings();
                 addAutos();
@@ -489,8 +490,8 @@ public class RobotContainer {
 
                 // // ShootTaxi
                 // autos.addAuto(() -> {
-                //         ShootTaxi shootTaxiCommand = new ShootTaxi();
-                //         return shootTaxiCommand.shootTaxi();
+                // ShootTaxi shootTaxiCommand = new ShootTaxi();
+                // return shootTaxiCommand.shootTaxi();
                 // });
 
                 // Three Piece (center line)
@@ -502,8 +503,9 @@ public class RobotContainer {
 
                 // // Shoot Intake Auto Shoot
                 // autos.addAuto(() -> {
-                //         ShootIntakeAutoShoot shootIntakeAutoShootCommand = new ShootIntakeAutoShoot();
-                //         return shootIntakeAutoShootCommand.shootIntakeAutoShoot();
+                // ShootIntakeAutoShoot shootIntakeAutoShootCommand = new
+                // ShootIntakeAutoShoot();
+                // return shootIntakeAutoShootCommand.shootIntakeAutoShoot();
                 // });
 
                 // Shoot
