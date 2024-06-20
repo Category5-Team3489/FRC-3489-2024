@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.4127312870010371,
+        "y": 5.564955745296107
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.412731287001038,
+        "y": 5.564955745296107
+      },
+      "isLocked": false,
+      "linkedName": "Setup Center"
+    },
+    {
+      "anchor": {
+        "x": 2.813837166135872,
+        "y": 5.564955745296107
+      },
+      "prevControl": {
+        "x": 1.813837166135872,
+        "y": 5.564955745296107
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Intake Center Piece"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 0.5,
+    "maxAcceleration": 0.5,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Center 2 piece (2)",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": false
+}

@@ -88,12 +88,14 @@ public class RobotContainer {
                 final IntakeUntilDetectionAngle intakeUntilDetection = new IntakeUntilDetectionAngle();
                 final SetShooterSpeedAndAngle setShooterSpeedAndAngle = new SetShooterSpeedAndAngle(40, 0.5);
                 final AutonomousShoot autonomousShoot = new AutonomousShoot();
+                final Command index = Index.get().indexCommand(IndexState.Intake);
                 NamedCommands.registerCommand("exampleCommand", intakeUntilDetection);
                 final Outtake outtake = new Outtake();
                 NamedCommands.registerCommand("outtake", outtake);
                 NamedCommands.registerCommand("explan", Commands.print("Explan22"));
                 NamedCommands.registerCommand("set shooter", setShooterSpeedAndAngle);
                 NamedCommands.registerCommand("Auto Shoot", autonomousShoot);
+                NamedCommands.registerCommand("index", index);
 
                 NamedCommands.registerCommand("intake", intakeUntilDetection);
 
@@ -473,7 +475,7 @@ public class RobotContainer {
          */
         public Command getAutonomousCommand() {
                 // An example command will be run in autonomous
-                return new PathPlannerAuto("New Auto");
+                return new PathPlannerAuto("Center 2 note (Auto 2)");
                 // return autos.getAutonomousCommand();
         }
 
