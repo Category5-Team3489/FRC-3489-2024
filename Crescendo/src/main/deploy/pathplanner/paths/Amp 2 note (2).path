@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 4.64908852894629,
+        "y": 7.193001309079541
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.423359339421411,
+        "y": 7.25279413798156
+      },
+      "isLocked": false,
+      "linkedName": "Close Amp pickup"
+    },
+    {
+      "anchor": {
+        "x": 1.7707422576043426,
+        "y": 6.850839379282182
+      },
+      "prevControl": {
+        "x": 2.3445732483476367,
+        "y": 7.14361029292672
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 17.96913974015711,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "New Folder",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

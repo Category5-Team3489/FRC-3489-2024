@@ -1,32 +1,26 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 1.548236363234494,
-      "y": 5.492382339971527
-    },
-    "rotation": 0
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "AutonomousShoot"
+            "pathName": "Auto 2 (1)"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Example Path"
+            "pathName": "Auto 2 (2)"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "AutonomousShoot"
+            "name": "index"
           }
         }
       ]

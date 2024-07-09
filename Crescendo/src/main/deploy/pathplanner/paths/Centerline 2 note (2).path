@@ -1,0 +1,58 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 8.059461482689013,
+        "y": 0.7846260485673593
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 5.191770383544489,
+        "y": 0.2960082843191738
+      },
+      "isLocked": false,
+      "linkedName": "Centerline pick up source side (1)"
+    },
+    {
+      "anchor": {
+        "x": 1.3239288017074784,
+        "y": 4.055313495237289
+      },
+      "prevControl": {
+        "x": 1.5410015435452695,
+        "y": 3.4928977550211937
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Auto Shoot Source Side"
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -56.546690545927376,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Centerline 2 note",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

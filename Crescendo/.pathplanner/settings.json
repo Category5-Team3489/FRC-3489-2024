@@ -3,9 +3,9 @@
   "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
-    "Just Auto Folder",
-    "...another...auto...1",
-    "some sort of folder"
+    "Center 2 piece (2)",
+    "Centerline 2 note",
+    "New Folder"
   ],
   "autoFolders": [],
   "defaultMaxVel": 3.0,

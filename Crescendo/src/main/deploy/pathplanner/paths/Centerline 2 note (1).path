@@ -3,32 +3,38 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5215123211986787,
-        "y": 4.403274541213847
+        "x": 0.7284778050297884,
+        "y": 4.356431195030721
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.0739474831303437,
-        "y": 3.4429859444597626
+        "x": -0.12641326281226187,
+        "y": 2.3070347995189566
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 2.900837984272259,
-        "y": 5.527514849608872
+        "x": 8.059461482689013,
+        "y": 0.7846260485673593
       },
       "prevControl": {
-        "x": 1.987392733701301,
-        "y": 5.843707436344972
+        "x": 4.487656336225652,
+        "y": 0.655806846563763
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Centerline pick up source side (1)"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.5,
+      "rotationDegrees": 0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
@@ -43,9 +49,9 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Just Auto Folder",
+  "folder": "Centerline 2 note",
   "previewStartingState": {
-    "rotation": 16.85839876773829,
+    "rotation": -58.49573328079587,
     "velocity": 0
   },
   "useDefaultConstraints": true

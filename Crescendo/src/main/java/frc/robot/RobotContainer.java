@@ -84,13 +84,15 @@ public class RobotContainer {
          */
         public RobotContainer() {
                 // Configure the trigger bindings
+                final Index index = Index.get();
                 final IntakeUntilDetectionAngle intakeUntilDetection = new IntakeUntilDetectionAngle();
                 final SetShooterSpeedAndAngle setShooterSpeedAndAngle = new SetShooterSpeedAndAngle(40, 0.5);
-                NamedCommands.registerCommand("exampleCommand", intakeUntilDetection);
+                NamedCommands.registerCommand("intake", intakeUntilDetection);
                 final Outtake outtake = new Outtake();
                 NamedCommands.registerCommand("outtake", outtake);
                 NamedCommands.registerCommand("explan", Commands.print("Explan22"));
                 NamedCommands.registerCommand("set shooter", setShooterSpeedAndAngle);
+                NamedCommands.registerCommand("index", index.indexCommand(IndexState.Intake));
                 
 
                 configureBindings();
@@ -469,11 +471,20 @@ public class RobotContainer {
          */
         public Command getAutonomousCommand() {
                 // An example command will be run in autonomous
-                return new PathPlannerAuto("number 4");
-                // return autos.getAutonomousCommand();
+                // return new PathPlannerAuto("number 4");
+                return autos.getAutonomousCommand();
         }
 
         private void addAutos() {
+
+                autos.addAuto(() -> {
+                        return new PathPlannerAuto("Amp 2 Note");
+                });
+
+                autos.addAuto(() -> {
+                        return new PathPlannerAuto("number 4");
+                });
+
                 // Taxi
                 autos.addAuto(() -> {
                         Taxi taxiCommand = new Taxi();
