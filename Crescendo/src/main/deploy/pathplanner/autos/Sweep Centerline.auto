@@ -1,0 +1,37 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.7023114046228107,
+      "y": 4.331587893945019
+    },
+    "rotation": -60.14792373081731
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Sweep Centerline (1)"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Sweep Centerline (2)"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Sweep Centerline (3)"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "SCRAP",
+  "choreoAuto": false
+}

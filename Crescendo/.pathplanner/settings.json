@@ -3,11 +3,15 @@
   "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
-    "Just Auto Folder",
     "...another...auto...1",
+    "Just Auto Folder",
+    "Centerline 1 Note",
+    "Sweep Centerline",
     "some sort of folder"
   ],
-  "autoFolders": [],
+  "autoFolders": [
+    "SCRAP"
+  ],
   "defaultMaxVel": 3.0,
   "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,

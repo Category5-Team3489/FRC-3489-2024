@@ -1,0 +1,43 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 0.7023114046228107,
+      "y": 4.331587893945019
+    },
+    "rotation": -60.66210634532606
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "set shooter"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "index"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Centerline One Note (1)"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "SCRAP",
+  "choreoAuto": false
+}

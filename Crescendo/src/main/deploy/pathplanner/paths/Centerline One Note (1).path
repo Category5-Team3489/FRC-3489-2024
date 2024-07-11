@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 0.7023114046228107,
+        "y": 4.331587893945019
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 0.4063031202985497,
+        "y": 2.575272073621071
+      },
+      "isLocked": false,
+      "linkedName": "Start Source Side"
+    },
+    {
+      "anchor": {
+        "x": 6.98755397510795,
+        "y": 0.7104198823782273
+      },
+      "prevControl": {
+        "x": 5.931791094351422,
+        "y": 0.5525487974052881
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Centerline Setup Source Side"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "Centerline 1 Note",
+  "previewStartingState": {
+    "rotation": -62.080233571891384,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}
