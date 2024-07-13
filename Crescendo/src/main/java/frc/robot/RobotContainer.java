@@ -478,6 +478,10 @@ public class RobotContainer {
         private void addAutos() {
 
                 autos.addAuto(() -> {
+                        return new PathPlannerAuto("Sweep Centerline");
+                });
+
+                autos.addAuto(() -> {
                         return new PathPlannerAuto("Centerline 1 Note");
                 });
 
